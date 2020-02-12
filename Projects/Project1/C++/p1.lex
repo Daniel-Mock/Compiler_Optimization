@@ -35,16 +35,20 @@ int line=1;
 
 [a-zA-Z_][_a-zA-Z0-9]*  { yylval.id = strdup(yytext); return IDENT; } 
 
-[0-9]+          
+[0-9]+			{ yylval.num = atoi(yytext); return NUM; }          
 
-"-"	{ return MINUS;       } 
-"+"	{ return PLUS;        }  
-"*"	{ return MULTIPLY;    } 
-"/"	{ return DIVIDE;      } 
-
-"("     { return LPAREN;      }
-")"     { return RPAREN;      }
-
-.       { return ERROR;       }
+"-"	{ return MINUS;          } 
+"+"	{ return PLUS;           }  
+"*"	{ return MULTIPLY;       } 
+"/"	{ return DIVIDE;         }  
+"setq"	{ return SETQ;           }
+"min"	{ return MIN;            }
+"max"	{ return MAX;            }
+"aref"  { return AREF;           }
+"setf"  { return SETF;           }
+"make-array { return MAKEARRAY;  }
+"("     { return LPAREN;         }
+")"     { return RPAREN;         }
+.       { return ERROR;          }
 
 %%

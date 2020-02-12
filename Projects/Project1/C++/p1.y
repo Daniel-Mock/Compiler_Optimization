@@ -72,6 +72,8 @@ exprlist:  exprlist expr | expr // MAYBE ADD ACTION HERE?
 expr: LPAREN MINUS token_or_expr_list RPAREN
 { 
   // IMPLEMENT
+  /*(- 5 5 5)*/
+  
 }
 | LPAREN PLUS token_or_expr_list RPAREN
 {
@@ -125,6 +127,7 @@ token_or_expr_list:   token_or_expr_list token_or_expr
 {
   // IMPLEMENT
   // HINT: $$ = new std::list<Value*>;
+  $$ = new std::list<int*>
 }
 ;
 
@@ -150,6 +153,7 @@ token:   IDENT
 | NUM
 {
   // IMPLEMENT
+  $$ = Builder.getInt64($1);
 }
 ;
 
