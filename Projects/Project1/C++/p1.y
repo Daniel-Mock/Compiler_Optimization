@@ -39,13 +39,14 @@ map<string,Value*> idLookup;
 %union {
   int num;
   char *id;
+  Value* val;
 }
 
 %token IDENT NUM MINUS PLUS MULTIPLY DIVIDE LPAREN RPAREN SETQ SETF AREF MIN MAX ERROR MAKEARRAY
 
 %type <num> NUM
 %type <id> IDENT
-
+%type <val> expr
 %start program
 
 %%
@@ -157,7 +158,8 @@ token:   IDENT
 | NUM
 {
   // IMPLEMENT
-  $$ = Builder.getInt64($1);
+  Value* val = Builder.getInt32($1);
+  $$ = val;
 }
 ;
 
