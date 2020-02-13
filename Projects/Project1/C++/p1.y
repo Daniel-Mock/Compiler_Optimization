@@ -124,14 +124,14 @@ token_or_expr_list:   token_or_expr_list token_or_expr
 {
   // IMPLEMENT
   //Add new token or expr to end of list
-  $$ = $2.push_back($3);
+  //$$ = $2.push_back($3);
 }
 | token_or_expr
 {
   // IMPLEMENT
   //Create list for token or expr
   // HINT: $$ = new std::list<Value*>;
-  $$ = new std::list<Value*>;
+  //$$ = new std::list<Value*>;
 }
 ;
 
@@ -148,18 +148,19 @@ token_or_expr :  token
 
 token:   IDENT
 {
-  if (idLookup.find($1) != idLookup.end())
+/*  if (idLookup.find($1) != idLookup.end())
     $$ = Builder.CreateLoad(idLookup[$1]);
   else
     {
       YYABORT;
       }
+*/
 }
 | NUM
 {
   // IMPLEMENT
-  Value* val = Builder.getInt32($1);
-  $$ = val;
+  $$  = Builder.getInt32($1);
+  
 }
 ;
 
