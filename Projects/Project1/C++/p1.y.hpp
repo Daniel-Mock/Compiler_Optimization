@@ -72,8 +72,9 @@ union YYSTYPE
 
   int num;
   char *id;
+  Value* val;
 
-#line 77 "p1.y.hpp" /* yacc.c:1909  */
+#line 78 "p1.y.hpp" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

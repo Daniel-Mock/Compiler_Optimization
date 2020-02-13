@@ -46,7 +46,7 @@ map<string,Value*> idLookup;
 
 %type <num> NUM
 %type <id> IDENT
-%type <val> expr
+%type <val> expr token
 %start program
 
 %%
