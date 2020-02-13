@@ -1,4 +1,4 @@
-%{ 
+%{
 /* P1. Implements scanner.  Some changes are needed! */
 
 #include "llvm/IR/LLVMContext.h"
@@ -16,37 +16,37 @@
 #include <list>
 
 using namespace llvm;
-  
+
 int line=1;
 
-#include "p1.y.hpp" 
+#include "p1.y.hpp"
 %}
 
-%option nodefault 
+%option nodefault
 %option yylineno
 %option nounput
 %option noinput
- 
-%% 
+
+%%
 
 \n           line++;
 [\t ]        ;
 
 
-[a-zA-Z_][_a-zA-Z0-9]*  { yylval.id = strdup(yytext); return IDENT; } 
+[a-zA-Z_][_a-zA-Z0-9]*  { yylval.id = strdup(yytext); return IDENT; }
 
-[0-9]+			{ yylval.num = atoi(yytext); return NUM; }          
+[0-9]+			{ yylval.num = atoi(yytext); return NUM; }
 
-"-"	{ return MINUS;          } 
-"+"	{ return PLUS;           }  
-"*"	{ return MULTIPLY;       } 
-"/"	{ return DIVIDE;         }  
+"-"	{ return MINUS;          }
+"+"	{ return PLUS;           }
+"*"	{ return MULTIPLY;       }
+"/"	{ return DIVIDE;         }
 "setq"	{ return SETQ;           }
 "min"	{ return MIN;            }
 "max"	{ return MAX;            }
 "aref"  { return AREF;           }
 "setf"  { return SETF;           }
-"make-array { return MAKEARRAY;  }
+"make-array" { return MAKEARRAY;  }
 "("     { return LPAREN;         }
 ")"     { return RPAREN;         }
 .       { return ERROR;          }
