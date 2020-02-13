@@ -4,7 +4,7 @@
 #include <errno.h>
 #include <list>
 #include <map>
-  
+
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/Value.h"
 #include "llvm/IR/Function.h"
@@ -33,7 +33,7 @@ extern IRBuilder<> Builder;
 
 // Used to lookup Value associated with ID
 map<string,Value*> idLookup;
- 
+
 %}
 
 %union {
@@ -43,7 +43,7 @@ map<string,Value*> idLookup;
 
 %token IDENT NUM MINUS PLUS MULTIPLY DIVIDE LPAREN RPAREN SETQ SETF AREF MIN MAX ERROR MAKEARRAY
 
-%type <num> NUM 
+%type <num> NUM
 %type <id> IDENT
 
 %start program
@@ -55,9 +55,9 @@ map<string,Value*> idLookup;
    IMPLMENT ALL THE RULES BELOW HERE!
  */
 
-program : exprlist 
-{ 
-  /* 
+program : exprlist
+{
+  /*
     IMPLEMENT: return value
     Hint: the following code is not sufficient
   */
@@ -67,13 +67,13 @@ program : exprlist
 ;
 
 exprlist:  exprlist expr | expr // MAYBE ADD ACTION HERE?
-;         
+;
 
 expr: LPAREN MINUS token_or_expr_list RPAREN
-{ 
+{
   // IMPLEMENT
   /*(- 5 5 5)*/
-  
+
 }
 | LPAREN PLUS token_or_expr_list RPAREN
 {
@@ -99,7 +99,7 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 | LPAREN MAX token_or_expr_list RPAREN
 {
   // HINT: select instruction
-  
+
 }
 | LPAREN SETF token_or_expr token_or_expr RPAREN
 {
@@ -122,33 +122,37 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 token_or_expr_list:   token_or_expr_list token_or_expr
 {
   // IMPLEMENT
+  //Add new token or expr to end of list
+  $$ = $2.push_back($3);
 }
 | token_or_expr
 {
   // IMPLEMENT
+  //Create list for token or expr
   // HINT: $$ = new std::list<Value*>;
-  $$ = new std::list<int*>
+  $$ = new std::list<Value*>;
 }
 ;
 
 token_or_expr :  token
 {
   // IMPLEMENT
+
 }
 | expr
 {
   // IMPLEMENT
 }
-; 
+;
 
 token:   IDENT
 {
-  /*if (idLookup.find($1) != idLookup.end())
+  if (idLookup.find($1) != idLookup.end())
     $$ = Builder.CreateLoad(idLookup[$1]);
   else
     {
-      YYABORT;      
-      }*/
+      YYABORT;
+      }
 }
 | NUM
 {
@@ -169,7 +173,7 @@ void initialize()
   Value * v = Builder.CreateAlloca(a->getType());
   Builder.CreateStore(a,v);
   idLookup[s2] = (Value*)v;
-  
+
   /* IMPLEMENT: add something else here if needed */
 }
 
