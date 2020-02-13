@@ -40,6 +40,8 @@ map<string,Value*> idLookup;
   int num;
   char *id;
   Value* val;
+  std::list<Value*> lst;
+
 }
 
 %token IDENT NUM MINUS PLUS MULTIPLY DIVIDE LPAREN RPAREN SETQ SETF AREF MIN MAX ERROR MAKEARRAY
@@ -47,6 +49,7 @@ map<string,Value*> idLookup;
 %type <num> NUM
 %type <id> IDENT
 %type <val> expr token
+%type <lst> lst
 %start program
 
 %%
@@ -124,43 +127,47 @@ token_or_expr_list:   token_or_expr_list token_or_expr
 {
   // IMPLEMENT
   //Add new token or expr to end of list
-  //$$ = $2.push_back($3);
+  $$ = $1.push_back($2);
 }
 | token_or_expr
 {
   // IMPLEMENT
   //Create list for token or expr
   // HINT: $$ = new std::list<Value*>;
-  //$$ = new std::list<Value*>;
+  //lst = new std::list<Value*>;
+  for (int i = 0; i < sizeof(token_or_expr); i++){
+  		lst.push_back(token_or_expr[i]);
+  }
+  $$ = lst;
 }
 ;
 
 token_or_expr :  token
 {
   // IMPLEMENT
+  //ID or Num
+  $$ = $1
 
 }
 | expr
 {
   // IMPLEMENT
+  $$ = $1
 }
 ;
 
 token:   IDENT
 {
-/*  if (idLookup.find($1) != idLookup.end())
+  if (idLookup.find($1) != idLookup.end())
     $$ = Builder.CreateLoad(idLookup[$1]);
   else
-    {
-      YYABORT;
-      }
-*/
+      abort();
 }
 | NUM
 {
   // IMPLEMENT
   $$  = Builder.getInt32($1);
-  
+
 }
 ;
 
