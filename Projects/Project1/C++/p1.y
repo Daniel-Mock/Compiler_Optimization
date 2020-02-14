@@ -135,7 +135,9 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 | LPAREN MIN token_or_expr_list RPAREN
 {
   // HINT: select instruction
-
+  //compare icmp(sgt, slt), sel(condition = compare)
+  Value * cmp = Builder.CreateICmpSLT($3->front(), $3->back())
+  $$ = Builder.CreateSelect(cmp, $3->front(), $3->back() )
 }
 | LPAREN MAX token_or_expr_list RPAREN
 {
