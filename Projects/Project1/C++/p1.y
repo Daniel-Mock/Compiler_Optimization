@@ -77,6 +77,11 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 {
   // IMPLEMENT
   /*(- 5 5 5)*/
+  int val = $3[0];
+  for(int i = 1; i <= $3.size(); i++){
+    val -=$3[i];
+  }
+  $$ = val;
 
 }
 | LPAREN PLUS token_or_expr_list RPAREN
