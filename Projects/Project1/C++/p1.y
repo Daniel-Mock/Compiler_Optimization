@@ -104,6 +104,7 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 | LPAREN MULTIPLY token_or_expr_list RPAREN
 {
   // IMPLEMENT
+  std::list<Value*>::iterator it;
   for(it = $3->begin(); it != $3->end(); it++){
     if(it == $3->begin()){
      $$ = Builder.CreateAdd(*it, Builder.getInt32(0));
@@ -115,6 +116,7 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 | LPAREN DIVIDE token_or_expr_list RPAREN
 {
   // IMPLEMENT
+  std::list<Value*>::iterator it;
   for(it = $3->begin(); it != $3->end(); it++){
     if(it == $3->begin()){
      $$ = Builder.CreateAdd(*it, Builder.getInt32(0));
