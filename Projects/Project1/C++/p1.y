@@ -137,20 +137,17 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
   // HINT: select instruction
   //compare icmp(sgt, slt), sel(condition = compare)
   std::list<Value*>::iterator it;
+  Value * val;
   for(it = $3->begin(); it != $3->end(); it++){
     if(it == $3->begin()){
-     Value * val = Builder.CreateAdd(*it, Builder.getInt32(0));
+     val = Builder.CreateAdd(*it, Builder.getInt32(0));
     }
     else{
       Value * cmp = Builder.CreateICmpSLT(val, *it);
-      val = Builder.CreateSelect(cmp, $val, *it);
+      val = Builder.CreateSelect(cmp, val, *it);
     }
   $$ = val;
   }
-
-
-  Value * cmp = Builder.CreateICmpSLT($3->front(), $3->back())
-  $$ = Builder.CreateSelect(cmp, $3->front(), $3->back() )
 }
 | LPAREN MAX token_or_expr_list RPAREN
 {
