@@ -95,19 +95,33 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
   //$$ = Builder.CreateLoad(*it);
   for(it = $3->begin(); it != $3->end(); it++){
     if(it == $3->begin()){
-     $$ = Builder.CreateAdd(*it, Builder.getInt32(0));  
+     $$ = Builder.CreateAdd(*it, Builder.getInt32(0));
     }
-    
+
     else $$ = Builder.CreateAdd(*it, $$);
   }
 }
 | LPAREN MULTIPLY token_or_expr_list RPAREN
 {
   // IMPLEMENT
+  for(it = $3->begin(); it != $3->end(); it++){
+    if(it == $3->begin()){
+     $$ = Builder.CreateAdd(*it, Builder.getInt32(0));
+    }
+
+    else $$ = Builder.CreateMul(*it, $$);
+  }
 }
 | LPAREN DIVIDE token_or_expr_list RPAREN
 {
   // IMPLEMENT
+  for(it = $3->begin(); it != $3->end(); it++){
+    if(it == $3->begin()){
+     $$ = Builder.CreateAdd(*it, Builder.getInt32(0));
+    }
+
+    else $$ = Builder.CreateDiv(*it, $$);
+  }
 }
 | LPAREN SETQ IDENT token_or_expr RPAREN
 {
