@@ -83,10 +83,13 @@ exprlist:  exprlist expr | expr // MAYBE ADD ACTION HERE?
 expr: LPAREN MINUS token_or_expr_list RPAREN
 {
   // IMPLEMENT
-  std::list<Value*>::iterator it;
+  $$ = Builder.CreateNeg($3->front());
+
+  /*std::list<Value*>::iterator it;
   for(it = $3->begin(); it != $3->end(); it++){
     $$ = Builder.CreateSub(Builder.getInt32(0), *it);
   }
+  */
 }
 | LPAREN PLUS token_or_expr_list RPAREN
 {
