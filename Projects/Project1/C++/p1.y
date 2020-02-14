@@ -122,7 +122,7 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
      $$ = Builder.CreateAdd(*it, Builder.getInt32(0));
     }
 
-    else $$ = Builder.CreateDiv(*it, $$);
+    else $$ = Builder.CreateDiv($$, *it);
   }
 }
 | LPAREN SETQ IDENT token_or_expr RPAREN
