@@ -40,7 +40,7 @@ map<string,Value*> idLookup;
   int num;
   char *id;
   Value* val;
-  std::list<Value*> lst;
+  std::list<Value*> *lst;
 
 }
 
@@ -48,8 +48,8 @@ map<string,Value*> idLookup;
 
 %type <num> NUM
 %type <id> IDENT
-%type <val> expr token
-%type <lst> lst
+%type <val> expr token token_or_expr
+%type <lst> token_or_expr_list
 %start program
 
 %%
@@ -127,18 +127,16 @@ token_or_expr_list:   token_or_expr_list token_or_expr
 {
   // IMPLEMENT
   //Add new token or expr to end of list
-  $$ = $1.push_back($2);
+  $1->push_back($2);
+  $$ = $1;
 }
 | token_or_expr
 {
   // IMPLEMENT
   //Create list for token or expr
   // HINT: $$ = new std::list<Value*>;
-  //lst = new std::list<Value*>;
-  for (int i = 0; i < sizeof(token_or_expr); i++){
-  		lst.push_back(token_or_expr[i]);
-  }
-  $$ = lst;
+  $$ = new std::list<Value*>;
+  $$->push_back($1);
 }
 ;
 
@@ -146,13 +144,13 @@ token_or_expr :  token
 {
   // IMPLEMENT
   //ID or Num
-  $$ = $1
+  $$ = $1;
 
 }
 | expr
 {
   // IMPLEMENT
-  $$ = $1
+  $$ = $1;
 }
 ;
 

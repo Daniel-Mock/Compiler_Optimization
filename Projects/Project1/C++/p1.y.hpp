@@ -73,8 +73,10 @@ union YYSTYPE
   int num;
   char *id;
   Value* val;
+  std::list<Value*> *lst;
 
-#line 78 "p1.y.hpp" /* yacc.c:1909  */
+
+#line 80 "p1.y.hpp" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
