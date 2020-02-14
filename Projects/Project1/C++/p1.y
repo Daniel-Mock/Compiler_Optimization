@@ -48,7 +48,7 @@ map<string,Value*> idLookup;
 
 %type <num> NUM
 %type <id> IDENT
-%type <val> expr token token_or_expr
+%type <val> expr token token_or_expr exprlist program
 %type <lst> token_or_expr_list
 %start program
 
@@ -65,28 +65,41 @@ program : exprlist
     IMPLEMENT: return value
     Hint: the following code is not sufficient
   */
-  Builder.CreateRet(Builder.getInt32(0));
+  Builder.CreateRet($1);
   return 0;
 }
 ;
 
 exprlist:  exprlist expr | expr // MAYBE ADD ACTION HERE?
+{
+  $$ = $1;
+}
+| expr
+{
+ $$ = $1;
+}
 ;
 
 expr: LPAREN MINUS token_or_expr_list RPAREN
 {
   // IMPLEMENT
-  /*(- 5 5 5)*/
-  int val = $3[0];
-  for(int i = 1; i <= $3.size(); i++){
-    val -=$3[i];
+  std::list<Value*>::iterator it;
+  for(it = $3->begin(); it != $3->end(); it++){
+    $$ = Builder.CreateSub(Builder.getInt32(0), *it);
   }
-  $$ = val;
-
 }
 | LPAREN PLUS token_or_expr_list RPAREN
 {
   // IMPLEMENT
+  std::list<Value*>::iterator it;
+  //$$ = Builder.CreateLoad(*it);
+  for(it = $3->begin(); it != $3->end(); it++){
+    if(it == $3->begin()){
+     $$ = Builder.CreateAdd(*it, Builder.getInt32(0));  
+    }
+    
+    else $$ = Builder.CreateAdd(*it, $$);
+  }
 }
 | LPAREN MULTIPLY token_or_expr_list RPAREN
 {

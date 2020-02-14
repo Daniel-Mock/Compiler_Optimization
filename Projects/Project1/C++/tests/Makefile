@@ -5,24 +5,24 @@ LLVM_LINK = llvm-link
 ece466 = \
 	test_00   \
 	test_01 \
-	//test_02 \
-	//test_03 \
-	//test_04 \
-        //test_05 \
-	//test_06 \
-	//test_07 \
-	//test_08 \
-	//test_09
+	#test_02 \
+	test_03 \
+	test_04 \
+        test_05 \
+	test_06 \
+	test_07 \
+	test_08 \
+	test_09
 	
 ece566 = \
-        //test_10 \
-        //test_11 \
-        //test_12 \
-        //test_13 \
-        //test_14
+        test_10 \
+        test_11 \
+        test_12 \
+        test_13 \
+        test_14
 
-#programs = $(ece466)
-programs = $(ece466) $(ece566)
+programs = $(ece466)
+#programs = $(ece466) $(ece566)
 
 .PHONY: all install
 
