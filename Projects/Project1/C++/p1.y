@@ -131,6 +131,10 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 | LPAREN SETQ IDENT token_or_expr RPAREN
 {
   // IMPLEMENT
+  //map<string,Value*> idLookup;
+  idLookup[$3] = $4;
+  //idLookup.insert(std::pair<char *, Value *>($4,$5));
+
 }
 | LPAREN MIN token_or_expr_list RPAREN
 {
@@ -165,7 +169,7 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
     }
   }
   $$ = val;
-  
+
 
 }
 | LPAREN SETF token_or_expr token_or_expr RPAREN
