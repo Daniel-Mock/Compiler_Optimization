@@ -187,7 +187,8 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 | LPAREN AREF IDENT token_or_expr RPAREN
 {
   // IMPLEMENT
-
+  Value * tmp = Builder.CreateIntToPtr(idLookup[$3], PointerType::get(Builder.getInt32Ty(),0));
+  $$ = Builder.CreateLoad(tmp);
 }
 | LPAREN MAKEARRAY IDENT NUM token_or_expr RPAREN
 {
