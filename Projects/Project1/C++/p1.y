@@ -153,6 +153,19 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 | LPAREN MAX token_or_expr_list RPAREN
 {
   // HINT: select instruction
+  std::list<Value*>::iterator it;
+  Value * val;
+  for(it = $3->begin(); it != $3->end(); it++){
+    if(it == $3->begin()){
+     val = $3->front();
+    }
+    else{
+      Value * cmp = Builder.CreateICmpSGT(val, *it);
+      val = Builder.CreateSelect(cmp, val, *it);
+    }
+  }
+  $$ = val;
+  
 
 }
 | LPAREN SETF token_or_expr token_or_expr RPAREN
