@@ -134,11 +134,9 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 }
 | LPAREN MIN token_or_expr_list RPAREN
 {
-  Value * cmp = Builder.CreateICmpSLT($3->front(), $3->back());
-  $$ = Builder.CreateSelect(cmp, $3->front(), $3->back());
   // HINT: select instruction
   //compare icmp(sgt, slt), sel(condition = compare)
- /* std::list<Value*>::iterator it;
+  std::list<Value*>::iterator it;
   Value * val;
   for(it = $3->begin(); it != $3->end(); it++){
     if(it == $3->begin()){
@@ -150,7 +148,7 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
     }
   }
   $$ = val;
-*/
+
 }
 | LPAREN MAX token_or_expr_list RPAREN
 {
