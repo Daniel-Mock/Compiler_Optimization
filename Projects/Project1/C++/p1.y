@@ -65,28 +65,20 @@ program : exprlist
     IMPLEMENT: return value
     Hint: the following code is not sufficient
   */
- /* std::list<Value*>::iterator it;
-  for(it = $1->begin(); it != $1->end(); it++){
-    if(it == $1->end()){
-      Builder.CreateRet(*it);
-    }
-  }
-  */
-  std::list<Value*>::iterator it = $1->end(); 
-  Builder.CreateRet(*it);
+  Value * val = $1->back();
+  Builder.CreateRet(val);
   return 0;
 }
 ;
 
 exprlist:  exprlist expr// MAYBE ADD ACTION HERE?
 {
-  //$$ = $2;
   $1->push_back($2);
   $$ = $1;
+
 }
 | expr
 {
- //$$ = $1;
  $$ = new std::list<Value*>;
  $$->push_back($1);
 }
@@ -144,8 +136,11 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 {
   // IMPLEMENT
   //map<string,Value*> idLookup;
-  idLookup[$3] = $4;
-  //idLookup.insert(std::pair<char *, Value *>($4,$5));
+  //idLookup[$3] = $4;
+  Value * v = Builder.CreateAlloca($4->getType());
+  Builder.CreateStore($4,v);
+  idLookup[$3] = (Value*)v;
+  //idLookup.insert(std::pair<char *, Value *>($3,$4));
   $$ = $4;
 }
 | LPAREN MIN token_or_expr_list RPAREN
