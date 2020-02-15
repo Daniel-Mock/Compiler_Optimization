@@ -183,12 +183,17 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 {
   // ECE 566 only
   // IMPLEMENT
+  Value * v = Builder.CreateIntToPtr(idLookup[$3], PointerType::get(Builder.getInt32Ty(),0));
+  Builder.CreateStore($4,v);
+  idLookup[$3] = (Value*)v;
+  
 }
 | LPAREN AREF IDENT token_or_expr RPAREN
 {
   // IMPLEMENT
   Value * tmp = Builder.CreateIntToPtr(idLookup[$3], PointerType::get(Builder.getInt32Ty(),0));
   $$ = Builder.CreateLoad(tmp);
+  
 }
 | LPAREN MAKEARRAY IDENT NUM token_or_expr RPAREN
 {
