@@ -33,6 +33,7 @@ extern IRBuilder<> Builder;
 
 // Used to lookup Value associated with ID
 map<string,Value*> idLookup;
+map<Value*,Value*> setfmap;
 
 %}
 
@@ -183,17 +184,18 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 {
   // ECE 566 only
   // IMPLEMENT
-  Value * v = Builder.CreateIntToPtr(idLookup[$3], PointerType::get(Builder.getInt32Ty(),0));
-  Builder.CreateStore($4,v);
+  //Value * v = Builder.CreateIntToPtr(idLookup[$3], PointerType::get(Builder.getInt32Ty(),0));
+  Builder.CreateStore($4,setfmap[$3]);
   idLookup[$3] = (Value*)v;
-  
+
 }
 | LPAREN AREF IDENT token_or_expr RPAREN
 {
   // IMPLEMENT
   Value * tmp = Builder.CreateIntToPtr(idLookup[$3], PointerType::get(Builder.getInt32Ty(),0));
   $$ = Builder.CreateLoad(tmp);
-  
+  setfmap[$$] = tmp;
+
 }
 | LPAREN MAKEARRAY IDENT NUM token_or_expr RPAREN
 {
