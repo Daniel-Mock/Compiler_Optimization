@@ -65,18 +65,23 @@ program : exprlist
     IMPLEMENT: return value
     Hint: the following code is not sufficient
   */
-  Builder.CreateRet($1);
+
+  //Builder.CreateRet($1->end());
   return 0;
 }
 ;
 
 exprlist:  exprlist expr// MAYBE ADD ACTION HERE?
 {
-  $$ = $2;
+  //$$ = $2;
+  $1->push_back($2)
+  $$ = $1
 }
 | expr
 {
- $$ = $1;
+ //$$ = $1;
+ $$ = new std::list<Value*>;
+ $$->push_back($1);
 }
 ;
 
