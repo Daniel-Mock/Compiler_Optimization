@@ -48,8 +48,8 @@ map<string,Value*> idLookup;
 
 %type <num> NUM
 %type <id> IDENT
-%type <val> expr token token_or_expr exprlist program
-%type <lst> token_or_expr_list
+%type <val> expr token token_or_expr program
+%type <lst> token_or_expr_list exprlist
 %start program
 
 %%
@@ -65,8 +65,15 @@ program : exprlist
     IMPLEMENT: return value
     Hint: the following code is not sufficient
   */
-
-  //Builder.CreateRet($1->end());
+ /* std::list<Value*>::iterator it;
+  for(it = $1->begin(); it != $1->end(); it++){
+    if(it == $1->end()){
+      Builder.CreateRet(*it);
+    }
+  }
+  */
+  std::list<Value*>::iterator it = $1->end(); 
+  Builder.CreateRet(*it);
   return 0;
 }
 ;
@@ -74,8 +81,8 @@ program : exprlist
 exprlist:  exprlist expr// MAYBE ADD ACTION HERE?
 {
   //$$ = $2;
-  $1->push_back($2)
-  $$ = $1
+  $1->push_back($2);
+  $$ = $1;
 }
 | expr
 {
