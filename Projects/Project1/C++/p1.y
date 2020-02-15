@@ -70,9 +70,9 @@ program : exprlist
 }
 ;
 
-exprlist:  exprlist expr | expr // MAYBE ADD ACTION HERE?
+exprlist:  exprlist expr// MAYBE ADD ACTION HERE?
 {
-  $$ = $1;
+  $$ = $2;
 }
 | expr
 {
@@ -134,7 +134,7 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
   //map<string,Value*> idLookup;
   idLookup[$3] = $4;
   //idLookup.insert(std::pair<char *, Value *>($4,$5));
-
+  $$ = $4;
 }
 | LPAREN MIN token_or_expr_list RPAREN
 {
@@ -210,19 +210,21 @@ token_or_expr_list:   token_or_expr_list token_or_expr
 token_or_expr :  token
 {
   // IMPLEMENT
-  //ID or Num
+  //imm val or val associated with id
   $$ = $1;
 
 }
 | expr
 {
   // IMPLEMENT
+  //output of the epression
   $$ = $1;
 }
 ;
 
 token:   IDENT
 {
+  //if id, find val for the id in the map
   if (idLookup.find($1) != idLookup.end())
     $$ = Builder.CreateLoad(idLookup[$1]);
   else

@@ -3,7 +3,7 @@ CLANG = clang
 LLVM_LINK = llvm-link
 
 ece466 = \
-        test_06
+        test_04
         #test_00   \
 	test_01 \
 	test_02 \
