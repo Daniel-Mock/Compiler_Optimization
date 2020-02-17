@@ -56,16 +56,11 @@ map<Value*,Value*> setfmap;
 
 %%
 
-
-/*
-   IMPLMENT ALL THE RULES BELOW HERE!
- */
-
 program : exprlist
 {
   /*
-    IMPLEMENT: return value
-    Hint: the following code is not sufficient
+    Return last expression in list of expressions. 
+    This is the final return value.
   */
   Value * val = $1->back();
   Builder.CreateRet(val);
@@ -75,12 +70,14 @@ program : exprlist
 
 exprlist:  exprlist expr// MAYBE ADD ACTION HERE?
 {
+  /*Append expression to the list created to hold epressions */
   $1->push_back($2);
   $$ = $1;
 
 }
 | expr
 {
+ /*Create new list to hold expressions and append first expression to the list */
  $$ = new std::list<Value*>;
  $$->push_back($1);
 }
@@ -88,7 +85,10 @@ exprlist:  exprlist expr// MAYBE ADD ACTION HERE?
 
 expr: LPAREN MINUS token_or_expr_list RPAREN
 {
-  // Error Handling
+  /*
+   Error Handling: If list is greater than 1, return error.
+   Only 1 operand used for negation 
+  */
    if($3->size() > 1){
     cout << "########################################\n";
     cout << "ERROR: Only 1 operand accepted for this command!\n";
@@ -98,19 +98,19 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
     cout << "########################################\n";
     abort();
     }
-  $$ = Builder.CreateNeg($3->front());
+   //If only 1 operand, return the negation of it
+   $$ = Builder.CreateNeg($3->front());
 
-  /*std::list<Value*>::iterator it;
-  for(it = $3->begin(); it != $3->end(); it++){
-    $$ = Builder.CreateSub(Builder.getInt32(0), *it);
-  }
-  */
 }
 | LPAREN PLUS token_or_expr_list RPAREN
 {
-  // IMPLEMENT
+  //Create itorator to traverse token list
   std::list<Value*>::iterator it;
-  //$$ = Builder.CreateLoad(*it);
+  /*
+    Traverse list, if first element, initialize return value to it
+    If past first element, add current element to the current return value 
+  */
+  
   for(it = $3->begin(); it != $3->end(); it++){
     if(it == $3->begin()){
      $$ = Builder.CreateAdd(*it, Builder.getInt32(0));
@@ -121,8 +121,14 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 }
 | LPAREN MULTIPLY token_or_expr_list RPAREN
 {
-  // IMPLEMENT
+  //Create itorator to traverse token list
   std::list<Value*>::iterator it;
+
+  /*
+    Traverse list, if first element, initialize return value to it
+    If past first element, multiply current element with the current return value 
+  */
+ 
   for(it = $3->begin(); it != $3->end(); it++){
     if(it == $3->begin()){
      $$ = Builder.CreateAdd(*it, Builder.getInt32(0));
@@ -133,9 +139,15 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 }
 | LPAREN DIVIDE token_or_expr_list RPAREN
 {
-  // IMPLEMENT
-  
+  //Create Itorator to traverse token list 
   std::list<Value*>::iterator it;
+
+  /*
+    Traverse list, if first element, initialize return value to it
+    If past first element, Check if val is zero. If so, return error code. 
+    If not, divide current element by the current return value 
+  */
+ 
   for(it = $3->begin(); it != $3->end(); it++){
     if(it == $3->begin()){
      $$ = Builder.CreateAdd(*it, Builder.getInt32(0));
@@ -158,19 +170,29 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 }
 | LPAREN SETQ IDENT token_or_expr RPAREN
 {
-  // IMPLEMENT
-  //map<string,Value*> idLookup;
-  //idLookup[$3] = $4;
+ /*
+  Allocate Memoy to store value of variable in. 
+  Store the value in allocated memory.
+  Add Memory location to idLookup table of the ID of var. 
+  Return the value stored at the location. 
+ */
+
   Value * v = Builder.CreateAlloca($4->getType());
   Builder.CreateStore($4,v);
   idLookup[$3] = (Value*)v;
-  //idLookup.insert(std::pair<char *, Value *>($3,$4));
   $$ = $4;
 }
 | LPAREN MIN token_or_expr_list RPAREN
 {
-  // HINT: select instruction
-  //compare icmp(sgt, slt), sel(condition = compare)
+  /*
+    Create Itorator to traverse token list.
+    If first element in list, initialize variable to that element.
+    If past first element in list, compare current element to the element
+    in the variable.
+    Update variable to the smaller value.
+    After for loop finishes, return value in the variable. 
+  */
+
   std::list<Value*>::iterator it;
   Value * val;
   for(it = $3->begin(); it != $3->end(); it++){
@@ -187,7 +209,16 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 }
 | LPAREN MAX token_or_expr_list RPAREN
 {
-  // HINT: select instruction
+
+  /*
+    Create Itorator to traverse token list.
+    If first element in list, initialize variable to that element.
+    If past first element in list, compare current element to the element
+    in the variable.
+    Update variable to the larger value.
+    After for loop finishes, return value in the variable. 
+  */
+
   std::list<Value*>::iterator it;
   Value * val;
   for(it = $3->begin(); it != $3->end(); it++){
@@ -205,28 +236,38 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 }
 | LPAREN SETF token_or_expr token_or_expr RPAREN
 {
-  // ECE 566 only
-  // IMPLEMENT
-  //Value * v = Builder.CreateIntToPtr(idLookup[$3], PointerType::get(Builder.getInt32Ty(),0));
-  //Builder.CreateStore($4,setfmap[$3]);
- // idLookup[$3] = (Value*)v;
+  /*
+    Get the pointer that $3 at operand 0 takes in from aref and
+    assign it to User * val.
+    Store $4 at the location pointed to by val.
+  */
   User * val = (User*) $3;
   Builder.CreateStore($4,val->getOperand(0));
   $$ = $4;
 }
 | LPAREN AREF IDENT token_or_expr RPAREN
 {
-  // IMPLEMENT
- // Value * tmp = Builder.CreateIntToPtr(idLookup[$3], PointerType::get(Builder.getInt32Ty(),0));
+  /*
+    Generate a pointer Value * tmp that points to the array referenced in the idlookup
+    table at location $3 with an offset of $4. 
+    Load and return the value in the memory location that tmp points to. 
+  */
+
   Value * tmp = Builder.CreateGEP(idLookup[$3], $4);
   $$ = Builder.CreateLoad(tmp);
-  setfmap[$$] = tmp;
 
 }
 | LPAREN MAKEARRAY IDENT NUM token_or_expr RPAREN
 {
-  // ECE 566 only
-  // IMPLEMENT
+  /*
+    Create an int32 variable num with the value in NUM.
+    Allocate space in memory of size of type($5) times num. 
+    Create a pointer that points to the first element of the array.
+    Iterate through the array and store $5 in each element of array.
+    Add the array pointer to the idLookup table at location IDENT.
+    Return the value the array was initialized to. 
+  */
+
   Value* num = Builder.getInt32($4);
   Value * v = Builder.CreateAlloca($5->getType(), num); 
   Value * ref = v;
@@ -242,16 +283,14 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 
 token_or_expr_list:   token_or_expr_list token_or_expr
 {
-  // IMPLEMENT
   //Add new token or expr to end of list
   $1->push_back($2);
   $$ = $1;
 }
 | token_or_expr
 {
-  // IMPLEMENT
   //Create list for token or expr
-  // HINT: $$ = new std::list<Value*>;
+  //Add first token or expression to the list.
   $$ = new std::list<Value*>;
   $$->push_back($1);
 }
@@ -259,14 +298,13 @@ token_or_expr_list:   token_or_expr_list token_or_expr
 
 token_or_expr :  token
 {
-  // IMPLEMENT
   //imm val or val associated with id
+  //Return the Token
   $$ = $1;
 
 }
 | expr
 {
-  // IMPLEMENT
   //output of the epression
   $$ = $1;
 }
@@ -283,6 +321,7 @@ token:   IDENT
 | NUM
 {
   // IMPLEMENT
+  //Create an int32 with the value of NUM
   $$  = Builder.getInt32($1);
 
 }
@@ -301,7 +340,6 @@ void initialize()
   Builder.CreateStore(a,v);
   idLookup[s2] = (Value*)v;
 
-  /* IMPLEMENT: add something else here if needed */
 }
 
 extern int line;

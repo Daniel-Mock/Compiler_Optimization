@@ -3,8 +3,7 @@ CLANG = clang
 LLVM_LINK = llvm-link
 
 ece466 = \
-	test_01
-        #test_00   \
+        test_00   \
 	test_01 \
 	test_02 \
 	test_03 \
@@ -23,7 +22,7 @@ ece566 = \
         test_14
 
 programs = $(ece466)
-#programs = $(ece466) $(ece566)
+programs = $(ece466) $(ece566)
 
 .PHONY: all install
 
