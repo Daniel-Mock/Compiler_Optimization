@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <list>
 #include <map>
+#include <iostream>
 
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/Value.h"
@@ -87,7 +88,16 @@ exprlist:  exprlist expr// MAYBE ADD ACTION HERE?
 
 expr: LPAREN MINUS token_or_expr_list RPAREN
 {
-  // IMPLEMENT
+  // Error Handling
+   if($3->size() > 1){
+    cout << "########################################\n";
+    cout << "ERROR: Only 1 operand accepted for this command!\n";
+    cout << "Operand Size: ";
+    cout << $3->size();
+    cout << "\n";
+    cout << "########################################\n";
+    abort();
+    }
   $$ = Builder.CreateNeg($3->front());
 
   /*std::list<Value*>::iterator it;
@@ -124,14 +134,27 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 | LPAREN DIVIDE token_or_expr_list RPAREN
 {
   // IMPLEMENT
+  
   std::list<Value*>::iterator it;
   for(it = $3->begin(); it != $3->end(); it++){
     if(it == $3->begin()){
      $$ = Builder.CreateAdd(*it, Builder.getInt32(0));
     }
-
-    else $$ = Builder.CreateSDiv($$, *it);
-  }
+    
+    else{
+      ConstantInt *ci = dyn_cast<ConstantInt>(*it);
+      if(ci->getZExtValue() == 0){
+        cout << "########################################\n";
+        cout << "ERROR: Cannot Divide by Zero!\n";
+        cout << "Val: ";
+        cout << ci->getZExtValue();
+        cout << "\n";
+        cout << "########################################\n";
+        abort();
+      }
+            $$ = Builder.CreateSDiv($$, *it);
+    } 
+ }
 }
 | LPAREN SETQ IDENT token_or_expr RPAREN
 {
@@ -185,14 +208,17 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
   // ECE 566 only
   // IMPLEMENT
   //Value * v = Builder.CreateIntToPtr(idLookup[$3], PointerType::get(Builder.getInt32Ty(),0));
-  Builder.CreateStore($4,setfmap[$3]);
+  //Builder.CreateStore($4,setfmap[$3]);
  // idLookup[$3] = (Value*)v;
- $$ = $4;
+  User * val = (User*) $3;
+  Builder.CreateStore($4,val->getOperand(0));
+  $$ = $4;
 }
 | LPAREN AREF IDENT token_or_expr RPAREN
 {
   // IMPLEMENT
-  Value * tmp = Builder.CreateIntToPtr(idLookup[$3], PointerType::get(Builder.getInt32Ty(),0));
+ // Value * tmp = Builder.CreateIntToPtr(idLookup[$3], PointerType::get(Builder.getInt32Ty(),0));
+  Value * tmp = Builder.CreateGEP(idLookup[$3], $4);
   $$ = Builder.CreateLoad(tmp);
   setfmap[$$] = tmp;
 
@@ -201,7 +227,16 @@ expr: LPAREN MINUS token_or_expr_list RPAREN
 {
   // ECE 566 only
   // IMPLEMENT
+  Value* num = Builder.getInt32($4);
+  Value * v = Builder.CreateAlloca($5->getType(), num); 
+  Value * ref = v;
 
+  for(int i = 0; i <= $4; i++){
+   Builder.CreateStore($5,(v));
+   v = Builder.CreateGEP(v, Builder.getInt64(1));
+  }
+  idLookup[$3] = ref;
+  $$  = $5;
 }
 ;
 
