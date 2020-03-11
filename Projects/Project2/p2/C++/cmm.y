@@ -25,7 +25,7 @@
 #include <stack>
 
 #include "symbol.h"
-  
+
 using namespace llvm;
 using namespace std;
 
@@ -40,7 +40,7 @@ typedef struct {
 } loop_info;
 
 stack<loop_info> loop_stack;
- 
+
 int num_errors;
 
 extern int yylex();   /* lexical analyzer generated from lex.l */
@@ -56,11 +56,11 @@ int loops_found=0;
 
 extern Module *M;
 extern LLVMContext TheContext;
- 
+
 Function *Fun;
 IRBuilder<> *Builder;
 
-Value* BuildFunction(Type* RetType, const char *name, 
+Value* BuildFunction(Type* RetType, const char *name,
 			   parameter_list *params);
 
 %}
@@ -81,10 +81,10 @@ Value* BuildFunction(Type* RetType, const char *name,
 %token SEMICOLON COMMA MYEOF
 %token LBRACE RBRACE LPAREN RPAREN LBRACKET RBRACKET
 
-%token ASSIGN PLUS MINUS STAR DIV MOD 
+%token ASSIGN PLUS MINUS STAR DIV MOD
 %token LT GT LTE GTE EQ NEQ
 %token BITWISE_OR BITWISE_XOR LSHIFT RSHIFT BITWISE_INVERT
-%token DOT AMPERSAND 
+%token DOT AMPERSAND
 
 %token FOR WHILE IF ELSE DO RETURN SWITCH
 %token BREAK CONTINUE CASE COLON
@@ -102,7 +102,7 @@ Value* BuildFunction(Type* RetType, const char *name,
 %left AMPERSAND
 %left LSHIFT RSHIFT
 %left PLUS MINUS
-%left MOD DIV STAR 
+%left MOD DIV STAR
 %nonassoc ELSE
 
 %type <type> type_specifier
@@ -125,7 +125,7 @@ translation_unit:	  external_declaration
 ;
 
 external_declaration:	  function_definition
-                        | global_declaration 
+                        | global_declaration
 ;
 
 function_definition:	  type_specifier ID LPAREN param_list_opt RPAREN
@@ -134,7 +134,7 @@ function_definition:	  type_specifier ID LPAREN param_list_opt RPAREN
   symbol_push_scope();
   BuildFunction($1,$2,$4);
 }
-compound_stmt 
+compound_stmt
 {
   symbol_pop_scope();
 }
@@ -154,12 +154,12 @@ compound_stmt
 global_declaration:    type_specifier STAR ID opt_initializer SEMICOLON
 {
   // Check to make sure global isn't already allocated
-  // new GlobalVariable(...)  
+  // new GlobalVariable(...)
 }
 | type_specifier ID opt_initializer SEMICOLON
 {
   // Check to make sure global isn't already allocated
-  // new GlobalVariable(...)  		
+  // new GlobalVariable(...)
 }
 ;
 
@@ -178,7 +178,7 @@ type_specifier:		  INT
 ;
 
 
-param_list_opt:           
+param_list_opt:
 {
   $$ = nullptr;
 }
@@ -189,7 +189,7 @@ param_list_opt:
 ;
 
 // USED FOR FUNCTION DEFINITION; NO MODIFICATION NEEDED
-param_list:	
+param_list:
 param_list COMMA type_specifier ID
 {
   $$ = $1;
@@ -213,18 +213,18 @@ param_list COMMA type_specifier ID
 ;
 
 
-statement:		  expr_stmt            
-			| compound_stmt        
-			| selection_stmt       
-			| iteration_stmt       
-			| return_stmt            
+statement:		  expr_stmt
+			| compound_stmt
+			| selection_stmt
+			| iteration_stmt
+			| return_stmt
                         | break_stmt
                         | continue_stmt
                         | case_stmt
 ;
 
-expr_stmt:	           SEMICOLON            
-			|  assign_expression SEMICOLON       
+expr_stmt:	           SEMICOLON
+			|  assign_expression SEMICOLON
 ;
 
 local_declaration:    type_specifier STAR ID opt_initializer SEMICOLON
@@ -239,15 +239,15 @@ local_declaration:    type_specifier STAR ID opt_initializer SEMICOLON
   Value * ai = Builder->CreateAlloca($1,0,$2);
   if (nullptr != $3)
     Builder->CreateStore($3,ai);
-  symbol_insert($2,ai);  
+  symbol_insert($2,ai);
 }
 ;
 
 local_declaration_list:	   local_declaration
-                         | local_declaration_list local_declaration  
+                         | local_declaration_list local_declaration
 ;
 
-local_declaration_list_opt:	
+local_declaration_list_opt:
 			| local_declaration_list
 ;
 
@@ -256,7 +256,7 @@ compound_stmt:		  LBRACE {
   symbol_push_scope();
 }
 local_declaration_list_opt
-statement_list_opt 
+statement_list_opt
 {
   // POP SCOPE TO REMOVE VARIABLES NO LONGER ACCESSIBLE
   symbol_pop_scope();
@@ -265,7 +265,7 @@ RBRACE
 ;
 
 
-statement_list_opt:	
+statement_list_opt:
 			| statement_list
 ;
 
@@ -282,19 +282,19 @@ case_stmt:                CASE constant_expression COLON
 continue_stmt:            CONTINUE SEMICOLON
 ;
 
-selection_stmt:		  
+selection_stmt:
   IF LPAREN bool_expression RPAREN statement ELSE statement
-| SWITCH LPAREN expression RPAREN statement 
+| SWITCH LPAREN expression RPAREN statement
 ;
 
 
 iteration_stmt:
   WHILE LPAREN bool_expression RPAREN statement
-| FOR LPAREN expr_opt SEMICOLON bool_expression SEMICOLON expr_opt RPAREN statement 
+| FOR LPAREN expr_opt SEMICOLON bool_expression SEMICOLON expr_opt RPAREN statement
 | DO statement WHILE LPAREN bool_expression RPAREN SEMICOLON
 ;
 
-expr_opt:  	
+expr_opt:
 	| assign_expression
 ;
 
@@ -302,7 +302,7 @@ return_stmt:		  RETURN SEMICOLON
 			| RETURN expression SEMICOLON
 ;
 
-bool_expression: expression 
+bool_expression: expression
 ;
 
 assign_expression:
@@ -324,6 +324,9 @@ expression:
 | expression LSHIFT expression
 | expression RSHIFT expression
 | expression PLUS expression
+  {
+    $$ = $1;
+  }
 | expression MINUS expression
 | expression STAR expression
 | expression DIV expression
@@ -374,7 +377,13 @@ constant_expression:
 | constant_expression LSHIFT constant_expression
 | constant_expression RSHIFT constant_expression
 | constant_expression PLUS constant_expression
+{
+  $$ = Builder.CreateAdd($1, $3);
+}
 | constant_expression MINUS constant_expression
+{
+  $$ = Builder.CreateSub($1, $3);
+}
 | constant_expression STAR constant_expression
 | constant_expression DIV constant_expression
 | constant_expression MOD constant_expression
@@ -383,10 +392,21 @@ constant_expression:
 ;
 
 unary_constant_expression:
-  constant
+  constant {$$ = $1;}
 | MINUS unary_constant_expression
+{
+  //assuming a negation here
+  $$ = Builder.CreateNeg($2);
+}
 | PLUS unary_constant_expression
+{
+  //not sure if I make it positive or just return the value
+  $$ = $2;
+}
 | BITWISE_INVERT unary_constant_expression
+{
+   Builder->CreateNot($2);
+}
 ;
 
 
@@ -399,7 +419,7 @@ constant:	          CONSTANT_INTEGER
 
 %%
 
-Value* BuildFunction(Type* RetType, const char *name, 
+Value* BuildFunction(Type* RetType, const char *name,
 			   parameter_list *params)
 {
   std::vector<Type*> v;
@@ -409,9 +429,9 @@ Value* BuildFunction(Type* RetType, const char *name,
     for(auto ii : *params)
       {
 	vname.push_back( ii.second );
-	v.push_back( ii.first );      
+	v.push_back( ii.first );
       }
-  
+
   ArrayRef<Type*> Params(v);
 
   FunctionType* FunType = FunctionType::get(RetType,Params,false);
@@ -467,13 +487,13 @@ int yywrap() {
       yyin = stdin;
       return 0;
     }
-  
+
   static FILE * currentFile = NULL;
 
   if ( (currentFile != 0) ) {
     fclose(yyin);
   }
-  
+
   if(infile[infile_cnt]==NULL)
     return 1;
 
@@ -484,7 +504,7 @@ int yywrap() {
     printf("Could not open file: %s",infile[infile_cnt]);
 
   infile_cnt++;
-  
+
   return (currentFile)?0:1;
 }
 
