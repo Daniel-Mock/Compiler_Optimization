@@ -378,11 +378,11 @@ constant_expression:
 | constant_expression RSHIFT constant_expression
 | constant_expression PLUS constant_expression
 {
-  $$ = Builder.CreateAdd($1, $3);
+  $$ = Builder->CreateAdd($1, $3);
 }
 | constant_expression MINUS constant_expression
 {
-  $$ = Builder.CreateSub($1, $3);
+  $$ = Builder->CreateSub($1, $3);
 }
 | constant_expression STAR constant_expression
 | constant_expression DIV constant_expression
@@ -396,7 +396,7 @@ unary_constant_expression:
 | MINUS unary_constant_expression
 {
   //assuming a negation here
-  $$ = Builder.CreateNeg($2);
+  $$ = Builder->CreateNeg($2);
 }
 | PLUS unary_constant_expression
 {
