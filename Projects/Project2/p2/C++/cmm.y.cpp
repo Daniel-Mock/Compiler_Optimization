@@ -90,7 +90,7 @@
 #include <stack>
 
 #include "symbol.h"
-  
+
 using namespace llvm;
 using namespace std;
 
@@ -105,7 +105,7 @@ typedef struct {
 } loop_info;
 
 stack<loop_info> loop_stack;
- 
+
 int num_errors;
 
 extern int yylex();   /* lexical analyzer generated from lex.l */
@@ -121,11 +121,11 @@ int loops_found=0;
 
 extern Module *M;
 extern LLVMContext TheContext;
- 
+
 Function *Fun;
 IRBuilder<> *Builder;
 
-Value* BuildFunction(Type* RetType, const char *name, 
+Value* BuildFunction(Type* RetType, const char *name,
 			   parameter_list *params);
 
 
@@ -555,11 +555,11 @@ static const yytype_uint16 yyrline[] =
      260,   254,   268,   269,   272,   273,   276,   279,   282,   286,
      287,   292,   293,   294,   297,   298,   301,   302,   305,   309,
      310,   314,   315,   316,   317,   318,   319,   320,   321,   322,
-     323,   324,   325,   326,   327,   328,   329,   330,   331,   332,
-     333,   334,   335,   336,   337,   341,   341,   345,   346,   350,
-     351,   352,   353,   354,   355,   359,   360,   364,   365,   366,
-     370,   371,   372,   373,   374,   375,   376,   377,   378,   379,
-     380,   381,   382,   386,   387,   388,   389,   393
+     323,   324,   325,   326,   330,   331,   332,   333,   334,   335,
+     336,   337,   338,   339,   340,   344,   344,   348,   349,   353,
+     354,   355,   356,   357,   358,   362,   366,   370,   386,   387,
+     391,   392,   393,   394,   395,   396,   397,   401,   405,   406,
+     407,   408,   409,   413,   414,   419,   424,   431
 };
 #endif
 
@@ -1615,7 +1615,7 @@ yyreduce:
 #line 155 "cmm.y" /* yacc.c:1646  */
     {
   // Check to make sure global isn't already allocated
-  // new GlobalVariable(...)  
+  // new GlobalVariable(...)
 }
 #line 1621 "cmm.y.cpp" /* yacc.c:1646  */
     break;
@@ -1624,7 +1624,7 @@ yyreduce:
 #line 160 "cmm.y" /* yacc.c:1646  */
     {
   // Check to make sure global isn't already allocated
-  // new GlobalVariable(...)  		
+  // new GlobalVariable(...)
 }
 #line 1630 "cmm.y.cpp" /* yacc.c:1646  */
     break;
@@ -1726,7 +1726,7 @@ yyreduce:
   Value * ai = Builder->CreateAlloca((yyvsp[-3].type),0,(yyvsp[-2].id));
   if (nullptr != (yyvsp[-1].value))
     Builder->CreateStore((yyvsp[-1].value),ai);
-  symbol_insert((yyvsp[-2].id),ai);  
+  symbol_insert((yyvsp[-2].id),ai);
 }
 #line 1732 "cmm.y.cpp" /* yacc.c:1646  */
     break;
@@ -1749,16 +1749,100 @@ yyreduce:
 #line 1750 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
-  case 117:
-#line 394 "cmm.y" /* yacc.c:1646  */
+  case 73:
+#line 327 "cmm.y" /* yacc.c:1646  */
     {
-  (yyval.value) = Builder->getInt64((yyvsp[0].inum));
-}
+    (yyval.value) = (yyvsp[-2].value);
+  }
 #line 1758 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
+  case 95:
+#line 363 "cmm.y" /* yacc.c:1646  */
+    {
+    (yyval.value) = (yyvsp[0].value);
+  }
+#line 1766 "cmm.y.cpp" /* yacc.c:1646  */
+    break;
 
-#line 1762 "cmm.y.cpp" /* yacc.c:1646  */
+  case 97:
+#line 371 "cmm.y" /* yacc.c:1646  */
+    {
+    //Pop from parameter_list, may have to add support to check for param list
+    //param_list = list of <type*,char*>
+    //vname holds param IDs, v holds param types taken from param_list
+    
+    /*std::vector<char*>::iterator it;
+    it = find (vname.begin(), vname.end(), $1);
+    if (it != vname.end())
+      $$ = *it;
+    else
+      //std::cout << "Element not found in myvector\n";
+      abort();
+    */
+    (yyval.value) = symbol_find((yyvsp[0].id));
+  }
+#line 1786 "cmm.y.cpp" /* yacc.c:1646  */
+    break;
+
+  case 106:
+#line 398 "cmm.y" /* yacc.c:1646  */
+    {
+  (yyval.value) = Builder->CreateAdd((yyvsp[-2].value), (yyvsp[0].value));
+}
+#line 1794 "cmm.y.cpp" /* yacc.c:1646  */
+    break;
+
+  case 107:
+#line 402 "cmm.y" /* yacc.c:1646  */
+    {
+  (yyval.value) = Builder->CreateSub((yyvsp[-2].value), (yyvsp[0].value));
+}
+#line 1802 "cmm.y.cpp" /* yacc.c:1646  */
+    break;
+
+  case 113:
+#line 413 "cmm.y" /* yacc.c:1646  */
+    {(yyval.value) = (yyvsp[0].value);}
+#line 1808 "cmm.y.cpp" /* yacc.c:1646  */
+    break;
+
+  case 114:
+#line 415 "cmm.y" /* yacc.c:1646  */
+    {
+  //assuming a negation here
+  (yyval.value) = Builder->CreateNeg((yyvsp[0].value));
+}
+#line 1817 "cmm.y.cpp" /* yacc.c:1646  */
+    break;
+
+  case 115:
+#line 420 "cmm.y" /* yacc.c:1646  */
+    {
+  //not sure if I make it positive or just return the value
+  (yyval.value) = (yyvsp[0].value);
+}
+#line 1826 "cmm.y.cpp" /* yacc.c:1646  */
+    break;
+
+  case 116:
+#line 425 "cmm.y" /* yacc.c:1646  */
+    {
+   Builder->CreateNot((yyvsp[0].value));
+}
+#line 1834 "cmm.y.cpp" /* yacc.c:1646  */
+    break;
+
+  case 117:
+#line 432 "cmm.y" /* yacc.c:1646  */
+    {
+  (yyval.value) = Builder->getInt64((yyvsp[0].inum));
+}
+#line 1842 "cmm.y.cpp" /* yacc.c:1646  */
+    break;
+
+
+#line 1846 "cmm.y.cpp" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1986,10 +2070,10 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 400 "cmm.y" /* yacc.c:1906  */
+#line 438 "cmm.y" /* yacc.c:1906  */
 
 
-Value* BuildFunction(Type* RetType, const char *name, 
+Value* BuildFunction(Type* RetType, const char *name,
 			   parameter_list *params)
 {
   std::vector<Type*> v;
@@ -1999,9 +2083,9 @@ Value* BuildFunction(Type* RetType, const char *name,
     for(auto ii : *params)
       {
 	vname.push_back( ii.second );
-	v.push_back( ii.first );      
+	v.push_back( ii.first );
       }
-  
+
   ArrayRef<Type*> Params(v);
 
   FunctionType* FunType = FunctionType::get(RetType,Params,false);
@@ -2057,13 +2141,13 @@ int yywrap() {
       yyin = stdin;
       return 0;
     }
-  
+
   static FILE * currentFile = NULL;
 
   if ( (currentFile != 0) ) {
     fclose(yyin);
   }
-  
+
   if(infile[infile_cnt]==NULL)
     return 1;
 
@@ -2074,7 +2158,7 @@ int yywrap() {
     printf("Could not open file: %s",infile[infile_cnt]);
 
   infile_cnt++;
-  
+
   return (currentFile)?0:1;
 }
 

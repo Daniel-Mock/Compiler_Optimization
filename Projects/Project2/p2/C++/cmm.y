@@ -372,12 +372,8 @@ lvalue_location:
     //Pop from parameter_list, may have to add support to check for param list
     //param_list = list of <type*,char*>
     //vname holds param IDs, v holds param types taken from param_list
-    it = find (vname.begin(), vname.end(), $1);
-    if (it != vname.end())
-      $$ = *it;
-    else
-      std::cout << "Element not found in myvector\n";
-      abort();
+    //symbol list used to access predefined variables in memory
+    $$ = symbol_find($1);
   }
 | lvalue_location LBRACKET expression RBRACKET
 | STAR LPAREN expression RPAREN
