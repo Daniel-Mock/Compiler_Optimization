@@ -371,7 +371,7 @@ lvalue_location:
   {
     //Pop from parameter_list, may have to add support to check for param list
     //param_list = list of <type*,char*>
-    id_pair = pair<Type*,const char*>;
+    std::pair <Type*,const char*> id_pair;
     id_pair = param_list.pop_front();
     $$ = id_pair.second();
   }
