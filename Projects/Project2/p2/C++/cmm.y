@@ -360,11 +360,21 @@ unary_expression:         primary_expression
 
 primary_expression:
   lvalue_location
+  {
+    $$ = $1;
+  }
 | constant
 ;
 
 lvalue_location:
   ID
+  {
+    //Pop from parameter_list, may have to add support to check for param list
+    //param_list = list of <type*,char*>
+    id_pair = pair<Type*,const char*>;
+    id_pair = param_list.pop_front();
+    $$ = id_pair.second();
+  }
 | lvalue_location LBRACKET expression RBRACKET
 | STAR LPAREN expression RPAREN
 ;
