@@ -298,8 +298,14 @@ expr_opt:
 	| assign_expression
 ;
 
-return_stmt:		  RETURN SEMICOLON
-			| RETURN expression SEMICOLON
+return_stmt:		  RETURN SEMICOLON 
+	       		  {
+			    Builder->CreateRetVoid();
+			  }
+			| RETURN expression SEMICOLON 
+			  {
+			    Builder->CreateRet($2);
+			  }
 ;
 
 bool_expression: expression
@@ -311,7 +317,7 @@ assign_expression:
 ;
 
 expression:
-  unary_expression
+  unary_expression {$$ = $1;}
 | expression BITWISE_OR expression
 | expression BITWISE_XOR expression
 | expression AMPERSAND expression
@@ -325,7 +331,8 @@ expression:
 | expression RSHIFT expression
 | expression PLUS expression
   {
-    $$ = $1;
+    //access value from memory for $1 and $3, add together and return value
+    $$ = Builder->CreateAdd($1, $3);
   }
 | expression MINUS expression
 | expression STAR expression
@@ -350,7 +357,7 @@ argument_list:
 ;
 
 
-unary_expression:         primary_expression
+unary_expression:         primary_expression {$$ = $1;}
 | AMPERSAND primary_expression
 | STAR primary_expression
 | MINUS unary_expression
