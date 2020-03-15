@@ -217,7 +217,7 @@ statement:		  expr_stmt
 			| compound_stmt
 			| selection_stmt
 			| iteration_stmt
-			| return_stmt
+			| return_stmt 
                         | break_stmt
                         | continue_stmt
                         | case_stmt
@@ -301,6 +301,7 @@ expr_opt:
 return_stmt:		  RETURN SEMICOLON 
 	       		  {
 			    Builder->CreateRetVoid();
+
 			  }
 			| RETURN expression SEMICOLON 
 			  {
@@ -380,7 +381,10 @@ lvalue_location:
     //param_list = list of <type*,char*>
     //vname holds param IDs, v holds param types taken from param_list
     //symbol list used to access predefined variables in memory
-    $$ = symbol_find($1);
+    Value * ptr = Builder->CreateGEP(symbol_find($1),Builder->getInt64(0));
+    $$ = Builder->CreateLoad(ptr);
+    //$$ = symbol_find($1);
+    
   }
 | lvalue_location LBRACKET expression RBRACKET
 | STAR LPAREN expression RPAREN
