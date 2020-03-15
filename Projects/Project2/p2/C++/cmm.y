@@ -352,6 +352,9 @@ expression:
 | SEXT LPAREN expression RPAREN
 | ID LPAREN argument_list_opt RPAREN
 | LPAREN expression RPAREN
+  {
+    $$ = $2;
+  }
 ;
 
 
