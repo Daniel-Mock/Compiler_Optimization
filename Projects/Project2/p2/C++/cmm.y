@@ -217,7 +217,7 @@ statement:		  expr_stmt
 			| compound_stmt
 			| selection_stmt
 			| iteration_stmt
-			| return_stmt 
+			| return_stmt
                         | break_stmt
                         | continue_stmt
                         | case_stmt
@@ -298,12 +298,12 @@ expr_opt:
 	| assign_expression
 ;
 
-return_stmt:		  RETURN SEMICOLON 
+return_stmt:		  RETURN SEMICOLON
 	       		  {
 			    Builder->CreateRetVoid();
 
 			  }
-			| RETURN expression SEMICOLON 
+			| RETURN expression SEMICOLON
 			  {
 			    Builder->CreateRet($2);
 			  }
@@ -336,7 +336,13 @@ expression:
     $$ = Builder->CreateAdd($1, $3);
   }
 | expression MINUS expression
+  {
+    $$ = Builder->CreateSub($1, $3);
+  }
 | expression STAR expression
+  {
+    $$ = Builder->CreateMul($1, $3);
+  }
 | expression DIV expression
 | expression MOD expression
 | BOOL LPAREN expression RPAREN
@@ -384,7 +390,7 @@ lvalue_location:
     Value * ptr = Builder->CreateGEP(symbol_find($1),Builder->getInt64(0));
     $$ = Builder->CreateLoad(ptr);
     //$$ = symbol_find($1);
-    
+
   }
 | lvalue_location LBRACKET expression RBRACKET
 | STAR LPAREN expression RPAREN
