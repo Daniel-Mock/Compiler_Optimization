@@ -327,7 +327,15 @@ expression:
 | expression LT expression
 | expression GT expression
 | expression LTE expression
+{
+  Value * cmp = Builder->CreateICmpSLT($1, $3);
+  $$ = Builder.CreateSelect(cmp, $1, $3);
+}
 | expression GTE expression
+  {
+    Value * cmp = Builder->CreateICmpSGT($1, $3);
+    $$ = Builder.CreateSelect(cmp, $1, $3);
+  }
 | expression LSHIFT expression
 | expression RSHIFT expression
 | expression PLUS expression
