@@ -283,7 +283,29 @@ continue_stmt:            CONTINUE SEMICOLON
 ;
 
 selection_stmt:
-  IF LPAREN bool_expression RPAREN statement ELSE statement
+  IF LPAREN bool_expression RPAREN
+  {
+    BasicBlock *bbthen = BasicBlock::Create(M->getContext(),"if.then",Fun);
+    BasicBlock *bbelse = BasicBlock::Create(M->getContext(),"if.else",Fun);
+    BasicBlock *bbjoin = BasicBlock::Create(M->getContext(),"if.join",Fun);
+    push_loop(nullptr,bbthen,bbelse,bbjoin);
+    Builder->CreateCondBr(Builder->CreateICmpNE($3,Builder->getInt32(0)),bbthen,bbelse);
+    Builder->SetInsertPoint(bbthen);
+  }
+  statement
+  {
+    loop_info_t info = get_loop();
+    Builder->CreateBr(info.exit);
+    Builder->SetInsertPoint(info.reinit_else);
+  }
+  ELSE statement
+  {
+    loop_info_t info = get_loop();
+    Builder->CreateBr(info.exit);
+    Builder->SetInsertPoint(info.exit);
+    pop_loop();
+  }
+
 | SWITCH LPAREN expression RPAREN statement
 ;
 
