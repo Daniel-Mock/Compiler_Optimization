@@ -23,7 +23,7 @@
 #include <vector>
 #include <utility>
 #include <stack>
-
+#include "list.h"
 #include "symbol.h"
 
 using namespace llvm;
@@ -31,14 +31,14 @@ using namespace std;
 
 using parameter = pair<Type*,const char*>;
 using parameter_list = std::list<parameter>;
-
+/*
 typedef struct {
   BasicBlock* expr;
   BasicBlock* body;
   BasicBlock* reinit;
   BasicBlock* exit;
 } loop_info;
-
+*/
 stack<loop_info> loop_stack;
 
 int num_errors;
@@ -285,18 +285,18 @@ continue_stmt:            CONTINUE SEMICOLON
 selection_stmt:
   IF LPAREN bool_expression RPAREN
   {
-    BasicBlock *bbthen = BasicBlock::Create(M->getContext(),"if.then",Fun);
-    BasicBlock *bbelse = BasicBlock::Create(M->getContext(),"if.else",Fun);
-    BasicBlock *bbjoin = BasicBlock::Create(M->getContext(),"if.join",Fun);
+    BasicBlock *bbthen = BasicBlock::Create(TheContext,"if.then",Fun);
+    BasicBlock *bbelse = BasicBlock::Create(TheContext,"if.else",Fun);
+    BasicBlock *bbjoin = BasicBlock::Create(TheContext,"if.join",Fun);
     push_loop(nullptr,bbthen,bbelse,bbjoin);
-    Builder->CreateCondBr(Builder->CreateICmpNE($3,Builder->getInt32(0)),bbthen,bbelse);
+    Builder->CreateCondBr($3, bbthen,bbelse);
     Builder->SetInsertPoint(bbthen);
   }
   statement
   {
     loop_info_t info = get_loop();
     Builder->CreateBr(info.exit);
-    Builder->SetInsertPoint(info.reinit_else);
+    Builder->SetInsertPoint(info.reinit);
   }
   ELSE statement
   {
@@ -349,17 +349,18 @@ expression:
 | expression AMPERSAND expression
 | expression EQ expression
 | expression NEQ expression
-| expression LT expression
-| expression GT expression
+| expression LT expression {$$ = Builder->CreateICmpSLT($1, $3);}
+| expression GT expression {$$ = Builder->CreateICmpSGT($1, $3);}
+
 | expression LTE expression
 {
   Value * cmp = Builder->CreateICmpSLT($1, $3);
-  $$ = Builder.CreateSelect(cmp, Builder->getInt1(1), Builder->getInt1(0));
+  //$$ = Builder->CreateSelect(cmp, Builder->getInt1(1), Builder->getInt1(0));
 }
 | expression GTE expression
   {
     Value * cmp = Builder->CreateICmpSGT($1, $3);
-    $$ = Builder.CreateSelect(cmp, Builder->getInt1(1), Builder->getInt1(0));
+    //$$ = Builder->CreateSelect(cmp, Builder->getInt1(1), Builder->getInt1(0));
   }
 | expression LSHIFT expression
 | expression RSHIFT expression
