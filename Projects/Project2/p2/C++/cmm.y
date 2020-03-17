@@ -310,6 +310,9 @@ return_stmt:		  RETURN SEMICOLON
 ;
 
 bool_expression: expression
+{
+  $$ = $1;
+}
 ;
 
 assign_expression:
@@ -329,12 +332,12 @@ expression:
 | expression LTE expression
 {
   Value * cmp = Builder->CreateICmpSLT($1, $3);
-  $$ = Builder.CreateSelect(cmp, $1, $3);
+  $$ = Builder.CreateSelect(cmp, Builder->getInt1(1), Builder->getInt1(0));
 }
 | expression GTE expression
   {
     Value * cmp = Builder->CreateICmpSGT($1, $3);
-    $$ = Builder.CreateSelect(cmp, $1, $3);
+    $$ = Builder.CreateSelect(cmp, Builder->getInt1(1), Builder->getInt1(0));
   }
 | expression LSHIFT expression
 | expression RSHIFT expression
