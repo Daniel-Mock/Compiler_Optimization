@@ -109,8 +109,9 @@ union YYSTYPE
   Value* value;
   parameter_list *plist;
   vector<Value*> *arglist;
+  BasicBlock* bb;
 
-#line 114 "cmm.y.hpp" /* yacc.c:1909  */
+#line 115 "cmm.y.hpp" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

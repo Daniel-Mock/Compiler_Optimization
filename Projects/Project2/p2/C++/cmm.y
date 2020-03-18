@@ -74,7 +74,7 @@ Value* BuildFunction(Type* RetType, const char *name,
   Value* value;
   parameter_list *plist;
   vector<Value*> *arglist;
-  BasicBlock bb;
+  BasicBlock* bb;
 }
 
 /* these tokens are simply their corresponding int values, more terminals*/
@@ -316,7 +316,7 @@ selection_stmt:
   }
   ELSE statement
   {
-    */loop_info_t info = get_loop();
+    /*loop_info_t info = get_loop();
     Builder->CreateBr(info.exit);
     Builder->SetInsertPoint(info.exit);
     pop_loop();
@@ -371,9 +371,17 @@ expression:
 | expression AMPERSAND expression
 | expression EQ expression
 | expression NEQ expression
-| expression LT expression {$$ = Builder->CreateICmpSLT($1, $3);}
-| expression GT expression {$$ = Builder->CreateICmpSGT($1, $3);}
-
+| expression LT expression 
+  {
+    Value * cmp = Builder->CreateICmpSLT($1, $3);
+    cmp->print(errs(),true);
+    
+  }
+| expression GT expression 
+  {
+    Value * cmp = Builder->CreateICmpSGT($1, $3);
+    cmp->print(errs(),true);
+  }
 | expression LTE expression
 {
   Value * cmp = Builder->CreateICmpSLT($1, $3);
