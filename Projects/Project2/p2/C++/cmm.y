@@ -325,7 +325,6 @@ selection_stmt:
     BasicBlock* join = $<bb>7;
     Builder->CreateBr(join);
     Builder->SetInsertPoint(join);
-
   }
 
 | SWITCH LPAREN expression RPAREN statement
@@ -333,7 +332,28 @@ selection_stmt:
 
 
 iteration_stmt:
-  WHILE LPAREN bool_expression RPAREN statement
+  WHILE
+  {
+    BasicBlock *bbexpr = BasicBlock::Create(TheContext,"while.expr",Fun);
+    BasicBlock *bbbody = BasicBlock::Create(TheContext,"while.body",Fun);
+    BasicBlock *bbexit = BasicBlock::Create(TheContext,"while.exit",Fun);
+    push_loop(bbexpr,bbbody,nullptr,bbexit);
+    Builder->CreateBr(bbexpr);
+    Builder->SetInsertPoint(bbexpr);
+  }
+  LPAREN bool_expression
+  {
+    loop_info_t info = get_loop();
+    Builder->CreateCondBr($4,info.body,info.exit);
+    Builder->SetInsertPoint(info.body);
+  } 
+  RPAREN statement 
+  {
+    loop_info_t info = get_loop();
+    Builder->CreateBr(info.expr);
+    Builder->SetInsertPoint(info.exit);
+    pop_loop();
+  }
 | FOR LPAREN expr_opt SEMICOLON bool_expression SEMICOLON expr_opt RPAREN statement
 | DO statement WHILE LPAREN bool_expression RPAREN SEMICOLON
 ;
@@ -373,14 +393,21 @@ expression:
 | expression NEQ expression
 | expression LT expression 
   {
-    Value * cmp = Builder->CreateICmpSLT($1, $3);
-    cmp->print(errs(),true);
+    $$ = Builder->CreateICmpSLT($1, $3);
+    printf("############################# Value: ");
+    Type* val = $$->getType();
+    val->print(errs(),true);
     
   }
 | expression GT expression 
   {
-    Value * cmp = Builder->CreateICmpSGT($1, $3);
-    cmp->print(errs(),true);
+    $$ = Builder->CreateICmpSGT($1, $3);
+   /* printf("############################# Value: ");
+    if($$->getType() == Builder->getInt1Ty())
+      printf("true");
+    else
+      printf("False");
+    */
   }
 | expression LTE expression
 {
