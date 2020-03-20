@@ -23,7 +23,7 @@
 #include <vector>
 #include <utility>
 #include <stack>
-#include "list.h"
+//#include "list.h"
 #include "symbol.h"
 
 using namespace llvm;
@@ -31,14 +31,14 @@ using namespace std;
 
 using parameter = pair<Type*,const char*>;
 using parameter_list = std::list<parameter>;
-/*
+
 typedef struct {
   BasicBlock* expr;
   BasicBlock* body;
   BasicBlock* reinit;
   BasicBlock* exit;
 } loop_info;
-*/
+
 stack<loop_info> loop_stack;
 
 int num_errors;
@@ -284,7 +284,7 @@ continue_stmt:            CONTINUE SEMICOLON
 ;
 
 selection_stmt:
-  IF LPAREN bool_expression RPAREN
+  IF LPAREN bool_expression
   {
     /*BasicBlock *bbthen = BasicBlock::Create(TheContext,"if.then",Fun);
     BasicBlock *bbelse = BasicBlock::Create(TheContext,"if.else",Fun);
@@ -301,14 +301,14 @@ selection_stmt:
     $<bb>$ = if_else;
 
   }
-  statement
+  RPAREN statement
   {
     /*loop_info_t info = get_loop();
     Builder->CreateBr(info.exit);
     Builder->SetInsertPoint(info.reinit);
     */
 
-    BasicBlock* if_else = $<bb>5;
+    BasicBlock* if_else = $<bb>4;
     BasicBlock* if_join = BasicBlock::Create(TheContext,"if_join",Fun);
     Builder->CreateBr(if_join);
     Builder->SetInsertPoint(if_else);
@@ -333,27 +333,27 @@ selection_stmt:
 
 iteration_stmt:
   WHILE
-  {
+  {/*
     BasicBlock *bbexpr = BasicBlock::Create(TheContext,"while.expr",Fun);
     BasicBlock *bbbody = BasicBlock::Create(TheContext,"while.body",Fun);
     BasicBlock *bbexit = BasicBlock::Create(TheContext,"while.exit",Fun);
     push_loop(bbexpr,bbbody,nullptr,bbexit);
     Builder->CreateBr(bbexpr);
     Builder->SetInsertPoint(bbexpr);
-  }
+  */}
   LPAREN bool_expression
-  {
+  {/*
     loop_info_t info = get_loop();
     Builder->CreateCondBr($4,info.body,info.exit);
     Builder->SetInsertPoint(info.body);
-  } 
+  */} 
   RPAREN statement 
-  {
+  {/*
     loop_info_t info = get_loop();
     Builder->CreateBr(info.expr);
     Builder->SetInsertPoint(info.exit);
     pop_loop();
-  }
+  */}
 | FOR LPAREN expr_opt SEMICOLON bool_expression SEMICOLON expr_opt RPAREN statement
 | DO statement WHILE LPAREN bool_expression RPAREN SEMICOLON
 ;
@@ -380,7 +380,11 @@ bool_expression: expression
 ;
 
 assign_expression:
-  lvalue_location ASSIGN expression
+  lvalue_location ASSIGN expression 
+  {
+    User * val = (User*) $1;
+    Builder->CreateStore($3,val->getOperand(0)); 
+  }
 | expression
 ;
 
@@ -434,7 +438,7 @@ expression:
   {
     $$ = Builder->CreateMul($1, $3);
   }
-| expression DIV expression
+| expression DIV expression {$$ = Builder->CreateSDiv($1, $3);}
 | expression MOD expression
 | BOOL LPAREN expression RPAREN
 | I2P LPAREN expression RPAREN
@@ -491,7 +495,7 @@ lvalue_location:
 ;
 
 constant_expression:
-  unary_constant_expression
+  unary_constant_expression {$$ = $1;}
 | constant_expression BITWISE_OR constant_expression
 | constant_expression BITWISE_XOR constant_expression
 | constant_expression AMPERSAND constant_expression
@@ -506,10 +510,19 @@ constant_expression:
   $$ = Builder->CreateSub($1, $3);
 }
 | constant_expression STAR constant_expression
+  {
+    $$ = Builder->CreateMul($1, $3);
+  }
 | constant_expression DIV constant_expression
+  {
+    $$ = Builder->CreateSDiv($1, $3);
+  }
 | constant_expression MOD constant_expression
 | I2P LPAREN constant_expression RPAREN
 | LPAREN constant_expression RPAREN
+  {
+    $$ = $2;
+  }
 ;
 
 unary_constant_expression:
