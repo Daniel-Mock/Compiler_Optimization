@@ -337,27 +337,27 @@ selection_stmt:
 
 iteration_stmt:
   WHILE
-  {/*
+  {
     BasicBlock *bbexpr = BasicBlock::Create(TheContext,"while.expr",Fun);
     BasicBlock *bbbody = BasicBlock::Create(TheContext,"while.body",Fun);
     BasicBlock *bbexit = BasicBlock::Create(TheContext,"while.exit",Fun);
     push_loop(bbexpr,bbbody,nullptr,bbexit);
     Builder->CreateBr(bbexpr);
     Builder->SetInsertPoint(bbexpr);
-  */}
+  }
   LPAREN bool_expression
-  {/*
+  {
     loop_info_t info = get_loop();
     Builder->CreateCondBr($4,info.body,info.exit);
     Builder->SetInsertPoint(info.body);
-  */}
+  }
   RPAREN statement
-  {/*
+  {
     loop_info_t info = get_loop();
     Builder->CreateBr(info.expr);
     Builder->SetInsertPoint(info.exit);
     pop_loop();
-  */}
+  }
 | FOR LPAREN expr_opt SEMICOLON bool_expression SEMICOLON expr_opt RPAREN statement
 | DO statement WHILE LPAREN bool_expression RPAREN SEMICOLON
 ;
@@ -402,20 +402,11 @@ expression:
 | expression LT expression
   {
     $$ = Builder->CreateICmpSLT($1, $3);
-    printf("############################# Value: ");
-    Type* val = $$->getType();
-    val->print(errs(),true);
 
   }
 | expression GT expression
   {
     $$ = Builder->CreateICmpSGT($1, $3);
-   /* printf("############################# Value: ");
-    if($$->getType() == Builder->getInt1Ty())
-      printf("true");
-    else
-      printf("False");
-    */
   }
 | expression LTE expression
 {

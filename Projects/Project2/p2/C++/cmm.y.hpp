@@ -101,7 +101,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 70 "cmm.y" /* yacc.c:1909  */
+#line 72 "cmm.y" /* yacc.c:1909  */
 
   int inum;
   char * id;
