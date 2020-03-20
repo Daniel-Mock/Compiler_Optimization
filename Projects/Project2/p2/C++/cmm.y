@@ -23,7 +23,7 @@
 #include <vector>
 #include <utility>
 #include <stack>
-//#include "list.h"
+#include "list.h"
 #include "symbol.h"
 
 using namespace llvm;
@@ -32,12 +32,14 @@ using namespace std;
 using parameter = pair<Type*,const char*>;
 using parameter_list = std::list<parameter>;
 
+/*
 typedef struct {
   BasicBlock* expr;
   BasicBlock* body;
   BasicBlock* reinit;
   BasicBlock* exit;
 } loop_info;
+*/
 
 stack<loop_info> loop_stack;
 
@@ -286,45 +288,47 @@ continue_stmt:            CONTINUE SEMICOLON
 selection_stmt:
   IF LPAREN bool_expression
   {
-    /*BasicBlock *bbthen = BasicBlock::Create(TheContext,"if.then",Fun);
+    BasicBlock *bbthen = BasicBlock::Create(TheContext,"if.then",Fun);
     BasicBlock *bbelse = BasicBlock::Create(TheContext,"if.else",Fun);
     BasicBlock *bbjoin = BasicBlock::Create(TheContext,"if.join",Fun);
     push_loop(nullptr,bbthen,bbelse,bbjoin);
     Builder->CreateCondBr($3, bbthen,bbelse);
     Builder->SetInsertPoint(bbthen);
-    */
 
-    BasicBlock *if_then = BasicBlock::Create(TheContext,"if_then",Fun);
+
+    /*BasicBlock *if_then = BasicBlock::Create(TheContext,"if_then",Fun);
     BasicBlock *if_else = BasicBlock::Create(TheContext,"if_else",Fun);
     Builder->CreateCondBr($3,if_then,if_else);
     Builder->SetInsertPoint(if_then);
     $<bb>$ = if_else;
-
+    */
   }
   RPAREN statement
   {
-    /*loop_info_t info = get_loop();
+    loop_info_t info = get_loop();
     Builder->CreateBr(info.exit);
     Builder->SetInsertPoint(info.reinit);
-    */
 
-    BasicBlock* if_else = $<bb>4;
+
+    /*BasicBlock* if_else = $<bb>4;
     BasicBlock* if_join = BasicBlock::Create(TheContext,"if_join",Fun);
     Builder->CreateBr(if_join);
     Builder->SetInsertPoint(if_else);
     $<bb>$ = if_join;
+    */
   }
   ELSE statement
   {
-    /*loop_info_t info = get_loop();
+    loop_info_t info = get_loop();
     Builder->CreateBr(info.exit);
     Builder->SetInsertPoint(info.exit);
     pop_loop();
-    */
 
-    BasicBlock* join = $<bb>7;
+
+    /*BasicBlock* join = $<bb>7;
     Builder->CreateBr(join);
     Builder->SetInsertPoint(join);
+    */
   }
 
 | SWITCH LPAREN expression RPAREN statement
@@ -346,8 +350,8 @@ iteration_stmt:
     loop_info_t info = get_loop();
     Builder->CreateCondBr($4,info.body,info.exit);
     Builder->SetInsertPoint(info.body);
-  */} 
-  RPAREN statement 
+  */}
+  RPAREN statement
   {/*
     loop_info_t info = get_loop();
     Builder->CreateBr(info.expr);
@@ -380,10 +384,10 @@ bool_expression: expression
 ;
 
 assign_expression:
-  lvalue_location ASSIGN expression 
+  lvalue_location ASSIGN expression
   {
     User * val = (User*) $1;
-    Builder->CreateStore($3,val->getOperand(0)); 
+    Builder->CreateStore($3,val->getOperand(0));
   }
 | expression
 ;
@@ -395,15 +399,15 @@ expression:
 | expression AMPERSAND expression
 | expression EQ expression
 | expression NEQ expression
-| expression LT expression 
+| expression LT expression
   {
     $$ = Builder->CreateICmpSLT($1, $3);
     printf("############################# Value: ");
     Type* val = $$->getType();
     val->print(errs(),true);
-    
+
   }
-| expression GT expression 
+| expression GT expression
   {
     $$ = Builder->CreateICmpSGT($1, $3);
    /* printf("############################# Value: ");
