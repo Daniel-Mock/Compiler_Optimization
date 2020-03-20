@@ -396,7 +396,7 @@ expression:
   unary_expression {$$ = $1;}
 | expression BITWISE_OR expression
 | expression BITWISE_XOR expression
-| expression AMPERSAND expression
+| expression AMPERSAND expression 
 | expression EQ expression
 | expression NEQ expression
 | expression LT expression
@@ -410,19 +410,16 @@ expression:
   }
 | expression LTE expression
 {
-  Value * cmp = Builder->CreateICmpSLT($1, $3);
-  //$$ = Builder->CreateSelect(cmp, Builder->getInt1(1), Builder->getInt1(0));
+  $$ = Builder->CreateICmpSLE($1, $3);
 }
 | expression GTE expression
   {
-    Value * cmp = Builder->CreateICmpSGT($1, $3);
-    //$$ = Builder->CreateSelect(cmp, Builder->getInt1(1), Builder->getInt1(0));
+    $$= Builder->CreateICmpSGE($1, $3);
   }
 | expression LSHIFT expression
 | expression RSHIFT expression
 | expression PLUS expression
   {
-    //access value from memory for $1 and $3, add together and return value
     $$ = Builder->CreateAdd($1, $3);
   }
 | expression MINUS expression
@@ -460,8 +457,8 @@ argument_list:
 unary_expression:         primary_expression {$$ = $1;}
 | AMPERSAND primary_expression
 | STAR primary_expression
-| MINUS unary_expression
-| PLUS unary_expression
+| MINUS unary_expression {$$ = Builder->CreateNeg($2);}
+| PLUS unary_expression {$$ = $2;}
 | BITWISE_INVERT unary_expression
 ;
 
