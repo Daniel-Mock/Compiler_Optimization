@@ -358,7 +358,35 @@ iteration_stmt:
     Builder->SetInsertPoint(info.exit);
     pop_loop();
   }
-| FOR LPAREN expr_opt SEMICOLON bool_expression SEMICOLON expr_opt RPAREN statement
+| FOR LPAREN expr_opt SEMICOLON
+  {
+    BasicBlock *bbexpr = BasicBlock::Create(M->getContext(),"for.expr",Fun);
+    BasicBlock *bbbody = BasicBlock::Create(M->getContext(),"for.body",Fun);
+    BasicBlock *bbreinit = BasicBlock::Create(M->getContext(),"for.reinit",Fun);
+    BasicBlock *bbexit = BasicBlock::Create(M->getContext(),"for.exit",Fun);
+    push_loop(bbexpr,bbbody,bbreinit,bbexit);
+    Builder->CreateBr(bbexpr);
+    Builder->SetInsertPoint(bbexpr);
+  }
+bool_expression SEMICOLON
+  {
+    loop_info_t info = get_loop();
+    Builder->CreateCondBr($5,info.body_then,info.exit);
+    Builder->SetInsertPoint(info.reinit);
+  }
+expr_opt RPAREN
+  {
+    loop_info_t info = get_loop();
+    Builder->CreateBr(info.expr);
+    Builder->SetInsertPoint(info.body);
+  }
+statement
+  {
+    loop_info_t info = get_loop();
+    Builder->CreateBr(info.reinit);
+    Builder->SetInsertPoint(info.exit);
+    pop_loop();
+  }
 | DO statement WHILE LPAREN bool_expression RPAREN SEMICOLON
 ;
 
@@ -396,7 +424,7 @@ expression:
   unary_expression {$$ = $1;}
 | expression BITWISE_OR expression
 | expression BITWISE_XOR expression
-| expression AMPERSAND expression 
+| expression AMPERSAND expression
 | expression EQ expression
 | expression NEQ expression
 | expression LT expression
