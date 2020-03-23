@@ -371,7 +371,7 @@ iteration_stmt:
 bool_expression SEMICOLON
   {
     loop_info_t info = get_loop();
-    Builder->CreateCondBr($5,info.body_then,info.exit);
+    Builder->CreateCondBr($6,info.body,info.exit);
     Builder->SetInsertPoint(info.reinit);
   }
 expr_opt RPAREN
