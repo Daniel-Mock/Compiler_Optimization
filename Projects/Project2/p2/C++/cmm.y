@@ -407,7 +407,12 @@ return_stmt:		  RETURN SEMICOLON
 
 bool_expression: expression
 {
-  $$ = $1;
+  if($1->getType() == Builder->getInt64Ty())
+  {
+    $$ = Builder->CreateICmpNE($1,Builder->getInt64(0));
+  }
+  else $$ = $1;
+  //$$ = $1;
 }
 ;
 
@@ -425,7 +430,13 @@ expression:
 | expression BITWISE_OR expression
 | expression BITWISE_XOR expression
 | expression AMPERSAND expression
+  {
+    $$ = Builder->CreateAnd($1, $3);
+  }
 | expression EQ expression
+  {
+    $$ = Builder->CreateICmpEQ($1,$3);
+  }
 | expression NEQ expression
 | expression LT expression
   {
@@ -459,7 +470,7 @@ expression:
     $$ = Builder->CreateMul($1, $3);
   }
 | expression DIV expression {$$ = Builder->CreateSDiv($1, $3);}
-| expression MOD expression
+| expression MOD expression {$$ = Builder->CreateSRem($1,$3);}
 | BOOL LPAREN expression RPAREN
 | I2P LPAREN expression RPAREN
 | P2I LPAREN expression RPAREN
