@@ -288,12 +288,12 @@ continue_stmt:            CONTINUE SEMICOLON
 selection_stmt:
   IF LPAREN bool_expression
   {
-    BasicBlock *bbthen = BasicBlock::Create(TheContext,"if.then",Fun);
-    BasicBlock *bbelse = BasicBlock::Create(TheContext,"if.else",Fun);
-    BasicBlock *bbjoin = BasicBlock::Create(TheContext,"if.join",Fun);
-    push_loop(nullptr,bbthen,bbelse,bbjoin);
-    Builder->CreateCondBr($3, bbthen,bbelse);
-    Builder->SetInsertPoint(bbthen);
+    BasicBlock *if_then = BasicBlock::Create(TheContext,"if.then",Fun);
+    BasicBlock *if_else = BasicBlock::Create(TheContext,"if.else",Fun);
+    BasicBlock *if_join = BasicBlock::Create(TheContext,"if.join",Fun);
+    push_loop(nullptr,if_then,if_else,if_join);
+    Builder->CreateCondBr($3, if_then,if_else);
+    Builder->SetInsertPoint(if_then);
 
 
     /*BasicBlock *if_then = BasicBlock::Create(TheContext,"if_then",Fun);
@@ -306,8 +306,8 @@ selection_stmt:
   RPAREN statement
   {
     loop_info_t info = get_loop();
-    Builder->CreateBr(info.exit);
-    Builder->SetInsertPoint(info.reinit);
+    Builder->CreateBr(info.if_join);
+    Builder->SetInsertPoint(info.if_else);
 
 
     /*BasicBlock* if_else = $<bb>4;
@@ -320,8 +320,8 @@ selection_stmt:
   ELSE statement
   {
     loop_info_t info = get_loop();
-    Builder->CreateBr(info.exit);
-    Builder->SetInsertPoint(info.exit);
+    Builder->CreateBr(info.if_join);
+    Builder->SetInsertPoint(info.if_join);
     pop_loop();
 
 
@@ -360,10 +360,10 @@ iteration_stmt:
   }
 | FOR LPAREN expr_opt SEMICOLON
   {
-    BasicBlock *bbexpr = BasicBlock::Create(M->getContext(),"for.expr",Fun);
-    BasicBlock *bbbody = BasicBlock::Create(M->getContext(),"for.body",Fun);
-    BasicBlock *bbreinit = BasicBlock::Create(M->getContext(),"for.reinit",Fun);
-    BasicBlock *bbexit = BasicBlock::Create(M->getContext(),"for.exit",Fun);
+    BasicBlock *bbexpr = BasicBlock::Create(TheContext,"for.expr",Fun);
+    BasicBlock *bbbody = BasicBlock::Create(TheContext,"for.body",Fun);
+    BasicBlock *bbreinit = BasicBlock::Create(TheContext,"for.reinit",Fun);
+    BasicBlock *bbexit = BasicBlock::Create(TheContext,"for.exit",Fun);
     push_loop(bbexpr,bbbody,bbreinit,bbexit);
     Builder->CreateBr(bbexpr);
     Builder->SetInsertPoint(bbexpr);
@@ -389,14 +389,14 @@ statement
   }
 | DO
   {
-    BasicBlock *bbexpr = BasicBlock::Create(M->getContext(),"do.expr",Fun);
-    BasicBlock *bbbody = BasicBlock::Create(M->getContext(),"do.body",Fun);
-    BasicBlock *bbexit = BasicBlock::Create(M->getContext(),"do.exit",Fun);
+    BasicBlock *bbexpr = BasicBlock::Create(TheContext,"do.expr",Fun);
+    BasicBlock *bbbody = BasicBlock::Create(TheContext,"do.body",Fun);
+    BasicBlock *bbexit = BasicBlock::Create(TheContext,"do.exit",Fun);
     push_loop(bbexpr,bbbody,nullptr,bbexit);
     Builder->CreateBr(bbbody);
     Builder->SetInsertPoint(bbbody);
 
-  } 
+  }
   statement
   {
     loop_info_t info = get_loop();
@@ -465,9 +465,9 @@ expression:
   {
     $$ = Builder->CreateICmpEQ($1,$3);
   }
-| expression NEQ expression 
+| expression NEQ expression
   {
-    $$ = Builder->CreateICmpNE($1,$3);  
+    $$ = Builder->CreateICmpNE($1,$3);
   }
 | expression LT expression
   {
@@ -526,7 +526,7 @@ argument_list:
 
 unary_expression:         primary_expression {$$ = $1;}
 | AMPERSAND primary_expression
-| STAR primary_expression {$$ = $2;}  
+| STAR primary_expression {$$ = $2;}
 | MINUS unary_expression {$$ = Builder->CreateNeg($2);}
 | PLUS unary_expression {$$ = $2;}
 | BITWISE_INVERT unary_expression
@@ -641,10 +641,10 @@ Value* BuildFunction(Type* RetType, const char *name,
   Fun = Function::Create(FunType,GlobalValue::ExternalLinkage,
 			 name,M);
   Twine T("entry");
-  BasicBlock *BB = BasicBlock::Create(M->getContext(),T,Fun);
+  BasicBlock *BB = BasicBlock::Create(TheContext,T,Fun);
 
   /* Create an Instruction Builder */
-  Builder = new IRBuilder<>(M->getContext());
+  Builder = new IRBuilder<>(TheContext);
   Builder->SetInsertPoint(BB);
 
   Function::arg_iterator I = Fun->arg_begin();
