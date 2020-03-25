@@ -387,7 +387,29 @@ statement
     Builder->SetInsertPoint(info.exit);
     pop_loop();
   }
-| DO statement WHILE LPAREN bool_expression RPAREN SEMICOLON
+| DO
+  {
+    BasicBlock *bbexpr = BasicBlock::Create(M->getContext(),"do.expr",Fun);
+    BasicBlock *bbbody = BasicBlock::Create(M->getContext(),"do.body",Fun);
+    BasicBlock *bbexit = BasicBlock::Create(M->getContext(),"do.exit",Fun);
+    push_loop(bbexpr,bbbody,nullptr,bbexit);
+    Builder->CreateBr(bbbody);
+    Builder->SetInsertPoint(bbbody);
+
+  } 
+  statement
+  {
+    loop_info_t info = get_loop();
+    Builder->CreateBr(info.expr);
+    Builder->SetInsertPoint(info.expr);
+  }
+  WHILE LPAREN bool_expression RPAREN SEMICOLON
+  {
+    loop_info_t info = get_loop();
+    Builder->CreateCondBr($7,info.body,info.exit);
+    Builder->SetInsertPoint(info.exit);
+    pop_loop();
+  }
 ;
 
 expr_opt:
@@ -428,7 +450,13 @@ assign_expression:
 expression:
   unary_expression {$$ = $1;}
 | expression BITWISE_OR expression
+  {
+    $$ = Builder->CreateOr($1,$3);
+  }
 | expression BITWISE_XOR expression
+  {
+    $$ = Builder->CreateXor($1,$3);
+  }
 | expression AMPERSAND expression
   {
     $$ = Builder->CreateAnd($1, $3);
@@ -437,7 +465,10 @@ expression:
   {
     $$ = Builder->CreateICmpEQ($1,$3);
   }
-| expression NEQ expression
+| expression NEQ expression 
+  {
+    $$ = Builder->CreateICmpNE($1,$3);  
+  }
 | expression LT expression
   {
     $$ = Builder->CreateICmpSLT($1, $3);
@@ -495,7 +526,7 @@ argument_list:
 
 unary_expression:         primary_expression {$$ = $1;}
 | AMPERSAND primary_expression
-| STAR primary_expression
+| STAR primary_expression {$$ = $2;}  
 | MINUS unary_expression {$$ = Builder->CreateNeg($2);}
 | PLUS unary_expression {$$ = $2;}
 | BITWISE_INVERT unary_expression
@@ -522,6 +553,12 @@ lvalue_location:
 
   }
 | lvalue_location LBRACKET expression RBRACKET
+  {
+    User * val = (User*) $1;
+    ConstantInt * ci = dyn_cast<ConstantInt>($3);
+    Value * ptr = Builder->CreateGEP($1,$3);
+    $$ = Builder->CreateLoad(ptr);
+  }
 | STAR LPAREN expression RPAREN
 ;
 
