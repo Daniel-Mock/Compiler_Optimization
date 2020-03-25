@@ -306,8 +306,8 @@ selection_stmt:
   RPAREN statement
   {
     loop_info_t info = get_loop();
-    Builder->CreateBr(info.if_join);
-    Builder->SetInsertPoint(info.if_else);
+    Builder->CreateBr(info.exit);
+    Builder->SetInsertPoint(info.reinit);
 
 
     /*BasicBlock* if_else = $<bb>4;
@@ -320,8 +320,8 @@ selection_stmt:
   ELSE statement
   {
     loop_info_t info = get_loop();
-    Builder->CreateBr(info.if_join);
-    Builder->SetInsertPoint(info.if_join);
+    Builder->CreateBr(info.exit);
+    Builder->SetInsertPoint(info.exit);
     pop_loop();
 
 

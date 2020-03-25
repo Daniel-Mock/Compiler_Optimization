@@ -1770,12 +1770,12 @@ yyreduce:
   case 49:
 #line 290 "cmm.y" /* yacc.c:1646  */
     {
-    BasicBlock *bbthen = BasicBlock::Create(TheContext,"if.then",Fun);
-    BasicBlock *bbelse = BasicBlock::Create(TheContext,"if.else",Fun);
-    BasicBlock *bbjoin = BasicBlock::Create(TheContext,"if.join",Fun);
-    push_loop(nullptr,bbthen,bbelse,bbjoin);
-    Builder->CreateCondBr((yyvsp[0].value), bbthen,bbelse);
-    Builder->SetInsertPoint(bbthen);
+    BasicBlock *if_then = BasicBlock::Create(TheContext,"if.then",Fun);
+    BasicBlock *if_else = BasicBlock::Create(TheContext,"if.else",Fun);
+    BasicBlock *if_join = BasicBlock::Create(TheContext,"if.join",Fun);
+    push_loop(nullptr,if_then,if_else,if_join);
+    Builder->CreateCondBr((yyvsp[0].value), if_then,if_else);
+    Builder->SetInsertPoint(if_then);
 
 
     /*BasicBlock *if_then = BasicBlock::Create(TheContext,"if_then",Fun);
@@ -1860,10 +1860,10 @@ yyreduce:
   case 56:
 #line 362 "cmm.y" /* yacc.c:1646  */
     {
-    BasicBlock *bbexpr = BasicBlock::Create(M->getContext(),"for.expr",Fun);
-    BasicBlock *bbbody = BasicBlock::Create(M->getContext(),"for.body",Fun);
-    BasicBlock *bbreinit = BasicBlock::Create(M->getContext(),"for.reinit",Fun);
-    BasicBlock *bbexit = BasicBlock::Create(M->getContext(),"for.exit",Fun);
+    BasicBlock *bbexpr = BasicBlock::Create(TheContext,"for.expr",Fun);
+    BasicBlock *bbbody = BasicBlock::Create(TheContext,"for.body",Fun);
+    BasicBlock *bbreinit = BasicBlock::Create(TheContext,"for.reinit",Fun);
+    BasicBlock *bbexit = BasicBlock::Create(TheContext,"for.exit",Fun);
     push_loop(bbexpr,bbbody,bbreinit,bbexit);
     Builder->CreateBr(bbexpr);
     Builder->SetInsertPoint(bbexpr);
@@ -1905,9 +1905,9 @@ yyreduce:
   case 60:
 #line 391 "cmm.y" /* yacc.c:1646  */
     {
-    BasicBlock *bbexpr = BasicBlock::Create(M->getContext(),"do.expr",Fun);
-    BasicBlock *bbbody = BasicBlock::Create(M->getContext(),"do.body",Fun);
-    BasicBlock *bbexit = BasicBlock::Create(M->getContext(),"do.exit",Fun);
+    BasicBlock *bbexpr = BasicBlock::Create(TheContext,"do.expr",Fun);
+    BasicBlock *bbbody = BasicBlock::Create(TheContext,"do.body",Fun);
+    BasicBlock *bbexit = BasicBlock::Create(TheContext,"do.exit",Fun);
     push_loop(bbexpr,bbbody,nullptr,bbexit);
     Builder->CreateBr(bbbody);
     Builder->SetInsertPoint(bbbody);
@@ -2017,7 +2017,7 @@ yyreduce:
   case 75:
 #line 469 "cmm.y" /* yacc.c:1646  */
     {
-    (yyval.value) = Builder->CreateICmpNE((yyvsp[-2].value),(yyvsp[0].value));  
+    (yyval.value) = Builder->CreateICmpNE((yyvsp[-2].value),(yyvsp[0].value));
   }
 #line 2023 "cmm.y.cpp" /* yacc.c:1646  */
     break;
@@ -2495,10 +2495,10 @@ Value* BuildFunction(Type* RetType, const char *name,
   Fun = Function::Create(FunType,GlobalValue::ExternalLinkage,
 			 name,M);
   Twine T("entry");
-  BasicBlock *BB = BasicBlock::Create(M->getContext(),T,Fun);
+  BasicBlock *BB = BasicBlock::Create(TheContext,T,Fun);
 
   /* Create an Instruction Builder */
-  Builder = new IRBuilder<>(M->getContext());
+  Builder = new IRBuilder<>(TheContext);
   Builder->SetInsertPoint(BB);
 
   Function::arg_iterator I = Fun->arg_begin();
