@@ -1649,7 +1649,7 @@ yyreduce:
 
   case 13:
 #line 170 "cmm.y" /* yacc.c:1646  */
-    { (yyval.value) = nullptr; }
+    { (yyval.value) = (yyvsp[0].value); }
 #line 1654 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 

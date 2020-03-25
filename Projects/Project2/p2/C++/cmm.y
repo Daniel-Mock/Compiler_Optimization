@@ -167,7 +167,7 @@ global_declaration:    type_specifier STAR ID opt_initializer SEMICOLON
 ;
 
 // YOU MUST FIXME: hacked to prevent segfault on initial testing
-opt_initializer:   ASSIGN constant_expression { $$ = nullptr; } | { $$ = nullptr; } ;
+opt_initializer:   ASSIGN constant_expression { $$ = $2; } | { $$ = nullptr; } ;
 
 // NO MODIFICATION NEEDED
 type_specifier:		  INT
