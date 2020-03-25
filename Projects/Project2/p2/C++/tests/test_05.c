@@ -4,7 +4,7 @@ extern int64_t test_05(int64_t);
 
 int64_t test_function(int64_t x)
 {
-  int64_t j;
+  //int64_t j;
   j=0;
   while(x>0) {
     j++;
@@ -15,10 +15,11 @@ int64_t test_function(int64_t x)
 
 int main()
 {
-  
+
   int64_t i, j, k;
   int errors=0;
   int success=0;
+  int j; //made j global
 
   for (i=-2; i<20; i++)
 	if (test_05(i)!=test_function(i))
