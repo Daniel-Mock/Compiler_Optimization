@@ -12,7 +12,7 @@
 # list below. Edit both the .c and .p2 files to test similar functionality.
 
 ece466 = \
-	test_05
+	test_14
 	#test_00 \
 	test_01 \
 	test_02 \
@@ -25,8 +25,9 @@ ece466 = \
 	test_09 # <basename>
 
 ece566 = \
-	test_10 \
+	#test_10 \
 	test_11 \
+	test_13 \
 	test_12 \
 	test_13 \
 	test_14 # <basename>
