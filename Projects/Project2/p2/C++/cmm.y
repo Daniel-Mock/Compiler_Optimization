@@ -32,6 +32,7 @@ using namespace std;
 using parameter = pair<Type*,const char*>;
 using parameter_list = std::list<parameter>;
 
+//Commented out because loop_info is used in list.cpp
 /*
 typedef struct {
   BasicBlock* expr;
@@ -161,11 +162,10 @@ global_declaration:    type_specifier STAR ID opt_initializer SEMICOLON
 }
 | type_specifier ID opt_initializer SEMICOLON
 {
-  // Check to make sure global isn't already allocated
-  // new GlobalVariable(...)
-
-  // Check to make sure global isn't already allocated
-  // new GlobalVariable(...)
+  /* If global ID is already initialized, abort porgram.
+     If it's initialized to null, create a null type and map it in symbol table
+     Else, map the value in symbol table
+  */
   if(symbol_find($2))
   {
    YYABORT;
@@ -182,23 +182,6 @@ global_declaration:    type_specifier STAR ID opt_initializer SEMICOLON
     dyn_cast<GlobalVariable>(ai)->setInitializer(dyn_cast<Constant>($3));
     symbol_insert($2,ai);
   }
-
-
-/*  if(symbol_find($2))
-  {
-    Value * ai = Builder->CreateAlloca($1,0,$2);
-    if (nullptr != $3)
-      Builder->CreateStore($3,ai);
-    symbol_insert($2,ai);
-
-
-  }
-  else
-  {
-    Twine name($2);
-    new GlobalVariable(*M,(Type*)$1,false,GlobalValue::ExternalLinkage,(Constant*)NULL,name);
-}
-*/
 }
 ;
 
@@ -322,49 +305,54 @@ continue_stmt:            CONTINUE SEMICOLON
 ;
 
 selection_stmt:
+
+/*
+  Create the control flow for the different types of statements.
+  push_loop and pop_loop is a stack used to push and pop the contents of the current BasicBlock.
+  get_loop retrieves the info that was last pushed onto the stack.
+
+*/
+
   IF LPAREN bool_expression
   {
+    //create the basic bloks for the if else statements
     BasicBlock *if_then = BasicBlock::Create(TheContext,"if.then",Fun);
     BasicBlock *if_else = BasicBlock::Create(TheContext,"if.else",Fun);
     BasicBlock *if_join = BasicBlock::Create(TheContext,"if.join",Fun);
+
+    //push the basic block info onto the stack
     push_loop(nullptr,if_then,if_else,if_join);
+
+    //route the control flow to the necessary statement
     Builder->CreateCondBr($3, if_then,if_else);
-    Builder->SetInsertPoint(if_then);
 
-
-    /*BasicBlock *if_then = BasicBlock::Create(TheContext,"if_then",Fun);
-    BasicBlock *if_else = BasicBlock::Create(TheContext,"if_else",Fun);
-    Builder->CreateCondBr($3,if_then,if_else);
+    //set the insert point
     Builder->SetInsertPoint(if_then);
-    $<bb>$ = if_else;
-    */
   }
   RPAREN statement
   {
+    //get the basic block information from the top of the stack
     loop_info_t info = get_loop();
+
+    //route the control flow to the exit statement
     Builder->CreateBr(info.exit);
+
+    //set the insert point
     Builder->SetInsertPoint(info.reinit);
-
-
-    /*BasicBlock* if_else = $<bb>4;
-    BasicBlock* if_join = BasicBlock::Create(TheContext,"if_join",Fun);
-    Builder->CreateBr(if_join);
-    Builder->SetInsertPoint(if_else);
-    $<bb>$ = if_join;
-    */
   }
   ELSE statement
   {
+    //get the basic block information from the top of the stack
     loop_info_t info = get_loop();
+
+    //route the control flow to the exit statement
     Builder->CreateBr(info.exit);
+
+    //set insert point
     Builder->SetInsertPoint(info.exit);
+
+    //pop the basic block informaton from the stack
     pop_loop();
-
-
-    /*BasicBlock* join = $<bb>7;
-    Builder->CreateBr(join);
-    Builder->SetInsertPoint(join);
-    */
   }
 
 | SWITCH LPAREN expression RPAREN statement
@@ -374,76 +362,137 @@ selection_stmt:
 iteration_stmt:
   WHILE
   {
+    //create basic blocks for the while statement
     BasicBlock *bbexpr = BasicBlock::Create(TheContext,"while.expr",Fun);
     BasicBlock *bbbody = BasicBlock::Create(TheContext,"while.body",Fun);
     BasicBlock *bbexit = BasicBlock::Create(TheContext,"while.exit",Fun);
+
+    //push basic block info onto the stack
     push_loop(bbexpr,bbbody,nullptr,bbexit);
+
+    //route the control flow to the expression
     Builder->CreateBr(bbexpr);
+
+    //set insert point
     Builder->SetInsertPoint(bbexpr);
   }
   LPAREN bool_expression
   {
+    //get basic block info from the stack
     loop_info_t info = get_loop();
+
+    //route to the necessary statement
     Builder->CreateCondBr($4,info.body,info.exit);
+
+    //set insert point to the body
     Builder->SetInsertPoint(info.body);
   }
   RPAREN statement
   {
+    //get basic block information from the stack
     loop_info_t info = get_loop();
+
+    //set branch to the exit statement
     Builder->CreateBr(info.expr);
+
+    //set insert point to exit
     Builder->SetInsertPoint(info.exit);
+
+    //pop the basic block information from the stack
     pop_loop();
   }
 | FOR LPAREN expr_opt SEMICOLON
   {
+    //create basic bloks for the for statement
     BasicBlock *bbexpr = BasicBlock::Create(TheContext,"for.expr",Fun);
     BasicBlock *bbbody = BasicBlock::Create(TheContext,"for.body",Fun);
     BasicBlock *bbreinit = BasicBlock::Create(TheContext,"for.reinit",Fun);
     BasicBlock *bbexit = BasicBlock::Create(TheContext,"for.exit",Fun);
+
+    //push the basic block information onto the stack
     push_loop(bbexpr,bbbody,bbreinit,bbexit);
+
+    //route the control flow to the expression
     Builder->CreateBr(bbexpr);
+
+    //set insert point
     Builder->SetInsertPoint(bbexpr);
   }
 bool_expression SEMICOLON
   {
+
+    //get basic block info from the stack
     loop_info_t info = get_loop();
+
+    //route the control flow to the necessary block
     Builder->CreateCondBr($6,info.body,info.exit);
+
+    //set insert point to reinit
     Builder->SetInsertPoint(info.reinit);
   }
 expr_opt RPAREN
   {
+
+    //get basic block info from the stack
     loop_info_t info = get_loop();
+
+    //route the control flow to the expresson
     Builder->CreateBr(info.expr);
+
+    //set insert point
     Builder->SetInsertPoint(info.body);
   }
 statement
   {
+    //get basic block info from the stack
     loop_info_t info = get_loop();
+
+    //route the control flow
     Builder->CreateBr(info.reinit);
+
+    //set insert point to the exit
     Builder->SetInsertPoint(info.exit);
+
+    //remove basic block info from the stack
     pop_loop();
   }
 | DO
   {
+
+    //create basic blocks for the do statement
     BasicBlock *bbexpr = BasicBlock::Create(TheContext,"do.expr",Fun);
     BasicBlock *bbbody = BasicBlock::Create(TheContext,"do.body",Fun);
     BasicBlock *bbexit = BasicBlock::Create(TheContext,"do.exit",Fun);
+
+    //push basic block information onto the stack
     push_loop(bbexpr,bbbody,nullptr,bbexit);
+
+    //route the control flow & set insert point
     Builder->CreateBr(bbbody);
     Builder->SetInsertPoint(bbbody);
 
   }
   statement
   {
+
+    //get bb info from the stack
     loop_info_t info = get_loop();
+
+    //route the control flow and set insert point
     Builder->CreateBr(info.expr);
     Builder->SetInsertPoint(info.expr);
   }
   WHILE LPAREN bool_expression RPAREN SEMICOLON
   {
+
+    //get bb info from the stack
     loop_info_t info = get_loop();
+
+    //route control flow and set insert point
     Builder->CreateCondBr($7,info.body,info.exit);
     Builder->SetInsertPoint(info.exit);
+
+    //remove bb info from stack
     pop_loop();
   }
 ;
@@ -460,18 +509,18 @@ return_stmt:		  RETURN SEMICOLON
 			| RETURN expression SEMICOLON
 			  {
 			    Builder->CreateRet($2);
-                        //    M->print(errs(),nullptr,false,true);
 			  }
 ;
 
 bool_expression: expression
+//if i64 type, compare to 0 and return a bool
+//if bool type already, return the value
 {
   if($1->getType() == Builder->getInt64Ty())
   {
     $$ = Builder->CreateICmpNE($1,Builder->getInt64(0));
   }
   else $$ = $1;
-  //$$ = $1;
 }
 ;
 
@@ -540,6 +589,10 @@ expression:
 | expression DIV expression {$$ = Builder->CreateSDiv($1, $3);}
 | expression MOD expression {$$ = Builder->CreateSRem($1,$3);}
 | BOOL LPAREN expression RPAREN
+  /*
+    if i64 type, compare to 0 and return a bool
+    if bool type, return value
+  */
   {
     if($3->getType() == Builder->getInt64Ty())
     {
@@ -547,8 +600,8 @@ expression:
     }
     else $$ = $3;
   }
-| I2P LPAREN expression RPAREN {$$ = Builder->CreateIntToPtr($3, PointerType::get(Builder->getInt64Ty(),0));} 
-| P2I LPAREN expression RPAREN {$$ = Builder->CreatePtrToInt($3, Builder->getInt64Ty());} 
+| I2P LPAREN expression RPAREN {$$ = Builder->CreateIntToPtr($3, PointerType::get(Builder->getInt64Ty(),0));}
+| P2I LPAREN expression RPAREN {$$ = Builder->CreatePtrToInt($3, Builder->getInt64Ty());}
 | ZEXT LPAREN expression RPAREN {$$ = Builder->CreateZExt($3, Builder->getInt64Ty());}
 | SEXT LPAREN expression RPAREN
 | ID LPAREN argument_list_opt RPAREN
@@ -569,7 +622,7 @@ argument_list:
 
 
 unary_expression:         primary_expression {$$ = $1;}
-| AMPERSAND primary_expression 
+| AMPERSAND primary_expression
   {
     User * val = (User*) $2;
     $$ = val->getOperand(0);
@@ -590,26 +643,24 @@ primary_expression:
   }
 | constant
   {
-    $$ = $1; 
+    $$ = $1;
   }
 ;
 
 lvalue_location:
   ID
   {
-    //Pop from parameter_list, may have to add support to check for param list
     //param_list = list of <type*,char*>
     //vname holds param IDs, v holds param types taken from param_list
     //symbol list used to access predefined variables in memory
     Value * ptr = Builder->CreateGEP(symbol_find($1),Builder->getInt64(0));
     $$ = Builder->CreateLoad(ptr);
-    //$$ = symbol_find($1);
 
   }
 | lvalue_location LBRACKET expression RBRACKET
   {
-    User * val = (User*) $1;
-    ConstantInt * ci = dyn_cast<ConstantInt>($3);
+    //User * val = (User*) $1;
+    //ConstantInt * ci = dyn_cast<ConstantInt>($3);
     Value * ptr = Builder->CreateGEP($1,$3);
     $$ = Builder->CreateLoad(ptr);
   }
@@ -660,7 +711,6 @@ unary_constant_expression:
 }
 | PLUS unary_constant_expression
 {
-  //not sure if I make it positive or just return the value
   $$ = $2;
 }
 | BITWISE_INVERT unary_constant_expression
