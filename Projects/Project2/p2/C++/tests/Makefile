@@ -12,8 +12,7 @@
 # list below. Edit both the .c and .p2 files to test similar functionality.
 
 ece466 = \
-	test_14
-	#test_00 \
+	test_00 \
 	test_01 \
 	test_02 \
 	test_03 \
@@ -25,19 +24,18 @@ ece466 = \
 	test_09 # <basename>
 
 ece566 = \
-	#test_10 \
+	test_10 \
 	test_11 \
-	test_13 \
 	test_12 \
 	test_13 \
-	test_14 # <basename>
+	test_14 \
 
 
 # for 466
-programs = $(ece466)
+#programs = $(ece466)
 
 # for 566
-#programs = $(ece466) $(ece566)
+programs = $(ece466) $(ece566)
 
 
 .PHONY: all install

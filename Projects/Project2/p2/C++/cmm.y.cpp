@@ -559,11 +559,11 @@ static const yytype_uint16 yyrline[] =
      343,   325,   370,   376,   385,   375,   398,   408,   414,   397,
      427,   437,   426,   451,   452,   455,   460,   467,   479,   484,
      488,   489,   493,   497,   501,   505,   509,   514,   518,   522,
-     526,   527,   528,   532,   536,   540,   541,   542,   543,   544,
-     545,   546,   547,   548,   555,   555,   559,   560,   564,   565,
-     570,   574,   575,   576,   580,   584,   591,   602,   609,   617,
-     618,   619,   620,   621,   622,   623,   627,   631,   635,   639,
-     640,   641,   648,   649,   654,   659,   666
+     526,   527,   528,   532,   536,   540,   541,   542,   550,   551,
+     552,   553,   554,   555,   562,   562,   566,   567,   571,   572,
+     577,   581,   582,   583,   587,   591,   598,   609,   616,   624,
+     625,   626,   627,   628,   629,   630,   634,   638,   642,   646,
+     647,   648,   655,   656,   661,   666,   673
 };
 #endif
 
@@ -2128,85 +2128,97 @@ yyreduce:
 #line 2129 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
-  case 88:
+  case 87:
 #line 543 "cmm.y" /* yacc.c:1646  */
-    {(yyval.value) = Builder->CreateIntToPtr((yyvsp[-1].value), PointerType::get(Builder->getInt64Ty(),0));}
-#line 2135 "cmm.y.cpp" /* yacc.c:1646  */
-    break;
-
-  case 89:
-#line 544 "cmm.y" /* yacc.c:1646  */
-    {(yyval.value) = Builder->CreatePtrToInt((yyvsp[-1].value), Builder->getInt64Ty());}
+    {
+    if((yyvsp[-1].value)->getType() == Builder->getInt64Ty())
+    {
+      (yyval.value) = Builder->CreateICmpNE((yyvsp[-1].value),Builder->getInt64(0));
+    }
+    else (yyval.value) = (yyvsp[-1].value);
+  }
 #line 2141 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
-  case 90:
-#line 545 "cmm.y" /* yacc.c:1646  */
-    {(yyval.value) = Builder->CreateZExt((yyvsp[-1].value), Builder->getInt64Ty());}
+  case 88:
+#line 550 "cmm.y" /* yacc.c:1646  */
+    {(yyval.value) = Builder->CreateIntToPtr((yyvsp[-1].value), PointerType::get(Builder->getInt64Ty(),0));}
 #line 2147 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
+  case 89:
+#line 551 "cmm.y" /* yacc.c:1646  */
+    {(yyval.value) = Builder->CreatePtrToInt((yyvsp[-1].value), Builder->getInt64Ty());}
+#line 2153 "cmm.y.cpp" /* yacc.c:1646  */
+    break;
+
+  case 90:
+#line 552 "cmm.y" /* yacc.c:1646  */
+    {(yyval.value) = Builder->CreateZExt((yyvsp[-1].value), Builder->getInt64Ty());}
+#line 2159 "cmm.y.cpp" /* yacc.c:1646  */
+    break;
+
   case 93:
-#line 549 "cmm.y" /* yacc.c:1646  */
+#line 556 "cmm.y" /* yacc.c:1646  */
     {
     (yyval.value) = (yyvsp[-1].value);
   }
-#line 2155 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2167 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 98:
-#line 564 "cmm.y" /* yacc.c:1646  */
+#line 571 "cmm.y" /* yacc.c:1646  */
     {(yyval.value) = (yyvsp[0].value);}
-#line 2161 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2173 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 99:
-#line 566 "cmm.y" /* yacc.c:1646  */
+#line 573 "cmm.y" /* yacc.c:1646  */
     {
     User * val = (User*) (yyvsp[0].value);
     (yyval.value) = val->getOperand(0);
   }
-#line 2170 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2182 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 100:
-#line 571 "cmm.y" /* yacc.c:1646  */
+#line 578 "cmm.y" /* yacc.c:1646  */
     {
-    Builder->CreateLoad((yyvsp[0].value));
+   (yyval.value) = Builder->CreateLoad((yyvsp[0].value));
   }
-#line 2178 "cmm.y.cpp" /* yacc.c:1646  */
-    break;
-
-  case 101:
-#line 574 "cmm.y" /* yacc.c:1646  */
-    {(yyval.value) = Builder->CreateNeg((yyvsp[0].value));}
-#line 2184 "cmm.y.cpp" /* yacc.c:1646  */
-    break;
-
-  case 102:
-#line 575 "cmm.y" /* yacc.c:1646  */
-    {(yyval.value) = (yyvsp[0].value);}
 #line 2190 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
-  case 104:
+  case 101:
 #line 581 "cmm.y" /* yacc.c:1646  */
+    {(yyval.value) = Builder->CreateNeg((yyvsp[0].value));}
+#line 2196 "cmm.y.cpp" /* yacc.c:1646  */
+    break;
+
+  case 102:
+#line 582 "cmm.y" /* yacc.c:1646  */
+    {(yyval.value) = (yyvsp[0].value);}
+#line 2202 "cmm.y.cpp" /* yacc.c:1646  */
+    break;
+
+  case 104:
+#line 588 "cmm.y" /* yacc.c:1646  */
     {
     (yyval.value) = (yyvsp[0].value);
   }
-#line 2198 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2210 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 105:
-#line 585 "cmm.y" /* yacc.c:1646  */
+#line 592 "cmm.y" /* yacc.c:1646  */
     {
     (yyval.value) = (yyvsp[0].value); 
   }
-#line 2206 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2218 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 106:
-#line 592 "cmm.y" /* yacc.c:1646  */
+#line 599 "cmm.y" /* yacc.c:1646  */
     {
     //Pop from parameter_list, may have to add support to check for param list
     //param_list = list of <type*,char*>
@@ -2217,123 +2229,123 @@ yyreduce:
     //$$ = symbol_find($1);
 
   }
-#line 2221 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2233 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 107:
-#line 603 "cmm.y" /* yacc.c:1646  */
+#line 610 "cmm.y" /* yacc.c:1646  */
     {
     User * val = (User*) (yyvsp[-3].value);
     ConstantInt * ci = dyn_cast<ConstantInt>((yyvsp[-1].value));
     Value * ptr = Builder->CreateGEP((yyvsp[-3].value),(yyvsp[-1].value));
     (yyval.value) = Builder->CreateLoad(ptr);
   }
-#line 2232 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2244 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 108:
-#line 610 "cmm.y" /* yacc.c:1646  */
+#line 617 "cmm.y" /* yacc.c:1646  */
     {
     Value * ptr = Builder->CreateGEP((yyvsp[-1].value),Builder->getInt64(0));
     (yyval.value) = Builder->CreateLoad(ptr);
   }
-#line 2241 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2253 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 109:
-#line 617 "cmm.y" /* yacc.c:1646  */
+#line 624 "cmm.y" /* yacc.c:1646  */
     {(yyval.value) = (yyvsp[0].value);}
-#line 2247 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2259 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 115:
-#line 624 "cmm.y" /* yacc.c:1646  */
+#line 631 "cmm.y" /* yacc.c:1646  */
     {
   (yyval.value) = Builder->CreateAdd((yyvsp[-2].value), (yyvsp[0].value));
 }
-#line 2255 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2267 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 116:
-#line 628 "cmm.y" /* yacc.c:1646  */
+#line 635 "cmm.y" /* yacc.c:1646  */
     {
   (yyval.value) = Builder->CreateSub((yyvsp[-2].value), (yyvsp[0].value));
 }
-#line 2263 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2275 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 117:
-#line 632 "cmm.y" /* yacc.c:1646  */
+#line 639 "cmm.y" /* yacc.c:1646  */
     {
     (yyval.value) = Builder->CreateMul((yyvsp[-2].value), (yyvsp[0].value));
   }
-#line 2271 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2283 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 118:
-#line 636 "cmm.y" /* yacc.c:1646  */
+#line 643 "cmm.y" /* yacc.c:1646  */
     {
     (yyval.value) = Builder->CreateSDiv((yyvsp[-2].value), (yyvsp[0].value));
   }
-#line 2279 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2291 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 120:
-#line 640 "cmm.y" /* yacc.c:1646  */
+#line 647 "cmm.y" /* yacc.c:1646  */
     {(yyval.value) = Builder->CreateIntToPtr((yyvsp[-1].value), PointerType::get(Builder->getInt64Ty(),0));}
-#line 2285 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2297 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 121:
-#line 642 "cmm.y" /* yacc.c:1646  */
+#line 649 "cmm.y" /* yacc.c:1646  */
     {
     (yyval.value) = (yyvsp[-1].value);
   }
-#line 2293 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2305 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 122:
-#line 648 "cmm.y" /* yacc.c:1646  */
+#line 655 "cmm.y" /* yacc.c:1646  */
     {(yyval.value) = (yyvsp[0].value);}
-#line 2299 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2311 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 123:
-#line 650 "cmm.y" /* yacc.c:1646  */
+#line 657 "cmm.y" /* yacc.c:1646  */
     {
   //assuming a negation here
   (yyval.value) = Builder->CreateNeg((yyvsp[0].value));
 }
-#line 2308 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2320 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 124:
-#line 655 "cmm.y" /* yacc.c:1646  */
+#line 662 "cmm.y" /* yacc.c:1646  */
     {
   //not sure if I make it positive or just return the value
   (yyval.value) = (yyvsp[0].value);
 }
-#line 2317 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2329 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 125:
-#line 660 "cmm.y" /* yacc.c:1646  */
+#line 667 "cmm.y" /* yacc.c:1646  */
     {
    Builder->CreateNot((yyvsp[0].value));
 }
-#line 2325 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2337 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
   case 126:
-#line 667 "cmm.y" /* yacc.c:1646  */
+#line 674 "cmm.y" /* yacc.c:1646  */
     {
   (yyval.value) = Builder->getInt64((yyvsp[0].inum));
 }
-#line 2333 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2345 "cmm.y.cpp" /* yacc.c:1646  */
     break;
 
 
-#line 2337 "cmm.y.cpp" /* yacc.c:1646  */
+#line 2349 "cmm.y.cpp" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2561,7 +2573,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 673 "cmm.y" /* yacc.c:1906  */
+#line 680 "cmm.y" /* yacc.c:1906  */
 
 
 Value* BuildFunction(Type* RetType, const char *name,

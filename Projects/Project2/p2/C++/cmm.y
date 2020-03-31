@@ -540,8 +540,15 @@ expression:
 | expression DIV expression {$$ = Builder->CreateSDiv($1, $3);}
 | expression MOD expression {$$ = Builder->CreateSRem($1,$3);}
 | BOOL LPAREN expression RPAREN
-| I2P LPAREN expression RPAREN {$$ = Builder->CreateIntToPtr($3, PointerType::get(Builder->getInt64Ty(),0));}
-| P2I LPAREN expression RPAREN {$$ = Builder->CreatePtrToInt($3, Builder->getInt64Ty());}
+  {
+    if($3->getType() == Builder->getInt64Ty())
+    {
+      $$ = Builder->CreateICmpNE($3,Builder->getInt64(0));
+    }
+    else $$ = $3;
+  }
+| I2P LPAREN expression RPAREN {$$ = Builder->CreateIntToPtr($3, PointerType::get(Builder->getInt64Ty(),0));} 
+| P2I LPAREN expression RPAREN {$$ = Builder->CreatePtrToInt($3, Builder->getInt64Ty());} 
 | ZEXT LPAREN expression RPAREN {$$ = Builder->CreateZExt($3, Builder->getInt64Ty());}
 | SEXT LPAREN expression RPAREN
 | ID LPAREN argument_list_opt RPAREN
@@ -569,7 +576,7 @@ unary_expression:         primary_expression {$$ = $1;}
   }
 | STAR primary_expression
   {
-    Builder->CreateLoad($2);
+   $$ = Builder->CreateLoad($2);
   }
 | MINUS unary_expression {$$ = Builder->CreateNeg($2);}
 | PLUS unary_expression {$$ = $2;}
