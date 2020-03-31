@@ -603,7 +603,7 @@ expression:
 | I2P LPAREN expression RPAREN {$$ = Builder->CreateIntToPtr($3, PointerType::get(Builder->getInt64Ty(),0));}
 | P2I LPAREN expression RPAREN {$$ = Builder->CreatePtrToInt($3, Builder->getInt64Ty());}
 | ZEXT LPAREN expression RPAREN {$$ = Builder->CreateZExt($3, Builder->getInt64Ty());}
-| SEXT LPAREN expression RPAREN
+| SEXT LPAREN expression RPAREN {$$ = Builder->CreateSExt($3, Builder->getInt64Ty());}
 | ID LPAREN argument_list_opt RPAREN
 | LPAREN expression RPAREN
   {
@@ -659,8 +659,6 @@ lvalue_location:
   }
 | lvalue_location LBRACKET expression RBRACKET
   {
-    //User * val = (User*) $1;
-    //ConstantInt * ci = dyn_cast<ConstantInt>($3);
     Value * ptr = Builder->CreateGEP($1,$3);
     $$ = Builder->CreateLoad(ptr);
   }
@@ -673,9 +671,9 @@ lvalue_location:
 
 constant_expression:
   unary_constant_expression {$$ = $1;}
-| constant_expression BITWISE_OR constant_expression
-| constant_expression BITWISE_XOR constant_expression
-| constant_expression AMPERSAND constant_expression
+| constant_expression BITWISE_OR constant_expression {$$ = Builder->CreateOr($1,$3);}
+| constant_expression BITWISE_XOR constant_expression {$$ = Builder->CreateXor($1,$3);}
+| constant_expression AMPERSAND constant_expression {$$ = Builder->CreateAnd($1,$3);}
 | constant_expression LSHIFT constant_expression
 | constant_expression RSHIFT constant_expression
 | constant_expression PLUS constant_expression
