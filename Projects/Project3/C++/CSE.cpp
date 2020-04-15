@@ -21,6 +21,7 @@
 #include "llvm/IR/ValueMap.h"
 #include "llvm/Support/GraphWriter.h"
 #include "llvm/IR/InstIterator.h"
+#include "llvm/Analysis/InstructionSimplify.h"
 
 #include <map>
 
@@ -37,7 +38,13 @@ int CSELdElim=0;
 int CSELdStElim=0;
 int CSERStElim=0;
 
-static void BasicCSE(Instruction &I)
+static void CSE_Simplify(Instruction &I)
+{
+  if SimplifyInstruction(&I)
+    CSE_Simplify++;
+}
+
+static void CSE_Basic(Instruction &I)
 {
 	if (isa<LoadInst>(I) || isa<StoreInst>(I) || isa<VAArgInst>(I)
 			|| isa<CallInst>(I) || isa<AllocaInst>(I) || isa<FCmpInst>(I))
@@ -60,17 +67,18 @@ static void BasicCSE(Instruction &I)
 					bb_it = target.eraseFromParent()--;
 				}
 			}
-		} 
+		}
 	}
 }
 
 
-static void BasicBlockWork(BasicBlock &BB)
+static void BB_Iter(BasicBlock &BB)
 {
 	for (BasicBlock::iterator bb_it=BB.begin(); bb_it!=BB.end(); bb_it++) {
 		Instruction &I = *bb_it;
 
-		BasicCSE(I);
+		CSE_Basic(I);
+    CSE_Simplify(I);
 	}
 }
 
@@ -81,7 +89,7 @@ void LLVMCommonSubexpressionElimination_Cpp(Module *M)
 
   for (Module::iterator mod_it=M->begin();mod_it!=M->end();mod_it++)
     for (Function::iterator fun_it=mod_it->begin(); fun_it!=mod_it->end(); fun_it++)
-      BasicBlockWork(*fun_it);
+      BB_Iter(*fun_it);
 
 
 
@@ -91,6 +99,5 @@ void LLVMCommonSubexpressionElimination_Cpp(Module *M)
   fprintf(stderr,"CSE_Simplify..%d\n", CSESimplify);
   fprintf(stderr,"CSE_RLd.......%d\n", CSELdElim);
   fprintf(stderr,"CSE_RSt.......%d\n", CSERStElim);
-  fprintf(stderr,"CSE_LdSt......%d\n", CSELdStElim);  
+  fprintf(stderr,"CSE_LdSt......%d\n", CSELdStElim);
 }
-
