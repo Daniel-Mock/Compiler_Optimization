@@ -39,12 +39,11 @@ int CSERStElim=0;
 
 static void BasicCSE(Instruction &I)
 {
-	if (isa<LoadInst>(I) || isa<StoreInst>(I) ||  isa<VAArgInst>(I)
+	if (isa<LoadInst>(I) || isa<StoreInst>(I) || isa<VAArgInst>(I)
 			|| isa<CallInst>(I) || isa<AllocaInst>(I) || isa<FCmpInst>(I))
 		return;
 
 	Function *F = I.getFunction();
-	//UpdateDominators(*F);
         DominatorTreeBase<BasicBlock,false> DTB;
 	DTB.recalculate(*F);
 	for (Function::iterator fun_it=F->begin(); fun_it!=F->end(); fun_it++) {
