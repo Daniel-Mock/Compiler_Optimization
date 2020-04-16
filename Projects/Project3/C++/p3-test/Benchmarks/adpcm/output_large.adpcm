@@ -1,3 +1,3 @@
 sh: 1: cannot open /afs/eos.ncsu.edu/lockers/workspace/ece/ece466/001/djmock/HW/Projects/Project3/C++/p3-test/../wolfbench/Benchmarks/adpcm/large.pcm: No such file
 exit 2
-RunSafely.sh detected a failure with these command-line arguments:  60 1 /afs/eos.ncsu.edu/lockers/workspace/ece/ece466/001/djmock/HW/Projects/Project3/C++/p3-test/../wolfbench/Benchmarks/adpcm/large.pcm output_large.adpcm ./adpcm.NOCSE
+RunSafely.sh detected a failure with these command-line arguments:  60 1 /afs/eos.ncsu.edu/lockers/workspace/ece/ece466/001/djmock/HW/Projects/Project3/C++/p3-test/../wolfbench/Benchmarks/adpcm/large.pcm output_large.adpcm ./adpcm.M2RCSE

@@ -40,8 +40,12 @@ int CSERStElim=0;
 
 static void CSE_Simplify(Instruction &I)
 {
-  if SimplifyInstruction(&I)
-    CSE_Simplify++;
+  if (Value * V = SimplifyInstruction(&I,I.getModule()->getDataLayout()))
+  {
+    CSESimplify++;
+    I.replaceAllUsesWith(V);
+  }
+    
 }
 
 static void CSE_Basic(Instruction &I)
@@ -77,8 +81,8 @@ static void BB_Iter(BasicBlock &BB)
 	for (BasicBlock::iterator bb_it=BB.begin(); bb_it!=BB.end(); bb_it++) {
 		Instruction &I = *bb_it;
 
-		CSE_Basic(I);
-    CSE_Simplify(I);
+		//CSE_Basic(I);
+                CSE_Simplify(I);
 	}
 }
 
