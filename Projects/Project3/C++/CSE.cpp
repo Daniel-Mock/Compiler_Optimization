@@ -76,6 +76,28 @@ static void CSE_Basic(Instruction &I)
 }
 
 
+static void CSE_Loads(Instruction &I)
+{
+	LoadInst *LI = dyn_cast<LoadInst>(&I);
+	if (!LI)
+		return;
+	
+	BasicBlock &BB = *I.getParent();
+	BasicBlock::iterator it = BB.begin();
+	while (&*it != &I)
+		it++;
+	for (it++;it!=BB.end()&&!isa<StoreInst>(*it)&&!isa<CallInst>(*it);it++) {
+		LoadInst *target = dyn_cast<LoadInst>(&*it);
+		if (target && !target->isVolatile() && target->getType() == LI->getType()
+					&& target->getPointerOperand() == LI->getPointerOperand()) {
+			CSELdElim++;
+			target->replaceAllUsesWith(LI);
+			it = target->eraseFromParent()--;
+		}
+	}
+}
+
+
 static void BB_Iter(BasicBlock &BB)
 {
 	for (BasicBlock::iterator bb_it=BB.begin(); bb_it!=BB.end(); bb_it++) {
@@ -83,6 +105,7 @@ static void BB_Iter(BasicBlock &BB)
 
 		//CSE_Basic(I);
                 CSE_Simplify(I);
+		CSE_Loads(I);
 	}
 }
 

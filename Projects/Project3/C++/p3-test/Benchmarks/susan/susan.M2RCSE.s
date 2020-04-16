@@ -1042,8 +1042,8 @@ enlarge:                                # @enlarge
 	.cfi_def_cfa_offset 48
 	pushq	%rbx
 	.cfi_def_cfa_offset 56
-	subq	$24, %rsp
-	.cfi_def_cfa_offset 80
+	subq	$40, %rsp
+	.cfi_def_cfa_offset 96
 	.cfi_offset %rbx, -56
 	.cfi_offset %r12, -48
 	.cfi_offset %r13, -40
@@ -1054,10 +1054,10 @@ enlarge:                                # @enlarge
 	movq	%rcx, %r14
 	movq	%rdx, %r13
 	movq	%rsi, %r12
-	movq	%rdi, (%rsp)            # 8-byte Spill
+	movq	%rdi, 8(%rsp)           # 8-byte Spill
 	xorl	%ebp, %ebp
 	movslq	%r8d, %rax
-	movq	%rax, 16(%rsp)          # 8-byte Spill
+	movq	%rax, 24(%rsp)          # 8-byte Spill
 	cmpl	(%r14), %ebp
 	jge	.LBB9_2
 	.p2align	4, 0x90
@@ -1068,25 +1068,27 @@ enlarge:                                # @enlarge
 	imull	%eax, %ecx
 	movslq	%ecx, %rdi
 	addq	%r12, %rdi
-	addq	16(%rsp), %rdi          # 8-byte Folded Reload
-	movslq	%ebp, %rsi
-	imulq	%rdx, %rsi
-	movq	(%rsp), %rax            # 8-byte Reload
+	addq	24(%rsp), %rdi          # 8-byte Folded Reload
+	movl	%ebp, %eax
+	imull	%edx, %eax
+	movslq	%eax, %rsi
+	movq	8(%rsp), %rax           # 8-byte Reload
 	addq	(%rax), %rsi
 	callq	memcpy
 	addl	$1, %ebp
 	cmpl	(%r14), %ebp
 	jl	.LBB9_11
 .LBB9_2:                                # %.preheader2
-	xorl	%ebp, %ebp
+	xorl	%esi, %esi
 	movl	$-1, %eax
-	movq	16(%rsp), %rbx          # 8-byte Reload
-	cmpl	%r15d, %ebp
+	movq	24(%rsp), %rbx          # 8-byte Reload
+	movq	8(%rsp), %rbp           # 8-byte Reload
+	cmpl	%r15d, %esi
 	jge	.LBB9_4
 	.p2align	4, 0x90
 .LBB9_12:                               # =>This Inner Loop Header: Depth=1
-	movq	%rax, 8(%rsp)           # 8-byte Spill
-	movq	8(%rsp), %rax           # 8-byte Reload
+	movq	%rax, 16(%rsp)          # 8-byte Spill
+	movq	16(%rsp), %rax          # 8-byte Reload
 	addl	%r15d, %eax
 	movslq	(%r13), %rdx
 	leal	(%rdx,%r15,2), %ecx
@@ -1094,13 +1096,15 @@ enlarge:                                # @enlarge
 	movslq	%ecx, %rdi
 	addq	%r12, %rdi
 	addq	%rbx, %rdi
-	movslq	%ebp, %rsi
-	imulq	%rdx, %rsi
-	movq	(%rsp), %rax            # 8-byte Reload
-	addq	(%rax), %rsi
+	movl	%esi, %eax
+	imull	%edx, %eax
+	movq	%rsi, 32(%rsp)          # 8-byte Spill
+	movslq	%eax, %rsi
+	addq	(%rbp), %rsi
 	callq	memcpy
 	movl	(%r14), %eax
-	leal	(%r15,%rbp), %ecx
+	movq	32(%rsp), %rcx          # 8-byte Reload
+	addl	%r15d, %ecx
 	addl	%eax, %ecx
 	movslq	(%r13), %rdx
 	leal	(%rdx,%r15,2), %esi
@@ -1108,16 +1112,16 @@ enlarge:                                # @enlarge
 	movslq	%esi, %rdi
 	addq	%r12, %rdi
 	addq	%rbx, %rdi
-	addl	8(%rsp), %eax           # 4-byte Folded Reload
+	addl	16(%rsp), %eax          # 4-byte Folded Reload
+	imull	%edx, %eax
 	movslq	%eax, %rsi
-	imulq	%rdx, %rsi
-	movq	(%rsp), %rax            # 8-byte Reload
-	addq	(%rax), %rsi
+	addq	(%rbp), %rsi
 	callq	memcpy
-	movq	8(%rsp), %rax           # 8-byte Reload
-	addl	$1, %ebp
+	movq	16(%rsp), %rax          # 8-byte Reload
+	movq	32(%rsp), %rsi          # 8-byte Reload
+	addl	$1, %esi
 	addl	$-1, %eax
-	cmpl	%r15d, %ebp
+	cmpl	%r15d, %esi
 	jl	.LBB9_12
 .LBB9_4:                                # %.preheader1
 	xorl	%eax, %eax
@@ -1170,9 +1174,9 @@ enlarge:                                # @enlarge
 .LBB9_10:
 	addl	%ecx, (%r13)
 	addl	%ecx, (%r14)
-	movq	(%rsp), %rax            # 8-byte Reload
+	movq	8(%rsp), %rax           # 8-byte Reload
 	movq	%r12, (%rax)
-	addq	$24, %rsp
+	addq	$40, %rsp
 	.cfi_def_cfa_offset 56
 	popq	%rbx
 	.cfi_def_cfa_offset 48
@@ -1235,10 +1239,10 @@ susan_smoothing:                        # @susan_smoothing
 	.cfi_offset %r14, -32
 	.cfi_offset %r15, -24
 	.cfi_offset %rbp, -16
-	movq	%r8, 80(%rsp)           # 8-byte Spill
+	movq	%r8, 72(%rsp)           # 8-byte Spill
+	movq	%rsi, %rbx
 	movl	%edi, %ebp
 	cvtsd2ss	%xmm0, %xmm1
-	movq	%rsi, 16(%rsp)          # 8-byte Spill
 	movq	%rsi, 32(%rsp)
 	movl	%edx, 8(%rsp)
 	movl	%ecx, 12(%rsp)
@@ -1280,133 +1284,134 @@ susan_smoothing:                        # @susan_smoothing
 	movl	%r15d, %r8d
 	callq	enlarge
 	testl	%ebp, %ebp
+	movq	%rbx, 16(%rsp)          # 8-byte Spill
 	je	.LBB10_12
 # %bb.6:                                # %.preheader3
-	movl	$1, %r8d
+	movl	$1, %ebx
 	movl	$0, 44(%rsp)            # 4-byte Folded Spill
 	jmp	.LBB10_7
 	.p2align	4, 0x90
 .LBB10_34:                              #   in Loop: Header=BB10_7 Depth=1
-	addl	$1, %r8d
+	addl	$1, %ebx
 	addl	$1, 44(%rsp)            # 4-byte Folded Spill
 .LBB10_7:                               # =>This Loop Header: Depth=1
                                         #     Child Loop BB10_9 Depth 2
 	movl	12(%rsp), %eax
 	addl	$-1, %eax
-	cmpl	%eax, %r8d
+	cmpl	%eax, %ebx
 	jge	.LBB10_35
 # %bb.8:                                # %.preheader2
                                         #   in Loop: Header=BB10_7 Depth=1
-	movl	$1, %r14d
-	movl	%r8d, 40(%rsp)          # 4-byte Spill
+	movl	$1, %r12d
+	movl	%ebx, 40(%rsp)          # 4-byte Spill
 	jmp	.LBB10_9
 	.p2align	4, 0x90
 .LBB10_11:                              #   in Loop: Header=BB10_9 Depth=2
 	movq	32(%rsp), %rdi
 	movl	8(%rsp), %ecx
-	movl	40(%rsp), %ebp          # 4-byte Reload
-	movl	%ebp, %esi
-	movl	%r14d, %edx
+	movl	40(%rsp), %ebx          # 4-byte Reload
+	movl	%ebx, %esi
+	movl	%r12d, %edx
 	callq	median
 	movq	16(%rsp), %rcx          # 8-byte Reload
 	movb	%al, (%rcx)
 	addq	$1, %rcx
 	movq	%rcx, 16(%rsp)          # 8-byte Spill
-	addq	$1, %r14
-	movl	%ebp, %r8d
+	addq	$1, %r12
 .LBB10_9:                               #   Parent Loop BB10_7 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
 	movl	8(%rsp), %eax
 	addl	$-1, %eax
-	cmpl	%eax, %r14d
+	cmpl	%eax, %r12d
 	jge	.LBB10_34
 # %bb.10:                               #   in Loop: Header=BB10_9 Depth=2
-	movq	32(%rsp), %rdx
-	movslq	8(%rsp), %r12
+	movq	32(%rsp), %rdi
+	movslq	8(%rsp), %r14
 	movl	44(%rsp), %eax          # 4-byte Reload
-	imull	%r12d, %eax
+	imull	%r14d, %eax
+	movslq	%eax, %r8
+	leaq	(%rdi,%r8), %r15
+	movl	%ebx, %eax
+	imull	%r14d, %eax
+	addl	%r12d, %eax
 	cltq
-	leaq	(%rdx,%rax), %rdi
-	movl	%r8d, %ecx
-	imull	%r12d, %ecx
-	addl	%r14d, %ecx
-	movslq	%ecx, %rcx
-	movzbl	(%rdx,%rcx), %esi
-	movq	80(%rsp), %rcx          # 8-byte Reload
-	movq	%rsi, 48(%rsp)          # 8-byte Spill
-	leaq	(%rcx,%rsi), %rcx
-	movzbl	-1(%r14,%rdi), %ebp
-	movq	%rcx, %rsi
-	movq	%rbp, 72(%rsp)          # 8-byte Spill
-	subq	%rbp, %rsi
-	movzbl	(%rsi), %r13d
-	movzbl	(%r14,%rdi), %ebp
-	movq	%rcx, %rsi
-	movq	%rbp, 24(%rsp)          # 8-byte Spill
-	subq	%rbp, %rsi
-	movzbl	(%rsi), %r9d
+	movzbl	(%rdi,%rax), %ecx
+	movq	72(%rsp), %rax          # 8-byte Reload
+	movq	%rcx, 48(%rsp)          # 8-byte Spill
+	leaq	(%rax,%rcx), %rax
+	movzbl	-1(%r12,%r15), %esi
+	movq	%rax, %rcx
+	movq	%rsi, 64(%rsp)          # 8-byte Spill
+	subq	%rsi, %rcx
+	movzbl	(%rcx), %r13d
+	movzbl	(%r12,%r15), %esi
+	movq	%rax, %rcx
+	movq	%rsi, 24(%rsp)          # 8-byte Spill
+	subq	%rsi, %rcx
+	movzbl	(%rcx), %r9d
 	leal	(%r9,%r13), %esi
-	movzbl	1(%r14,%rdi), %ebp
-	movq	%rcx, %rdi
+	movzbl	1(%r12,%r15), %ebp
+	movq	%rax, %rcx
 	movq	%rbp, 112(%rsp)         # 8-byte Spill
-	subq	%rbp, %rdi
-	movzbl	(%rdi), %r10d
+	subq	%rbp, %rcx
+	movzbl	(%rcx), %r10d
 	addl	%r10d, %esi
-	addq	%r12, %rax
-	addq	%rdx, %rax
-	movzbl	-1(%r14,%rax), %edi
-	movq	%rcx, %rdx
-	movq	%rdi, 104(%rsp)         # 8-byte Spill
-	subq	%rdi, %rdx
-	movzbl	(%rdx), %r11d
+	addq	%r14, %r15
+	movzbl	-1(%r12,%r15), %ebp
+	movq	%rax, %rcx
+	movq	%rbp, 104(%rsp)         # 8-byte Spill
+	subq	%rbp, %rcx
+	movzbl	(%rcx), %r11d
 	addl	%r11d, %esi
-	movzbl	(%r14,%rax), %edi
-	movzbl	1(%r14,%rax), %ebx
-	addq	%r12, %rax
-	movq	%rcx, %rdx
-	movq	%rdi, 96(%rsp)          # 8-byte Spill
-	subq	%rdi, %rdx
+	leaq	(%r8,%r14,2), %rbx
+	movzbl	(%r12,%r15), %edx
+	addq	%rdi, %rbx
+	movq	%rax, %rcx
+	movq	%rdx, 80(%rsp)          # 8-byte Spill
+	subq	%rdx, %rcx
+	movzbl	(%rcx), %ecx
+	addl	%ecx, %esi
+	movzbl	1(%r12,%r15), %r15d
+	movq	%rax, %rdx
+	subq	%r15, %rdx
 	movzbl	(%rdx), %ebp
 	addl	%ebp, %esi
-	movq	%rcx, %rdx
-	movq	%rbx, 88(%rsp)          # 8-byte Spill
-	subq	%rbx, %rdx
+	movzbl	-1(%r12,%rbx), %edi
+	movq	%rax, %rdx
+	movq	%rdi, 88(%rsp)          # 8-byte Spill
+	subq	%rdi, %rdx
+	movzbl	(%rdx), %r14d
+	addl	%r14d, %esi
+	movzbl	(%r12,%rbx), %edi
+	movq	%rax, %rdx
+	movq	%rdi, 96(%rsp)          # 8-byte Spill
+	subq	%rdi, %rdx
 	movzbl	(%rdx), %edx
 	addl	%edx, %esi
-	movzbl	-1(%r14,%rax), %ebx
-	movq	%rcx, %rdi
-	subq	%rbx, %rdi
-	movzbl	(%rdi), %r12d
-	addl	%r12d, %esi
-	movzbl	(%r14,%rax), %r15d
-	movq	%rcx, %rdi
-	subq	%r15, %rdi
-	movzbl	(%rdi), %edi
-	addl	%edi, %esi
-	movzbl	1(%r14,%rax), %r8d
-	subq	%r8, %rcx
-	movzbl	(%rcx), %eax
+	movzbl	1(%r12,%rbx), %r8d
+	subq	%r8, %rax
+	movzbl	(%rax), %eax
 	addl	%eax, %esi
 	addl	$-100, %esi
 	je	.LBB10_11
 # %bb.33:                               #   in Loop: Header=BB10_9 Depth=2
-	imull	72(%rsp), %r13d         # 4-byte Folded Reload
+	imull	64(%rsp), %r13d         # 4-byte Folded Reload
 	imull	24(%rsp), %r9d          # 4-byte Folded Reload
 	addl	%r13d, %r9d
 	imull	112(%rsp), %r10d        # 4-byte Folded Reload
 	addl	%r9d, %r10d
 	imull	104(%rsp), %r11d        # 4-byte Folded Reload
 	addl	%r10d, %r11d
-	imull	96(%rsp), %ebp          # 4-byte Folded Reload
-	addl	%r11d, %ebp
-	imull	88(%rsp), %edx          # 4-byte Folded Reload
-	addl	%ebp, %edx
-	imull	%ebx, %r12d
-	addl	%edx, %r12d
-	imull	%r15d, %edi
-	addl	%r12d, %edi
+	imull	80(%rsp), %ecx          # 4-byte Folded Reload
+	addl	%r11d, %ecx
+	imull	%r15d, %ebp
+	addl	%ecx, %ebp
+	imull	88(%rsp), %r14d         # 4-byte Folded Reload
+	addl	%ebp, %r14d
+	imull	96(%rsp), %edx          # 4-byte Folded Reload
+	addl	%r14d, %edx
 	imull	%r8d, %eax
-	addl	%edi, %eax
+	addl	%edx, %eax
 	imull	$100, 48(%rsp), %ecx    # 4-byte Folded Reload
 	subl	%ecx, %eax
 	cltd
@@ -1415,8 +1420,8 @@ susan_smoothing:                        # @susan_smoothing
 	movb	%al, (%rcx)
 	addq	$1, %rcx
 	movq	%rcx, 16(%rsp)          # 8-byte Spill
-	addq	$1, %r14
-	movl	40(%rsp), %r8d          # 4-byte Reload
+	addq	$1, %r12
+	movl	40(%rsp), %ebx          # 4-byte Reload
 	jmp	.LBB10_9
 .LBB10_12:
 	leal	(%r15,%r15), %ebx
@@ -1433,7 +1438,7 @@ susan_smoothing:                        # @susan_smoothing
 	movl	%r15d, %r14d
 	negl	%r14d
 	movl	%r14d, %r13d
-	movq	%rax, 72(%rsp)          # 8-byte Spill
+	movq	%rax, 64(%rsp)          # 8-byte Spill
 	movq	%rax, %rbp
 	movaps	%xmm1, 48(%rsp)         # 16-byte Spill
 	cmpl	%r15d, %r13d
@@ -1525,9 +1530,9 @@ susan_smoothing:                        # @susan_smoothing
 	movq	32(%rsp), %rax
 	movl	%r13d, %ecx
 	subl	%r15d, %ecx
-	movslq	8(%rsp), %rdx
+	movl	8(%rsp), %edx
+	imull	%edx, %ecx
 	movslq	%ecx, %rsi
-	imulq	%rdx, %rsi
 	addq	%rax, %rsi
 	movslq	%r14d, %rcx
 	addq	%rsi, %rcx
@@ -1536,11 +1541,11 @@ susan_smoothing:                        # @susan_smoothing
 	addl	%r14d, %edx
 	movslq	%edx, %rdx
 	movzbl	(%rax,%rdx), %r8d
-	movq	80(%rsp), %rax          # 8-byte Reload
+	movq	72(%rsp), %rax          # 8-byte Reload
 	leaq	(%rax,%r8), %r10
 	xorl	%r11d, %r11d
 	movl	24(%rsp), %r9d          # 4-byte Reload
-	movq	72(%rsp), %rbp          # 8-byte Reload
+	movq	64(%rsp), %rbp          # 8-byte Reload
 	xorl	%eax, %eax
 	cmpl	%r15d, %r9d
 	jle	.LBB10_20

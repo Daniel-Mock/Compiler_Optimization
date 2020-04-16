@@ -6,8 +6,8 @@ Recursive bit count by nybbles        > Time:   0.018 sec.; Bits: 17116098
 Non-recursive bit count by nybbles    > Time:   0.007 sec.; Bits: 18244704
 Non-recursive bit count by bytes (BW) > Time:   0.004 sec.; Bits: 18730970
 Non-recursive bit count by bytes (AR) > Time:   0.004 sec.; Bits: 16962481
-Shift and count bits                  > Time:   0.071 sec.; Bits: 17759895
+Shift and count bits                  > Time:   0.074 sec.; Bits: 17759895
 
-Best  > Non-recursive bit count by bytes (AR)
+Best  > Non-recursive bit count by bytes (BW)
 Worst > Shift and count bits
 exit 0

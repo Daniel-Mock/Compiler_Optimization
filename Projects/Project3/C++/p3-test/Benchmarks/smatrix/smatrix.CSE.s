@@ -129,21 +129,21 @@ main:                                   # @main
 .LBB1_6:                                #   Parent Loop BB1_4 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
 	movl	8(%rsp), %eax
-	movl	4(%rsp), %ecx
+	movslq	4(%rsp), %rcx
 	cmpl	size(%rip), %eax
 	jge	.LBB1_8
 # %bb.7:                                #   in Loop: Header=BB1_6 Depth=2
 	movl	size(%rip), %esi
-	imull	%esi, %ecx
+	movl	%ecx, %edx
+	imull	%esi, %edx
 	movslq	8(%rsp), %rdi
 	movl	%edi, %eax
 	imull	%esi, %eax
-	addl	%ecx, %eax
+	addl	%edx, %eax
 	cltd
 	idivl	%esi
-	movslq	4(%rsp), %rax
-	shlq	$12, %rax
-	movl	%edx, A(%rax,%rdi,4)
+	shlq	$12, %rcx
+	movl	%edx, A(%rcx,%rdi,4)
 	movslq	4(%rsp), %rax
 	movl	size(%rip), %ecx
 	imull	%eax, %ecx
@@ -178,8 +178,8 @@ main:                                   # @main
 	jmp	.LBB1_10
 	.p2align	4, 0x90
 .LBB1_14:                               #   in Loop: Header=BB1_10 Depth=1
-	addl	$1, %edx
-	movl	%edx, 4(%rsp)
+	addl	$1, %eax
+	movl	%eax, 4(%rsp)
 .LBB1_10:                               # =>This Loop Header: Depth=1
                                         #     Child Loop BB1_12 Depth 2
 	movl	4(%rsp), %eax
@@ -190,41 +190,42 @@ main:                                   # @main
 	.p2align	4, 0x90
 .LBB1_12:                               #   Parent Loop BB1_10 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	movl	8(%rsp), %eax
-	movl	4(%rsp), %edx
-	cmpl	size(%rip), %eax
+	movl	8(%rsp), %ecx
+	movslq	4(%rsp), %rax
+	cmpl	size(%rip), %ecx
 	jge	.LBB1_14
 # %bb.13:                               #   in Loop: Header=BB1_12 Depth=2
-	movslq	8(%rsp), %rcx
-	imull	%ecx, %edx
-	movslq	4(%rsp), %rax
-	imull	%eax, %edx
-	addl	$10, %edx
+	movslq	8(%rsp), %rsi
+	movl	%eax, %ecx
+	imull	%esi, %ecx
+	imull	%eax, %ecx
+	addl	$10, %ecx
 	xorps	%xmm0, %xmm0
-	cvtsi2ss	%edx, %xmm0
-	movl	%ecx, %edx
-	imull	%eax, %edx
-	movq	%rax, %rsi
-	shlq	$12, %rsi
-	movslq	A(%rsi,%rcx,4), %rdi
-	movss	%xmm0, RA(,%rdi,4)
-	movslq	%edx, %r8
-	imulq	$1431655766, %r8, %rdi  # imm = 0x55555556
-	movq	%rdi, %rdx
-	shrq	$63, %rdx
-	shrq	$32, %rdi
-	addl	%edx, %edi
-	negl	%edi
-	leal	(%r8,%rdi), %edi
+	cvtsi2ss	%ecx, %xmm0
+	shlq	$12, %rax
+	movslq	A(%rax,%rsi,4), %rax
+	movss	%xmm0, RA(,%rax,4)
+	movslq	4(%rsp), %rcx
+	movl	%esi, %eax
+	imull	%ecx, %eax
+	cltq
+	imulq	$1431655766, %rax, %rdx # imm = 0x55555556
+	movq	%rdx, %rdi
+	shrq	$63, %rdi
+	shrq	$32, %rdx
+	addl	%edi, %edx
+	negl	%edx
+	leal	(%rax,%rdx), %edi
 	addl	$3, %edi
-                                        # kill: def $eax killed $eax killed $rax
+	movl	%ecx, %eax
 	cltd
 	idivl	%edi
 	xorps	%xmm0, %xmm0
 	cvtsi2ss	%eax, %xmm0
-	movslq	B(%rsi,%rcx,4), %rax
+	shlq	$12, %rcx
+	movslq	B(%rcx,%rsi,4), %rax
 	movss	%xmm0, RB(,%rax,4)
-	leal	1(%rcx), %eax
+	leal	1(%rsi), %eax
 	movl	%eax, 8(%rsp)
 	jmp	.LBB1_12
 .LBB1_15:
