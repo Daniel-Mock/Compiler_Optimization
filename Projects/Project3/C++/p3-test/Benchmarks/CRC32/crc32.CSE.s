@@ -109,12 +109,13 @@ crc32buf:                               # @crc32buf
 # %bb.2:                                #   in Loop: Header=BB2_1 Depth=1
 	movq	-8(%rsp), %rcx
 	movzbl	(%rcx), %edx
-	xorl	%eax, %edx
-	movzbl	%dl, %edx
-	shrq	$8, %rax
-	xorq	crc_32_tab(,%rdx,8), %rax
+	xorl	%edx, %eax
+	movzbl	%al, %eax
+	movq	-24(%rsp), %rdx
+	shrq	$8, %rdx
+	xorq	crc_32_tab(,%rax,8), %rdx
 	addq	$-1, -16(%rsp)
-	movq	%rax, -24(%rsp)
+	movq	%rdx, -24(%rsp)
 	addq	$1, %rcx
 	movq	%rcx, -8(%rsp)
 	jmp	.LBB2_1

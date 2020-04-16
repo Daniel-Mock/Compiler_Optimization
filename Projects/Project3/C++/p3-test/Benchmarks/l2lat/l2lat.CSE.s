@@ -99,12 +99,7 @@ main:                                   # @main
 	.size	main, .Lfunc_end0-main
 	.cfi_endproc
                                         # -- End function
-	.section	.rodata.cst8,"aM",@progbits,8
-	.p2align	3               # -- Begin function second
-.LCPI1_0:
-	.quad	4696837146684686336     # double 1.0E+6
-	.text
-	.globl	second
+	.globl	second                  # -- Begin function second
 	.p2align	4, 0x90
 	.type	second,@function
 second:                                 # @second
@@ -116,7 +111,6 @@ second:                                 # @second
 	xorl	%esi, %esi
 	callq	gettimeofday
 	cvtsi2sdq	8(%rsp), %xmm1
-	divsd	.LCPI1_0(%rip), %xmm1
 	cvtsi2sdq	(%rsp), %xmm0
 	addsd	%xmm1, %xmm0
 	addq	$24, %rsp

@@ -41,15 +41,15 @@ old_main:                               # @old_main
 # %bb.0:
 	pushq	%rbx
 	.cfi_def_cfa_offset 16
-	subq	$960, %rsp              # imm = 0x3C0
-	.cfi_def_cfa_offset 976
+	subq	$944, %rsp              # imm = 0x3B0
+	.cfi_def_cfa_offset 960
 	.cfi_offset %rbx, -16
-	movq	$0, 48(%rsp)
+	movq	$0, 40(%rsp)
 	movl	$0, (%rsp)
 	movl	$64, %eax
 	xorl	%edx, %edx
 	idivl	__NumNodes(%rip)
-	movl	%eax, 60(%rsp)
+	movl	%eax, 124(%rsp)
 	movl	$123, %edi
 	callq	srand
 	movl	$1064, %edi             # imm = 0x428
@@ -66,32 +66,32 @@ old_main:                               # @old_main
 	movq	8(%rsp), %rax
 	movabsq	$4616189618054758400, %rcx # imm = 0x4010000000000000
 	movq	%rcx, 24(%rax)
-	movl	$0, 400(%rsp)
-	cmpl	$2, 400(%rsp)
+	movl	$0, 384(%rsp)
+	cmpl	$2, 384(%rsp)
 	jg	.LBB1_3
 	.p2align	4, 0x90
 .LBB1_2:                                # =>This Inner Loop Header: Depth=1
-	movslq	400(%rsp), %rax
-	movq	$0, 112(%rsp,%rax,8)
+	movslq	384(%rsp), %rax
+	movq	$0, 96(%rsp,%rax,8)
 	addl	$1, %eax
-	movl	%eax, 400(%rsp)
-	cmpl	$2, 400(%rsp)
+	movl	%eax, 384(%rsp)
+	cmpl	$2, 384(%rsp)
 	jle	.LBB1_2
 .LBB1_3:
-	movl	$0, 400(%rsp)
-	cmpl	$2, 400(%rsp)
+	movl	$0, 384(%rsp)
+	cmpl	$2, 384(%rsp)
 	jg	.LBB1_6
 	.p2align	4, 0x90
 .LBB1_5:                                # =>This Inner Loop Header: Depth=1
-	movslq	400(%rsp), %rax
-	movq	$0, 80(%rsp,%rax,8)
+	movslq	384(%rsp), %rax
+	movq	$0, 64(%rsp,%rax,8)
 	addl	$1, %eax
-	movl	%eax, 400(%rsp)
-	cmpl	$2, 400(%rsp)
+	movl	%eax, 384(%rsp)
+	cmpl	$2, 384(%rsp)
 	jle	.LBB1_5
 .LBB1_6:
 	movl	$0, 4(%rsp)
-	leaq	144(%rsp), %rbx
+	leaq	128(%rsp), %rbx
 	cmpl	$31, 4(%rsp)
 	jle	.LBB1_8
 	jmp	.LBB1_17
@@ -122,88 +122,88 @@ old_main:                               # @old_main
 	movq	%rbx, %rdi
 	movl	%eax, %esi
 	callq	uniform_testdata
-	movupd	144(%rsp), %xmm0
-	movupd	160(%rsp), %xmm1
-	movups	176(%rsp), %xmm2
-	movups	192(%rsp), %xmm3
-	movaps	%xmm3, 448(%rsp)
-	movaps	%xmm2, 432(%rsp)
-	movapd	%xmm1, 416(%rsp)
-	movapd	%xmm0, 400(%rsp)
-	movq	448(%rsp), %rax
+	movupd	128(%rsp), %xmm0
+	movupd	144(%rsp), %xmm1
+	movups	160(%rsp), %xmm2
+	movups	176(%rsp), %xmm3
+	movaps	%xmm3, 432(%rsp)
+	movaps	%xmm2, 416(%rsp)
+	movapd	%xmm1, 400(%rsp)
+	movapd	%xmm0, 384(%rsp)
+	movq	432(%rsp), %rax
 	movq	8(%rsp), %rcx
 	movslq	4(%rsp), %rdx
 	movq	%rax, 40(%rcx,%rdx,8)
-	cmpq	$0, 48(%rsp)
+	cmpq	$0, 40(%rsp)
 	je	.LBB1_10
 # %bb.9:                                #   in Loop: Header=BB1_8 Depth=1
-	movq	448(%rsp), %rax
-	movq	48(%rsp), %rcx
+	movq	432(%rsp), %rax
+	movq	40(%rsp), %rcx
 	movq	%rax, 128(%rcx)
 .LBB1_10:                               #   in Loop: Header=BB1_8 Depth=1
-	movq	456(%rsp), %rax
-	movq	%rax, 48(%rsp)
-	movl	$0, 144(%rsp)
-	cmpl	$2, 144(%rsp)
+	movq	440(%rsp), %rax
+	movq	%rax, 40(%rsp)
+	movl	$0, 128(%rsp)
+	cmpl	$2, 128(%rsp)
 	jg	.LBB1_13
 	.p2align	4, 0x90
 .LBB1_12:                               #   Parent Loop BB1_8 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	movslq	144(%rsp), %rax
-	movsd	112(%rsp,%rax,8), %xmm0 # xmm0 = mem[0],zero
-	addsd	400(%rsp,%rax,8), %xmm0
-	movsd	%xmm0, 112(%rsp,%rax,8)
+	movslq	128(%rsp), %rax
+	movsd	96(%rsp,%rax,8), %xmm0  # xmm0 = mem[0],zero
+	addsd	384(%rsp,%rax,8), %xmm0
+	movsd	%xmm0, 96(%rsp,%rax,8)
 	addl	$1, %eax
-	movl	%eax, 144(%rsp)
-	cmpl	$2, 144(%rsp)
+	movl	%eax, 128(%rsp)
+	cmpl	$2, 128(%rsp)
 	jle	.LBB1_12
 .LBB1_13:                               #   in Loop: Header=BB1_8 Depth=1
-	movl	$0, 144(%rsp)
-	cmpl	$2, 144(%rsp)
+	movl	$0, 128(%rsp)
+	cmpl	$2, 128(%rsp)
 	jg	.LBB1_16
 	.p2align	4, 0x90
 .LBB1_15:                               #   Parent Loop BB1_8 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	movslq	144(%rsp), %rax
-	movsd	80(%rsp,%rax,8), %xmm0  # xmm0 = mem[0],zero
-	addsd	424(%rsp,%rax,8), %xmm0
-	movsd	%xmm0, 80(%rsp,%rax,8)
+	movslq	128(%rsp), %rax
+	movsd	64(%rsp,%rax,8), %xmm0  # xmm0 = mem[0],zero
+	addsd	408(%rsp,%rax,8), %xmm0
+	movsd	%xmm0, 64(%rsp,%rax,8)
 	addl	$1, %eax
-	movl	%eax, 144(%rsp)
-	cmpl	$2, 144(%rsp)
+	movl	%eax, 128(%rsp)
+	cmpl	$2, 128(%rsp)
 	jle	.LBB1_15
 	jmp	.LBB1_16
 .LBB1_17:
-	movl	$0, 400(%rsp)
-	cmpl	$2, 400(%rsp)
+	movl	$0, 384(%rsp)
+	cmpl	$2, 384(%rsp)
 	jg	.LBB1_20
 	.p2align	4, 0x90
 .LBB1_19:                               # =>This Inner Loop Header: Depth=1
-	movslq	400(%rsp), %rax
-	movsd	112(%rsp,%rax,8), %xmm0 # xmm0 = mem[0],zero
+	movslq	384(%rsp), %rax
+	movsd	96(%rsp,%rax,8), %xmm0  # xmm0 = mem[0],zero
 	xorps	%xmm1, %xmm1
 	cvtsi2sdl	nbody(%rip), %xmm1
 	divsd	%xmm1, %xmm0
-	movsd	%xmm0, 112(%rsp,%rax,8)
+	movsd	%xmm0, 96(%rsp,%rax,8)
 	addl	$1, %eax
-	movl	%eax, 400(%rsp)
-	cmpl	$2, 400(%rsp)
+	movl	%eax, 384(%rsp)
+	cmpl	$2, 384(%rsp)
 	jle	.LBB1_19
 .LBB1_20:
-	movl	$0, 400(%rsp)
-	cmpl	$2, 400(%rsp)
+	movl	$0, 384(%rsp)
+	cmpl	$2, 384(%rsp)
 	jg	.LBB1_23
 	.p2align	4, 0x90
 .LBB1_22:                               # =>This Inner Loop Header: Depth=1
-	movslq	400(%rsp), %rax
-	movsd	80(%rsp,%rax,8), %xmm0  # xmm0 = mem[0],zero
+	movslq	384(%rsp), %rax
+	movsd	64(%rsp,%rax,8), %xmm0  # xmm0 = mem[0],zero
 	xorps	%xmm1, %xmm1
 	cvtsi2sdl	nbody(%rip), %xmm1
 	divsd	%xmm1, %xmm0
-	movsd	%xmm0, 80(%rsp,%rax,8)
+	movsd	%xmm0, 64(%rsp,%rax,8)
 	addl	$1, %eax
-	movl	%eax, 400(%rsp)
-	cmpl	$2, 400(%rsp)
+	movl	%eax, 384(%rsp)
+	cmpl	$2, 384(%rsp)
 	jle	.LBB1_22
 .LBB1_23:
 	movl	$0, (%rsp)
@@ -212,8 +212,8 @@ old_main:                               # @old_main
 	.p2align	4, 0x90
 .LBB1_25:                               # =>This Inner Loop Header: Depth=1
 	movslq	(%rsp), %rax
-	movl	$0, 144(%rsp,%rax,4)
-	movq	$0, 400(%rsp,%rax,8)
+	movl	$0, 128(%rsp,%rax,4)
+	movq	$0, 384(%rsp,%rax,8)
 	addl	$1, %eax
 	movl	%eax, (%rsp)
 	cmpl	$63, (%rsp)
@@ -224,14 +224,14 @@ old_main:                               # @old_main
 	jmp	.LBB1_27
 	.p2align	4, 0x90
 .LBB1_34:                               #   in Loop: Header=BB1_27 Depth=1
-	movq	40(%rsp), %rdi
+	movq	32(%rsp), %rdi
 	movq	8(%rsp), %rsi
 	callq	intcoord
-	movq	%rax, 64(%rsp)
-	movq	%rdx, 72(%rsp)
-	movq	64(%rsp), %rax
+	movq	%rax, 48(%rsp)
+	movq	%rdx, 56(%rsp)
+	movq	48(%rsp), %rax
 	movq	%rax, 16(%rsp)
-	movq	72(%rsp), %rax
+	movq	56(%rsp), %rax
 	movq	%rax, 24(%rsp)
 	movq	16(%rsp), %rdi
 	movq	24(%rsp), %rsi
@@ -244,25 +244,23 @@ old_main:                               # @old_main
 	callq	old_subindex
                                         # kill: def $eax killed $eax def $rax
 	leal	(%rax,%rbx,8), %eax
-	cltd
-	idivl	60(%rsp)
 	movslq	%eax, %rcx
-	addl	$1, 144(%rsp,%rcx,4)
+	addl	$1, 128(%rsp,%rcx,4)
 	movl	%eax, (%rsp)
-	movq	400(%rsp,%rcx,8), %rax
-	movq	40(%rsp), %rcx
+	movq	384(%rsp,%rcx,8), %rax
+	movq	32(%rsp), %rcx
 	movq	%rax, 136(%rcx)
-	movq	40(%rsp), %rax
+	movq	32(%rsp), %rax
 	movslq	(%rsp), %rcx
-	movq	%rax, 400(%rsp,%rcx,8)
+	movq	%rax, 384(%rsp,%rcx,8)
 	movl	%ecx, 40(%rax)
-	movq	40(%rsp), %rax
+	movq	32(%rsp), %rax
 	movq	128(%rax), %rax
 .LBB1_27:                               # =>This Loop Header: Depth=1
                                         #     Child Loop BB1_30 Depth 2
                                         #     Child Loop BB1_33 Depth 2
-	movq	%rax, 40(%rsp)
-	cmpq	$0, 40(%rsp)
+	movq	%rax, 32(%rsp)
+	cmpq	$0, 32(%rsp)
 	je	.LBB1_35
 # %bb.28:                               #   in Loop: Header=BB1_27 Depth=1
 	movl	$0, 16(%rsp)
@@ -271,10 +269,10 @@ old_main:                               # @old_main
 	.p2align	4, 0x90
 .LBB1_30:                               #   Parent Loop BB1_27 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	movq	40(%rsp), %rax
+	movq	32(%rsp), %rax
 	movslq	16(%rsp), %rcx
 	movsd	16(%rax,%rcx,8), %xmm0  # xmm0 = mem[0],zero
-	subsd	112(%rsp,%rcx,8), %xmm0
+	subsd	96(%rsp,%rcx,8), %xmm0
 	movsd	%xmm0, 16(%rax,%rcx,8)
 	addl	$1, 16(%rsp)
 	cmpl	$2, 16(%rsp)
@@ -286,10 +284,10 @@ old_main:                               # @old_main
 	.p2align	4, 0x90
 .LBB1_33:                               #   Parent Loop BB1_27 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	movq	40(%rsp), %rax
+	movq	32(%rsp), %rax
 	movslq	16(%rsp), %rcx
 	movsd	48(%rax,%rcx,8), %xmm0  # xmm0 = mem[0],zero
-	subsd	80(%rsp,%rcx,8), %xmm0
+	subsd	64(%rsp,%rcx,8), %xmm0
 	movsd	%xmm0, 48(%rax,%rcx,8)
 	addl	$1, 16(%rsp)
 	cmpl	$2, 16(%rsp)
@@ -304,13 +302,13 @@ old_main:                               # @old_main
 	jge	.LBB1_38
 # %bb.37:                               #   in Loop: Header=BB1_36 Depth=1
 	movslq	(%rsp), %rsi
-	movl	144(%rsp,%rsi,4), %edx
+	movl	128(%rsp,%rsi,4), %edx
 	movl	$.L.str.1, %edi
                                         # kill: def $esi killed $esi killed $rsi
 	xorl	%eax, %eax
 	callq	printf
 	movslq	(%rsp), %rax
-	movq	400(%rsp,%rax,8), %rcx
+	movq	384(%rsp,%rax,8), %rcx
 	movq	8(%rsp), %rdx
 	movq	%rcx, 552(%rdx,%rax,8)
 	addl	$1, (%rsp)
@@ -319,7 +317,7 @@ old_main:                               # @old_main
 	movl	$0, (%rsp)
 	movq	$0, 16(%rsp)
 	movl	$0, 4(%rsp)
-	movl	$10, 64(%rsp)
+	movl	$10, 48(%rsp)
 	.p2align	4, 0x90
 .LBB1_39:                               # =>This Inner Loop Header: Depth=1
 	movsd	.LCPI1_0(%rip), %xmm0   # xmm0 = mem[0],zero
@@ -327,7 +325,7 @@ old_main:                               # @old_main
 	jbe	.LBB1_40
 # %bb.41:                               #   in Loop: Header=BB1_39 Depth=1
 	movl	4(%rsp), %eax
-	cmpl	64(%rsp), %eax
+	cmpl	48(%rsp), %eax
 	setl	%al
 	jmp	.LBB1_42
 	.p2align	4, 0x90
@@ -347,7 +345,7 @@ old_main:                               # @old_main
 	jmp	.LBB1_39
 .LBB1_44:
 	movq	%rdi, %rax
-	addq	$960, %rsp              # imm = 0x3C0
+	addq	$944, %rsp              # imm = 0x3B0
 	.cfi_def_cfa_offset 16
 	popq	%rbx
 	.cfi_def_cfa_offset 8

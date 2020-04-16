@@ -8,7 +8,7 @@
 newpath
     0        0    moveto
 %==>Solve3: links = 110,40,90
-%<==Solve2: L1=150, L2=90; nsoln=0, target=(0,0),J=(1.01856e-312,6.95312e-310)
+%<==Solve2: L1=150, L2=90; nsoln=0, target=(0,0),J=(1.01856e-312,6.9529e-310)
 %<==Solve2: L1=110, L2=130; nsoln=0, target=(0,0),J=(-nan,-nan)
 %TwoCircles00: p=(25.4545,30.8556)
 %<==Solve2: L1=40, L2=90; nsoln=2, target=(-110,0),J=(-25.4545,-30.8556)
@@ -21,7 +21,7 @@ closepath stroke
 newpath
     0        0    moveto
 %==>Solve3: links = 110,40,90
-%<==Solve2: L1=150, L2=90; nsoln=0, target=(5,5),J=(1.01856e-312,6.95312e-310)
+%<==Solve2: L1=150, L2=90; nsoln=0, target=(5,5),J=(1.01856e-312,6.9529e-310)
 %<==Solve2: L1=110, L2=130; nsoln=0, target=(5,5),J=(-nan,-nan)
 %TwoCircles00: p=(21.6421,33.6395)
 %<==Solve2: L1=40, L2=90; nsoln=2, target=(-105,5),J=(-23.2177,-32.572)
@@ -34,7 +34,7 @@ closepath stroke
 newpath
     0        0    moveto
 %==>Solve3: links = 110,40,90
-%<==Solve2: L1=150, L2=90; nsoln=0, target=(10,10),J=(1.01856e-312,6.95312e-310)
+%<==Solve2: L1=150, L2=90; nsoln=0, target=(10,10),J=(1.01856e-312,6.9529e-310)
 %<==Solve2: L1=110, L2=130; nsoln=0, target=(10,10),J=(-nan,-nan)
 %TwoCircles00: p=(17.9107,35.766)
 %<==Solve2: L1=40, L2=90; nsoln=2, target=(-100,10),J=(-21.3806,-33.8063)
@@ -47,7 +47,7 @@ closepath stroke
 newpath
     0        0    moveto
 %==>Solve3: links = 110,40,90
-%<==Solve2: L1=150, L2=90; nsoln=0, target=(15,15),J=(1.01856e-312,6.95312e-310)
+%<==Solve2: L1=150, L2=90; nsoln=0, target=(15,15),J=(1.01856e-312,6.9529e-310)
 %TwoCircles00: p=(-102.53,39.8434)
 %<==Solve2: L1=110, L2=130; nsoln=2, target=(15,15),J=(-100.674,-44.3264)
 %Solve3: link1=110, link2=130, joint=
@@ -58,7 +58,7 @@ closepath stroke
 newpath
     0        0    moveto
 %==>Solve3: links = 110,40,90
-%<==Solve2: L1=150, L2=90; nsoln=0, target=(20,20),J=(1.01856e-312,6.95312e-310)
+%<==Solve2: L1=150, L2=90; nsoln=0, target=(20,20),J=(1.01856e-312,6.9529e-310)
 %TwoCircles00: p=(-70.7107,84.2615)
 %<==Solve2: L1=110, L2=130; nsoln=2, target=(20,20),J=(-109.582,9.58188)
 %Solve3: link1=110, link2=130, joint=
@@ -69,7 +69,7 @@ closepath stroke
 newpath
     0        0    moveto
 %==>Solve3: links = 110,40,90
-%<==Solve2: L1=150, L2=90; nsoln=0, target=(25,25),J=(1.01856e-312,6.95312e-310)
+%<==Solve2: L1=150, L2=90; nsoln=0, target=(25,25),J=(1.01856e-312,6.9529e-310)
 %TwoCircles00: p=(-50.2046,97.8749)
 %<==Solve2: L1=110, L2=130; nsoln=2, target=(25,25),J=(-104.708,33.708)
 %Solve3: link1=110, link2=130, joint=
@@ -80,7 +80,7 @@ closepath stroke
 newpath
     0        0    moveto
 %==>Solve3: links = 110,40,90
-%<==Solve2: L1=150, L2=90; nsoln=0, target=(30,30),J=(1.01856e-312,6.95312e-310)
+%<==Solve2: L1=150, L2=90; nsoln=0, target=(30,30),J=(1.01856e-312,6.9529e-310)
 %TwoCircles00: p=(-35.3553,104.163)
 %<==Solve2: L1=110, L2=130; nsoln=2, target=(30,30),J=(-98.6546,48.6546)
 %Solve3: link1=110, link2=130, joint=
@@ -91,7 +91,7 @@ closepath stroke
 newpath
     0        0    moveto
 %==>Solve3: links = 110,40,90
-%<==Solve2: L1=150, L2=90; nsoln=0, target=(35,35),J=(1.01856e-312,6.95312e-310)
+%<==Solve2: L1=150, L2=90; nsoln=0, target=(35,35),J=(1.01856e-312,6.9529e-310)
 %TwoCircles00: p=(-23.7386,107.408)
 %<==Solve2: L1=110, L2=130; nsoln=2, target=(35,35),J=(-92.7346,59.1632)
 %Solve3: link1=110, link2=130, joint=
@@ -102,7 +102,7 @@ closepath stroke
 newpath
     0        0    moveto
 %==>Solve3: links = 110,40,90
-%<==Solve2: L1=150, L2=90; nsoln=0, target=(40,40),J=(1.01856e-312,6.95312e-310)
+%<==Solve2: L1=150, L2=90; nsoln=0, target=(40,40),J=(1.01856e-312,6.9529e-310)
 %TwoCircles00: p=(-14.1421,109.087)
 %<==Solve2: L1=110, L2=130; nsoln=2, target=(40,40),J=(-87.1362,67.1362)
 %Solve3: link1=110, link2=130, joint=

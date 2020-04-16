@@ -32,28 +32,16 @@ bitcount:                               # @bitcount
 	.cfi_startproc
 # %bb.0:
 	movq	%rdi, %rax
-	shrq	%rax
-	andl	$1431655765, %eax       # imm = 0x55555555
-	andl	$1431655765, %edi       # imm = 0x55555555
-	addq	%rax, %rdi
-	movq	%rdi, %rax
-	shrq	$2, %rax
+	movq	%rdi, %rcx
+	shrq	$2, %rcx
+	andl	$858993459, %ecx        # imm = 0x33333333
 	andl	$858993459, %eax        # imm = 0x33333333
-	andl	$858993459, %edi        # imm = 0x33333333
-	addq	%rax, %rdi
-	movl	%edi, %eax
-	andl	$1886417008, %eax       # imm = 0x70707070
-	shrq	$4, %rax
-	andl	$117901063, %edi        # imm = 0x7070707
-	addq	%rax, %rdi
-	movl	%edi, %eax
-	andl	$251662080, %eax        # imm = 0xF000F00
-	shrq	$8, %rax
-	andl	$983055, %edi           # imm = 0xF000F
-	addq	%rax, %rdi
-	movzwl	%di, %eax
-	shrq	$16, %rdi
-	addq	%rdi, %rax
+	addq	%rcx, %rax
+	movl	%eax, %ecx
+	andl	$1996519168, %ecx       # imm = 0x77007700
+	shrq	$8, %rcx
+	andl	$7798903, %eax          # imm = 0x770077
+	addq	%rcx, %rax
 	movq	%rax, -8(%rsp)
                                         # kill: def $eax killed $eax killed $rax
 	retq
@@ -139,22 +127,18 @@ AR_btbl_bitcount:                       # @AR_btbl_bitcount
 # %bb.0:
 	movq	%rdi, -24(%rsp)
 	leaq	-24(%rsp), %rax
-	movq	%rax, -8(%rsp)
+	movq	%rax, -16(%rsp)
 	movzbl	%dil, %eax
 	movsbl	bits(%rax), %eax
 	movzbl	-23(%rsp), %ecx
 	movsbl	bits(%rcx), %ecx
 	addl	%eax, %ecx
-	movl	%ecx, -12(%rsp)
+	movl	%ecx, -4(%rsp)
 	leaq	-21(%rsp), %rax
-	movq	%rax, -8(%rsp)
+	movq	%rax, -16(%rsp)
 	movzbl	-22(%rsp), %eax
-	movsbl	bits(%rax), %edx
-	addl	%ecx, %edx
-	movl	%edx, -12(%rsp)
-	movzbl	-21(%rsp), %eax
 	movsbl	bits(%rax), %eax
-	addl	%edx, %eax
+	addl	%ecx, %eax
 	retq
 .Lfunc_end4:
 	.size	AR_btbl_bitcount, .Lfunc_end4-AR_btbl_bitcount
@@ -592,7 +576,7 @@ bstr_i:                                 # @bstr_i
 	subq	$24, %rsp
 	.cfi_def_cfa_offset 32
 	movq	%rdi, 8(%rsp)
-	movl	$0, 4(%rsp)
+	movl	$0, 16(%rsp)
 	cmpq	$0, 8(%rsp)
 	je	.LBB14_5
 	.p2align	4, 0x90
@@ -614,14 +598,11 @@ bstr_i:                                 # @bstr_i
 	movsbl	(%rax), %eax
 	addl	$-48, %eax
 	movl	%eax, 20(%rsp)
-	movl	4(%rsp), %ecx
-	andl	$1, %eax
-	leal	(%rax,%rcx,2), %eax
-	movl	%eax, 4(%rsp)
+	shll	16(%rsp)
 	cmpq	$0, 8(%rsp)
 	jne	.LBB14_2
 .LBB14_5:                               # %.critedge
-	movl	4(%rsp), %eax
+	movl	16(%rsp), %eax
 	addq	$24, %rsp
 	.cfi_def_cfa_offset 8
 	retq

@@ -83,29 +83,55 @@ static void CSE_Loads(Instruction &I)
 		return;
 	
 	BasicBlock &BB = *I.getParent();
-	BasicBlock::iterator it = BB.begin();
-	while (&*it != &I)
-		it++;
-	for (it++;it!=BB.end()&&!isa<StoreInst>(*it)&&!isa<CallInst>(*it);it++) {
-		LoadInst *target = dyn_cast<LoadInst>(&*it);
-		if (target && !target->isVolatile() && target->getType() == LI->getType()
-					&& target->getPointerOperand() == LI->getPointerOperand()) {
+	BasicBlock::iterator bb_it = BB.begin();
+	while (&*bb_it != &I)
+		bb_it++;
+	for (bb_it++; bb_it!=BB.end()&&!isa<StoreInst>(*bb_it)&&!isa<CallInst>(*bb_it); bb_it++) {
+		LoadInst *load = dyn_cast<LoadInst>(&*bb_it);
+		if (load && !load->isVolatile() && load->getType() == LI->getType()
+					&& load->getPointerOperand() == LI->getPointerOperand()) {
 			CSELdElim++;
-			target->replaceAllUsesWith(LI);
-			it = target->eraseFromParent()--;
+			load->replaceAllUsesWith(LI);
+			load->eraseFromParent();
+			bb_it--;
 		}
 	}
 }
 
-
+static void CSE_Stores(Instruction &I)
+{
+	StoreInst *SI = dyn_cast<StoreInst>(&I);
+	if (!SI)
+          return;	
+	BasicBlock &BB = *I.getParent();
+	BasicBlock::iterator bb_it = BB.begin();
+	while (&*bb_it != &I)
+		bb_it++;
+	for (bb_it++; bb_it!=BB.end()&&!isa<CallInst>(*bb_it); bb_it++) {
+		StoreInst *store = dyn_cast<StoreInst>(&*bb_it);
+		if(store){	
+		if (!store->isVolatile() && store->getPointerOperand() == SI->getPointerOperand()
+					&& store->getValueOperand()->getType() == SI->getValueOperand()->getType()) {
+				CSERStElim++;
+				store->eraseFromParent();
+                                bb_it--;
+		}
+		return;
+	}
+		
+	
+        
+        }
+}
 static void BB_Iter(BasicBlock &BB)
 {
 	for (BasicBlock::iterator bb_it=BB.begin(); bb_it!=BB.end(); bb_it++) {
 		Instruction &I = *bb_it;
 
 		//CSE_Basic(I);
-                CSE_Simplify(I);
-		CSE_Loads(I);
+               // CSE_Simplify(I);
+		//CSE_Loads(I);
+		CSE_Stores(I);
 	}
 }
 

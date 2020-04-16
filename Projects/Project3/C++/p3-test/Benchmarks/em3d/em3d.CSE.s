@@ -1178,8 +1178,8 @@ gen_signed_number:                      # @gen_signed_number
 	addq	%rcx, %rcx
 	cqto
 	idivq	%rcx
-	subl	4(%rsp), %edx
 	movl	%edx, (%rsp)
+	testl	%edx, %edx
 	js	.LBB18_2
 # %bb.1:
 	addl	$1, (%rsp)
