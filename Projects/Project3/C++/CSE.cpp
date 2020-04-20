@@ -44,51 +44,51 @@ bool isDead(Instruction &I)
   switch(opcode){
   case Instruction::Add:
   case Instruction::FNeg:
-  case Instruction::FAdd: 	
+  case Instruction::FAdd:
   case Instruction::Sub:
-  case Instruction::FSub: 	
+  case Instruction::FSub:
   case Instruction::Mul:
-  case Instruction::FMul: 	
-  case Instruction::UDiv:	
-  case Instruction::SDiv:	
-  case Instruction::FDiv:	
-  case Instruction::URem: 	
-  case Instruction::SRem: 	
-  case Instruction::FRem: 	
-  case Instruction::Shl: 	
-  case Instruction::LShr: 	
-  case Instruction::AShr: 	
-  case Instruction::And: 	
-  case Instruction::Or: 	
-  case Instruction::Xor: 	
+  case Instruction::FMul:
+  case Instruction::UDiv:
+  case Instruction::SDiv:
+  case Instruction::FDiv:
+  case Instruction::URem:
+  case Instruction::SRem:
+  case Instruction::FRem:
+  case Instruction::Shl:
+  case Instruction::LShr:
+  case Instruction::AShr:
+  case Instruction::And:
+  case Instruction::Or:
+  case Instruction::Xor:
   case Instruction::Alloca:
-  case Instruction::GetElementPtr: 	
-  case Instruction::Trunc: 	
-  case Instruction::ZExt: 	
-  case Instruction::SExt: 	
-  case Instruction::FPToUI: 	
-  case Instruction::FPToSI: 	
-  case Instruction::UIToFP: 	
-  case Instruction::SIToFP: 	
-  case Instruction::FPTrunc: 	
-  case Instruction::FPExt: 	
-  case Instruction::PtrToInt: 	
-  case Instruction::IntToPtr: 	
-  case Instruction::BitCast: 	
-  case Instruction::AddrSpaceCast: 	
-  case Instruction::ICmp: 	
-  case Instruction::FCmp: 	
-  case Instruction::PHI: 
-  case Instruction::Select: 
-  case Instruction::ExtractElement: 	
-  case Instruction::InsertElement: 	
-  case Instruction::ShuffleVector: 	
-  case Instruction::ExtractValue: 	
-  case Instruction::InsertValue: 
+  case Instruction::GetElementPtr:
+  case Instruction::Trunc:
+  case Instruction::ZExt:
+  case Instruction::SExt:
+  case Instruction::FPToUI:
+  case Instruction::FPToSI:
+  case Instruction::UIToFP:
+  case Instruction::SIToFP:
+  case Instruction::FPTrunc:
+  case Instruction::FPExt:
+  case Instruction::PtrToInt:
+  case Instruction::IntToPtr:
+  case Instruction::BitCast:
+  case Instruction::AddrSpaceCast:
+  case Instruction::ICmp:
+  case Instruction::FCmp:
+  case Instruction::PHI:
+  case Instruction::Select:
+  case Instruction::ExtractElement:
+  case Instruction::InsertElement:
+  case Instruction::ShuffleVector:
+  case Instruction::ExtractValue:
+  case Instruction::InsertValue:
     if ( I.use_begin() == I.use_end() )
       {
 	return true;
-      }    
+      }
     break;
 
 
@@ -103,52 +103,61 @@ bool isDead(Instruction &I)
 	{
 	  return true;
 	}
-      
+
       break;
     }
-  
+
   default: // any other opcode fails (includes stores and branches)
     // we don't know about this case, so conservatively fail!
     return false;
   }
-  
+
   return false;
 }
 
 
 static void CSE_Dead(Instruction &I)
 {
+  //check if instruction is dead. Erease if so, and increment
   bool check = isInstructionTriviallyDead(&I);
   if (check) {
     CSEDead++;
     I.eraseFromParent();
-    } 
+    }
+  //else abort
   else if(isDead(I)){
       abort();
-      }      
+      }
 }
 
 
 
 static void CSE_Simplify(Instruction &I)
 {
+  //Run simplify pass
   if (Value * V = SimplifyInstruction(&I,I.getModule()->getDataLayout()))
   {
     CSESimplify++;
     I.replaceAllUsesWith(V);
   }
-    
+
 }
 
 static void CSE_Elim(Instruction &I)
 {
+  //If an illegal type, return
 	if (isa<LoadInst>(I) || isa<StoreInst>(I) || isa<VAArgInst>(I)
 			|| isa<CallInst>(I) || isa<AllocaInst>(I) || isa<FCmpInst>(I))
 		return;
 
+  //else perform CSE ELim.
+
+  //Calc Dom Tree
 	Function *F = I.getFunction();
         DominatorTreeBase<BasicBlock,false> DTB;
 	DTB.recalculate(*F);
+
+  //Find and replace common subexpressions found in dom tree with I
 	for (Function::iterator fun_it=F->begin(); fun_it!=F->end(); fun_it++) {
 		BasicBlock &BB = *fun_it;
 		if (I.getParent() == &BB) {
@@ -174,11 +183,13 @@ static void CSE_Loads(Instruction &I)
 	LoadInst *LI = dyn_cast<LoadInst>(&I);
 	if (!LI)
 		return;
-	
+	//traverse basic block to I
 	BasicBlock &BB = *I.getParent();
 	BasicBlock::iterator bb_it = BB.begin();
 	while (&*bb_it != &I)
 		bb_it++;
+
+  //from I to end of bb, if load is redundant, remove it
 	for (bb_it++; bb_it!=BB.end()&&!isa<StoreInst>(*bb_it)&&!isa<CallInst>(*bb_it); bb_it++) {
 		LoadInst *load = dyn_cast<LoadInst>(&*bb_it);
 		if (load && !load->isVolatile() && load->getType() == LI->getType()
@@ -187,7 +198,7 @@ static void CSE_Loads(Instruction &I)
 			load->replaceAllUsesWith(LI);
 			bb_it--;
 			load->eraseFromParent();
-		
+
 		}
 	}
 }
@@ -196,14 +207,17 @@ static void CSE_Stores(Instruction &I)
 {
 	StoreInst *SI = dyn_cast<StoreInst>(&I);
 	if (!SI)
-          return;	
+          return;
+  //Traverse Basic Block to find I
 	BasicBlock &BB = *I.getParent();
 	BasicBlock::iterator bb_it = BB.begin();
 	while (&*bb_it != &I)
 		bb_it++;
+
+  //from I to end of bb, if store is redundant, remove it
 	for (bb_it++; bb_it!=BB.end()&&!isa<CallInst>(*bb_it); bb_it++) {
 		StoreInst *store = dyn_cast<StoreInst>(&*bb_it);
-		if(store){	
+		if(store){
 		if (!store->isVolatile() && store->getPointerOperand() == SI->getPointerOperand()
 					&& store->getValueOperand()->getType() == SI->getValueOperand()->getType()) {
 				CSERStElim++;
@@ -213,7 +227,7 @@ static void CSE_Stores(Instruction &I)
 		}
 		else return;
 	}
-		
+
 		LoadInst *load = dyn_cast<LoadInst>(&*bb_it);
 		if (load) {
 			if (!load->isVolatile() && load->getPointerOperand() == SI->getPointerOperand()
@@ -226,16 +240,17 @@ static void CSE_Stores(Instruction &I)
 			} else {
 				return;
 			}
-		}	
-        
+		}
+
         }
 }
 static void BB_Iter(BasicBlock &BB)
 {
+  //traverse basic block and pass in each instruction to the optimizations
 	for (BasicBlock::iterator bb_it=BB.begin(); bb_it!=BB.end(); bb_it++) {
 		Instruction &I = *bb_it;
-                CSE_Dead(I);
-	        CSE_Simplify(I);
+    CSE_Dead(I);
+	  CSE_Simplify(I);
 		CSE_Elim(I);
 		CSE_Loads(I);
 		CSE_Stores(I);
@@ -244,9 +259,7 @@ static void BB_Iter(BasicBlock &BB)
 
 void LLVMCommonSubexpressionElimination_Cpp(Module *M)
 {
-  // for each function, f:
-  //   FunctionCSE(f);
-
+  //traverse each function within each module and call basic block iterator
   for (Module::iterator mod_it=M->begin();mod_it!=M->end();mod_it++)
     for (Function::iterator fun_it=mod_it->begin(); fun_it!=mod_it->end(); fun_it++)
       BB_Iter(*fun_it);
