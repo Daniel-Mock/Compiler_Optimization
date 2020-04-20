@@ -235,10 +235,10 @@ static void BB_Iter(BasicBlock &BB)
 	for (BasicBlock::iterator bb_it=BB.begin(); bb_it!=BB.end(); bb_it++) {
 		Instruction &I = *bb_it;
                 CSE_Dead(I);
-	        //CSE_Simplify(I);
-		//CSE_Elim(I);
-		//CSE_Loads(I);
-		//CSE_Stores(I);
+	        CSE_Simplify(I);
+		CSE_Elim(I);
+		CSE_Loads(I);
+		CSE_Stores(I);
 	}
 }
 

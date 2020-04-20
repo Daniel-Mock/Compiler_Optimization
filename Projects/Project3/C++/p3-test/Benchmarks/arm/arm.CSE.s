@@ -180,7 +180,6 @@ ReadTarget:                             # @ReadTarget
 	jmp	.LBB3_1
 .LBB3_4:
 	movl	(%rax), %esi
-	movq	8(%rsp), %rax
 	movl	4(%rax), %edx
 	movl	$.L.str.9, %edi
 	xorl	%eax, %eax
@@ -568,15 +567,15 @@ TwoCircles0a:                           # @TwoCircles0a
 # %bb.0:
 	subq	$72, %rsp
 	.cfi_def_cfa_offset 80
-	movl	%edi, 8(%rsp)
+	movl	%edi, 20(%rsp)
 	movq	%rsi, 32(%rsp)
-	movl	%edx, 20(%rsp)
+	movl	%edx, 16(%rsp)
 	movq	%rcx, 24(%rsp)
 	movq	%rsi, %rdi
 	callq	Length2
 	movsd	%xmm0, 56(%rsp)
-	movl	8(%rsp), %eax
-	movl	20(%rsp), %ecx
+	movl	20(%rsp), %eax
+	movl	16(%rsp), %ecx
 	leal	(%rax,%rcx), %edx
 	imull	%edx, %edx
 	cvtsi2sd	%edx, %xmm1
@@ -592,10 +591,10 @@ TwoCircles0a:                           # @TwoCircles0a
 	ucomisd	56(%rsp), %xmm0
 	jbe	.LBB12_3
 .LBB12_2:
-	movl	$0, 12(%rsp)
+	movl	$0, 8(%rsp)
 .LBB12_11:
-	movl	$1, 16(%rsp)
-	movl	12(%rsp), %eax
+	movl	$1, 12(%rsp)
+	movl	8(%rsp), %eax
 	addq	$72, %rsp
 	.cfi_def_cfa_offset 8
 	retq
@@ -606,10 +605,10 @@ TwoCircles0a:                           # @TwoCircles0a
 	jne	.LBB12_5
 	jp	.LBB12_5
 # %bb.4:
-	movl	8(%rsp), %eax
+	movl	20(%rsp), %eax
 	xorps	%xmm0, %xmm0
 	cvtsi2sd	%eax, %xmm0
-	addl	20(%rsp), %eax
+	addl	16(%rsp), %eax
 .LBB12_9:
 	xorps	%xmm1, %xmm1
 	cvtsi2sd	%eax, %xmm1
@@ -627,7 +626,7 @@ TwoCircles0a:                           # @TwoCircles0a
 	mulsd	40(%rsp), %xmm0
 	movq	24(%rsp), %rax
 	movsd	%xmm0, 8(%rax)
-	movl	$1, 12(%rsp)
+	movl	$1, 8(%rsp)
 	jmp	.LBB12_11
 .LBB12_5:
 	movsd	56(%rsp), %xmm0         # xmm0 = mem[0],zero
@@ -635,8 +634,9 @@ TwoCircles0a:                           # @TwoCircles0a
 	jne	.LBB12_10
 	jp	.LBB12_10
 # %bb.6:
+	movl	20(%rsp), %eax
 	xorps	%xmm0, %xmm0
-	cvtsi2sdl	8(%rsp), %xmm0
+	cvtsi2sd	%eax, %xmm0
 	movsd	48(%rsp), %xmm1         # xmm1 = mem[0],zero
 	xorps	%xmm2, %xmm2
 	ucomisd	%xmm2, %xmm1
@@ -647,19 +647,18 @@ TwoCircles0a:                           # @TwoCircles0a
 	movsd	%xmm0, (%rax)
 	movq	24(%rsp), %rax
 	movq	$0, 8(%rax)
-	movl	$3, 12(%rsp)
+	movl	$3, 8(%rsp)
 	jmp	.LBB12_11
 .LBB12_10:
-	movl	8(%rsp), %edi
+	movl	20(%rsp), %edi
 	movq	32(%rsp), %rsi
-	movl	20(%rsp), %edx
+	movl	16(%rsp), %edx
 	movq	24(%rsp), %rcx
 	callq	TwoCircles0b
-	movl	%eax, 12(%rsp)
+	movl	%eax, 8(%rsp)
 	jmp	.LBB12_11
 .LBB12_8:
-	movl	8(%rsp), %eax
-	subl	20(%rsp), %eax
+	subl	16(%rsp), %eax
 	jmp	.LBB12_9
 .Lfunc_end12:
 	.size	TwoCircles0a, .Lfunc_end12-TwoCircles0a

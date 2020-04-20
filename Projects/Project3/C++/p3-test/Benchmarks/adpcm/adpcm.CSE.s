@@ -14,7 +14,8 @@ adpcm_coder:                            # @adpcm_coder
 	movq	%rdi, -40(%rsp)
 	movswl	(%rcx), %eax
 	movl	%eax, -88(%rsp)
-	movsbq	2(%rcx), %rax
+	movsbl	2(%rcx), %eax
+	cltq
 	movl	%eax, -64(%rsp)
 	movl	stepsizeTable(,%rax,4), %eax
 	movl	%eax, -84(%rsp)
@@ -46,10 +47,12 @@ adpcm_coder:                            # @adpcm_coder
 	movl	%eax, -20(%rsp)
 	subl	-88(%rsp), %eax
 	movl	%eax, -80(%rsp)
-	shrl	$28, %eax
-	andl	$8, %eax
-	movl	%eax, -56(%rsp)
-	je	.LBB0_4
+	movl	%eax, %ecx
+	shrl	$28, %ecx
+	andl	$-8, %ecx
+	movl	%ecx, -56(%rsp)
+	testl	%eax, %eax
+	jns	.LBB0_4
 # %bb.3:                                #   in Loop: Header=BB0_2 Depth=1
 	negl	-80(%rsp)
 .LBB0_4:                                #   in Loop: Header=BB0_2 Depth=1
@@ -113,8 +116,8 @@ adpcm_coder:                            # @adpcm_coder
 .LBB0_17:                               #   in Loop: Header=BB0_2 Depth=1
 	movl	-76(%rsp), %eax
 	orl	-56(%rsp), %eax
-	movl	%eax, -76(%rsp)
 	movslq	%eax, %rsi
+	movl	%esi, -76(%rsp)
 	movl	-64(%rsp), %edx
 	xorl	%ecx, %ecx
 	addl	indexTable(,%rsi,4), %edx
@@ -174,7 +177,8 @@ adpcm_decoder:                          # @adpcm_decoder
 	movq	%rdi, -32(%rsp)
 	movswl	(%rcx), %eax
 	movl	%eax, -76(%rsp)
-	movsbq	2(%rcx), %rax
+	movsbl	2(%rcx), %eax
+	cltq
 	movl	%eax, -64(%rsp)
 	movl	stepsizeTable(,%rax,4), %eax
 	movl	%eax, -68(%rsp)

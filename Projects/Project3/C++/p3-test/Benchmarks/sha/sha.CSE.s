@@ -103,13 +103,11 @@ sha_update:                             # @sha_update
 # %bb.0:
 	subq	$24, %rsp
 	.cfi_def_cfa_offset 32
-                                        # kill: def $edx killed $edx def $rdx
 	movq	%rdi, 8(%rsp)
 	movq	%rsi, 16(%rsp)
 	movl	%edx, 4(%rsp)
-	movl	20(%rdi), %eax
-	leal	(%rax,%rdx,8), %ecx
-	cmpl	%eax, %ecx
+	shll	$3, %edx
+	addl	20(%rdi), %edx
 	jae	.LBB2_2
 # %bb.1:
 	movq	8(%rsp), %rax
@@ -359,27 +357,27 @@ sha_transform:                          # @sha_transform
 	movl	-100(%rsp), %ecx
 	jg	.LBB4_18
 # %bb.17:                               #   in Loop: Header=BB4_16 Depth=1
-	movl	-100(%rsp), %r9d
-	shldl	$5, %r9d, %ecx
-	movl	-104(%rsp), %edx
-	movl	-108(%rsp), %esi
-	movl	%edx, %edi
-	xorl	%esi, %edi
-	movl	-112(%rsp), %eax
-	xorl	%eax, %edi
-	addl	%ecx, %edi
-	addl	-116(%rsp), %edi
+	roll	$5, %ecx
+	movl	-104(%rsp), %eax
+	movl	-108(%rsp), %edx
+	movl	%eax, %esi
+	xorl	%edx, %esi
+	movl	-112(%rsp), %edi
+	xorl	%edi, %esi
+	addl	%ecx, %esi
+	addl	-116(%rsp), %esi
 	movslq	-120(%rsp), %rcx
-	addl	-80(%rsp,%rcx,4), %edi
-	leal	(%r8,%rdi), %edi
-	addl	$994510074, %edi        # imm = 0x3B4704FA
-	movl	%edi, -84(%rsp)
-	movl	%eax, -116(%rsp)
-	movl	%esi, -112(%rsp)
-	roll	$30, %edx
-	movl	%edx, -108(%rsp)
-	movl	%r9d, -104(%rsp)
-	movl	%edi, -100(%rsp)
+	addl	-80(%rsp,%rcx,4), %esi
+	leal	(%r8,%rsi), %esi
+	addl	$994510074, %esi        # imm = 0x3B4704FA
+	movl	%esi, -84(%rsp)
+	movl	%edi, -116(%rsp)
+	movl	%edx, -112(%rsp)
+	roll	$30, %eax
+	movl	%eax, -108(%rsp)
+	movl	-100(%rsp), %eax
+	movl	%eax, -104(%rsp)
+	movl	%esi, -100(%rsp)
 	leal	1(%rcx), %eax
 	movl	%eax, -120(%rsp)
 	jmp	.LBB4_16

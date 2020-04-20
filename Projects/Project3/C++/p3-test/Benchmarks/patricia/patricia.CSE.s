@@ -12,7 +12,7 @@ pat_insert:                             # @pat_insert
 	.cfi_def_cfa_offset 96
 	.cfi_offset %rbx, -16
 	movq	%rdi, 16(%rsp)
-	movq	%rsi, 32(%rsp)
+	movq	%rsi, 48(%rsp)
 	testq	%rsi, %rsi
 	je	.LBB0_3
 # %bb.1:
@@ -27,7 +27,7 @@ pat_insert:                             # @pat_insert
 	movq	8(%rax), %rcx
 	movq	(%rcx), %rcx
 	andq	%rcx, (%rax)
-	movq	32(%rsp), %rax
+	movq	48(%rsp), %rax
 	movq	%rax, 24(%rsp)
 	jmp	.LBB0_5
 	.p2align	4, 0x90
@@ -104,21 +104,20 @@ pat_insert:                             # @pat_insert
 	cmpl	$31, 12(%rsp)
 	jle	.LBB0_26
 .LBB0_28:                               # %.critedge
-	movq	32(%rsp), %rax
+	movq	48(%rsp), %rax
 	movsbl	17(%rax), %edi
 	movq	16(%rsp), %rax
 	movq	(%rax), %rsi
 	callq	bit
-	movq	32(%rsp), %rcx
+	movq	48(%rsp), %rcx
 	testq	%rax, %rax
 	je	.LBB0_30
 # %bb.29:
 	movq	32(%rcx), %rdi
 	movq	16(%rsp), %rsi
 	movl	12(%rsp), %edx
-	movq	32(%rsp), %rcx
 	callq	insertR
-	movq	32(%rsp), %rcx
+	movq	48(%rsp), %rcx
 	movq	%rax, 32(%rcx)
 	jmp	.LBB0_31
 .LBB0_16:
@@ -130,7 +129,7 @@ pat_insert:                             # @pat_insert
 	movq	%rax, 72(%rsp)
 	movl	$0, 60(%rsp)
 	movl	$0, 12(%rsp)
-	movq	%rax, 48(%rsp)
+	movq	%rax, 40(%rsp)
 	movl	$4294967295, %ebx       # imm = 0xFFFFFFFF
 	jmp	.LBB0_17
 	.p2align	4, 0x90
@@ -139,12 +138,12 @@ pat_insert:                             # @pat_insert
 	movslq	12(%rsp), %rdi
 	shlq	$4, %rdi
 	addq	8(%rax), %rdi
-	movq	48(%rsp), %rsi
+	movq	40(%rsp), %rsi
 	movl	$16, %edx
 	xorl	%eax, %eax
 	callq	bcopy
 	addl	$1, 12(%rsp)
-	addq	$16, 48(%rsp)
+	addq	$16, 40(%rsp)
 .LBB0_17:                               # =>This Inner Loop Header: Depth=1
 	movq	24(%rsp), %rax
 	movzbl	16(%rax), %eax
@@ -163,7 +162,7 @@ pat_insert:                             # @pat_insert
 # %bb.20:                               #   in Loop: Header=BB0_17 Depth=1
 	movq	16(%rsp), %rax
 	movq	8(%rax), %rdi
-	movq	48(%rsp), %rsi
+	movq	40(%rsp), %rsi
 	movl	$16, %edx
 	xorl	%eax, %eax
 	callq	bcopy
@@ -171,7 +170,7 @@ pat_insert:                             # @pat_insert
 	movq	8(%rax), %rax
 	movq	%rbx, (%rax)
 	movl	$1, 60(%rsp)
-	addq	$16, 48(%rsp)
+	addq	$16, 40(%rsp)
 	jmp	.LBB0_17
 .LBB0_21:
 	cmpl	$0, 60(%rsp)
@@ -179,7 +178,7 @@ pat_insert:                             # @pat_insert
 # %bb.22:
 	movq	16(%rsp), %rax
 	movq	8(%rax), %rdi
-	movq	48(%rsp), %rsi
+	movq	40(%rsp), %rsi
 	movl	$16, %edx
 	xorl	%eax, %eax
 	callq	bcopy
@@ -221,16 +220,15 @@ pat_insert:                             # @pat_insert
 	movq	24(%rcx), %rdi
 	movq	16(%rsp), %rsi
 	movl	12(%rsp), %edx
-	movq	32(%rsp), %rcx
 	callq	insertR
-	movq	32(%rsp), %rcx
+	movq	48(%rsp), %rcx
 	movq	%rax, 24(%rcx)
 .LBB0_31:
 	movq	16(%rsp), %rax
 .LBB0_32:
 	movq	%rax, 64(%rsp)
 .LBB0_33:
-	movl	$1, 44(%rsp)
+	movl	$1, 36(%rsp)
 	movq	64(%rsp), %rax
 	addq	$80, %rsp
 	.cfi_def_cfa_offset 16
@@ -266,15 +264,15 @@ insertR:                                # @insertR
 # %bb.0:
 	subq	$40, %rsp
 	.cfi_def_cfa_offset 48
-	movq	%rdi, 8(%rsp)
-	movq	%rsi, 16(%rsp)
+	movq	%rdi, 16(%rsp)
+	movq	%rsi, 8(%rsp)
 	movl	%edx, 4(%rsp)
 	movq	%rcx, 32(%rsp)
 	movsbl	17(%rdi), %eax
 	cmpl	%edx, %eax
 	jge	.LBB2_2
 # %bb.1:
-	movq	8(%rsp), %rax
+	movq	16(%rsp), %rax
 	movsbl	17(%rax), %eax
 	movq	32(%rsp), %rcx
 	movsbl	17(%rcx), %ecx
@@ -282,62 +280,60 @@ insertR:                                # @insertR
 	jg	.LBB2_7
 .LBB2_2:
 	movb	4(%rsp), %al
-	movq	16(%rsp), %rcx
+	movq	8(%rsp), %rcx
 	movb	%al, 17(%rcx)
 	movl	4(%rsp), %edi
-	movq	16(%rsp), %rax
+	movq	8(%rsp), %rax
 	movq	(%rax), %rsi
 	callq	bit
-	movq	16(%rsp), %rcx
+	movq	8(%rsp), %rcx
 	movq	%rcx, %rdx
 	testq	%rax, %rax
 	je	.LBB2_4
 # %bb.3:
-	movq	8(%rsp), %rdx
+	movq	16(%rsp), %rdx
 .LBB2_4:
 	movq	%rdx, 24(%rcx)
 	movl	4(%rsp), %edi
-	movq	16(%rsp), %rax
+	movq	8(%rsp), %rax
 	movq	(%rax), %rsi
 	callq	bit
-	movq	16(%rsp), %rcx
+	movq	8(%rsp), %rcx
 	movq	%rcx, %rdx
 	testq	%rax, %rax
 	jne	.LBB2_6
 # %bb.5:
-	movq	8(%rsp), %rdx
+	movq	16(%rsp), %rdx
 .LBB2_6:
 	movq	%rdx, 32(%rcx)
-	movq	16(%rsp), %rax
+	movq	8(%rsp), %rax
 	jmp	.LBB2_11
 .LBB2_7:
-	movq	8(%rsp), %rax
-	movsbl	17(%rax), %edi
 	movq	16(%rsp), %rax
+	movsbl	17(%rax), %edi
+	movq	8(%rsp), %rax
 	movq	(%rax), %rsi
 	callq	bit
-	movq	8(%rsp), %rcx
+	movq	16(%rsp), %rcx
 	testq	%rax, %rax
 	je	.LBB2_9
 # %bb.8:
 	movq	32(%rcx), %rdi
-	movq	16(%rsp), %rsi
+	movq	8(%rsp), %rsi
 	movl	4(%rsp), %edx
-	movq	8(%rsp), %rcx
 	callq	insertR
-	movq	8(%rsp), %rcx
+	movq	16(%rsp), %rcx
 	movq	%rax, 32(%rcx)
 	jmp	.LBB2_10
 .LBB2_9:
 	movq	24(%rcx), %rdi
-	movq	16(%rsp), %rsi
+	movq	8(%rsp), %rsi
 	movl	4(%rsp), %edx
-	movq	8(%rsp), %rcx
 	callq	insertR
-	movq	8(%rsp), %rcx
+	movq	16(%rsp), %rcx
 	movq	%rax, 24(%rcx)
 .LBB2_10:
-	movq	8(%rsp), %rax
+	movq	16(%rsp), %rax
 .LBB2_11:
 	movq	%rax, 24(%rsp)
 	movq	24(%rsp), %rax

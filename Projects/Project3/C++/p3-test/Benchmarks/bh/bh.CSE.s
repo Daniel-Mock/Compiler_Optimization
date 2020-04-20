@@ -386,7 +386,7 @@ old_main:                               # @old_main
 	.type	uniform_testdata,@function
 uniform_testdata:                       # @uniform_testdata
 	.cfi_startproc
-# %bb.0:
+# %bb.0:                                # %.split
 	pushq	%r14
 	.cfi_def_cfa_offset 16
 	pushq	%rbx
@@ -398,45 +398,37 @@ uniform_testdata:                       # @uniform_testdata
 	movq	%rdi, %rbx
 	movl	%esi, 52(%rsp)
 	movl	%edx, 48(%rsp)
-	movl	%ecx, 140(%rsp)
 	cvtsi2sd	%ecx, %xmm0
 	mulsd	.LCPI2_0(%rip), %xmm0
+	movl	%ecx, 140(%rsp)
 	movsd	%xmm0, 8(%rsp)
 	movabsq	$4603480897859297746, %rax # imm = 0x3FE2D97C7F3321D2
 	movq	%rax, 176(%rsp)
 	movsd	.LCPI2_1(%rip), %xmm0   # xmm0 = mem[0],zero
-	movb	$1, %al
-	testb	%al, %al
-	je	.LBB2_2
-# %bb.1:
 	sqrtsd	%xmm0, %xmm0
-	jmp	.LBB2_3
-.LBB2_2:                                # %call.sqrt
-	callq	sqrt
-.LBB2_3:                                # %.split
 	movsd	%xmm0, 128(%rsp)
+	movl	$0, 16(%rsp)
+	cmpl	$2, 16(%rsp)
+	jg	.LBB2_3
+	.p2align	4, 0x90
+.LBB2_2:                                # =>This Inner Loop Header: Depth=1
+	movslq	16(%rsp), %rax
+	movq	$0, (%rbx,%rax,8)
+	addl	$1, 16(%rsp)
+	cmpl	$2, 16(%rsp)
+	jle	.LBB2_2
+.LBB2_3:
 	movl	$0, 16(%rsp)
 	cmpl	$2, 16(%rsp)
 	jg	.LBB2_6
 	.p2align	4, 0x90
 .LBB2_5:                                # =>This Inner Loop Header: Depth=1
 	movslq	16(%rsp), %rax
-	movq	$0, (%rbx,%rax,8)
+	movq	$0, 24(%rbx,%rax,8)
 	addl	$1, 16(%rsp)
 	cmpl	$2, 16(%rsp)
 	jle	.LBB2_5
 .LBB2_6:
-	movl	$0, 16(%rsp)
-	cmpl	$2, 16(%rsp)
-	jg	.LBB2_9
-	.p2align	4, 0x90
-.LBB2_8:                                # =>This Inner Loop Header: Depth=1
-	movslq	16(%rsp), %rax
-	movq	$0, 24(%rbx,%rax,8)
-	addl	$1, 16(%rsp)
-	cmpl	$2, 16(%rsp)
-	jle	.LBB2_8
-.LBB2_9:
 	movl	52(%rsp), %edi
 	callq	ubody_alloc
 	movq	%rax, 120(%rsp)
@@ -446,32 +438,32 @@ uniform_testdata:                       # @uniform_testdata
 	movsd	.LCPI2_7(%rip), %xmm0   # xmm0 = mem[0],zero
 	sqrtsd	%xmm0, %xmm0
 	movsd	%xmm0, 80(%rsp)         # 8-byte Spill
-	jmp	.LBB2_10
+	jmp	.LBB2_7
 	.p2align	4, 0x90
-.LBB2_40:                               #   in Loop: Header=BB2_10 Depth=1
+.LBB2_37:                               #   in Loop: Header=BB2_7 Depth=1
 	addl	$1, 44(%rsp)
-.LBB2_10:                               # =>This Loop Header: Depth=1
+.LBB2_7:                                # =>This Loop Header: Depth=1
+                                        #     Child Loop BB2_15 Depth 2
                                         #     Child Loop BB2_18 Depth 2
+                                        #     Child Loop BB2_19 Depth 2
                                         #     Child Loop BB2_21 Depth 2
-                                        #     Child Loop BB2_22 Depth 2
-                                        #     Child Loop BB2_24 Depth 2
+                                        #       Child Loop BB2_23 Depth 3
                                         #       Child Loop BB2_26 Depth 3
-                                        #       Child Loop BB2_29 Depth 3
+                                        #     Child Loop BB2_33 Depth 2
                                         #     Child Loop BB2_36 Depth 2
-                                        #     Child Loop BB2_39 Depth 2
 	movl	44(%rsp), %eax
 	cmpl	48(%rsp), %eax
-	jge	.LBB2_41
-# %bb.11:                               #   in Loop: Header=BB2_10 Depth=1
+	jge	.LBB2_38
+# %bb.8:                                #   in Loop: Header=BB2_7 Depth=1
 	movl	52(%rsp), %edi
 	callq	ubody_alloc
 	movq	%rax, 24(%rsp)
 	testq	%rax, %rax
-	jne	.LBB2_13
-# %bb.12:                               #   in Loop: Header=BB2_10 Depth=1
+	jne	.LBB2_10
+# %bb.9:                                #   in Loop: Header=BB2_7 Depth=1
 	movl	$.L.str.3, %edi
 	callq	error
-.LBB2_13:                               #   in Loop: Header=BB2_10 Depth=1
+.LBB2_10:                               #   in Loop: Header=BB2_7 Depth=1
 	movq	24(%rsp), %rax
 	movq	64(%rsp), %rcx
 	movq	%rax, 128(%rcx)
@@ -500,25 +492,25 @@ uniform_testdata:                       # @uniform_testdata
 	subsd	%xmm1, %xmm0
 	movsd	%xmm0, 152(%rsp)
 	ucomisd	.LCPI2_10, %xmm0
-	jb	.LBB2_15
-# %bb.14:                               #   in Loop: Header=BB2_10 Depth=1
+	jb	.LBB2_12
+# %bb.11:                               #   in Loop: Header=BB2_7 Depth=1
 	sqrtsd	%xmm0, %xmm0
-	jmp	.LBB2_16
+	jmp	.LBB2_13
 	.p2align	4, 0x90
-.LBB2_15:                               # %call.sqrt2
-                                        #   in Loop: Header=BB2_10 Depth=1
+.LBB2_12:                               # %call.sqrt2
+                                        #   in Loop: Header=BB2_7 Depth=1
 	callq	sqrt
 	movsd	.LCPI2_2(%rip), %xmm1   # xmm1 = mem[0],zero
-.LBB2_16:                               # %.split1
-                                        #   in Loop: Header=BB2_10 Depth=1
+.LBB2_13:                               # %.split1
+                                        #   in Loop: Header=BB2_7 Depth=1
 	divsd	%xmm0, %xmm1
 	movsd	%xmm1, 16(%rsp)
 	movq	%r14, 96(%rsp)
 	movl	$0, 4(%rsp)
 	cmpl	$2, 4(%rsp)
-	jg	.LBB2_19
+	jg	.LBB2_16
 	.p2align	4, 0x90
-.LBB2_18:                               #   Parent Loop BB2_10 Depth=1
+.LBB2_15:                               #   Parent Loop BB2_7 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
 	movsd	8(%rsp), %xmm0          # xmm0 = mem[0],zero
 	movb	$1, %al
@@ -536,13 +528,13 @@ uniform_testdata:                       # @uniform_testdata
 	movsd	%xmm0, 16(%rax,%rcx,8)
 	addl	$1, 4(%rsp)
 	cmpl	$2, 4(%rsp)
-	jle	.LBB2_18
-.LBB2_19:                               #   in Loop: Header=BB2_10 Depth=1
+	jle	.LBB2_15
+.LBB2_16:                               #   in Loop: Header=BB2_7 Depth=1
 	movl	$0, (%rsp)
 	cmpl	$2, (%rsp)
-	jg	.LBB2_22
+	jg	.LBB2_19
 	.p2align	4, 0x90
-.LBB2_21:                               #   Parent Loop BB2_10 Depth=1
+.LBB2_18:                               #   Parent Loop BB2_7 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
 	movslq	(%rsp), %rax
 	movsd	(%rbx,%rax,8), %xmm0    # xmm0 = mem[0],zero
@@ -551,9 +543,9 @@ uniform_testdata:                       # @uniform_testdata
 	movsd	%xmm0, (%rbx,%rax,8)
 	addl	$1, (%rsp)
 	cmpl	$2, (%rsp)
-	jle	.LBB2_21
+	jle	.LBB2_18
 	.p2align	4, 0x90
-.LBB2_22:                               #   Parent Loop BB2_10 Depth=1
+.LBB2_19:                               #   Parent Loop BB2_7 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
 	movsd	8(%rsp), %xmm0          # xmm0 = mem[0],zero
 	movb	$1, %al
@@ -587,9 +579,9 @@ uniform_testdata:                       # @uniform_testdata
 	movsd	32(%rsp), %xmm1         # 8-byte Reload
                                         # xmm1 = mem[0],zero
 	ucomisd	%xmm0, %xmm1
-	ja	.LBB2_22
-# %bb.23:                               # %.split3
-                                        #   in Loop: Header=BB2_10 Depth=1
+	ja	.LBB2_19
+# %bb.20:                               # %.split3
+                                        #   in Loop: Header=BB2_7 Depth=1
 	movsd	72(%rsp), %xmm0         # xmm0 = mem[0],zero
 	mulsd	80(%rsp), %xmm0         # 8-byte Folded Reload
 	movsd	%xmm0, 32(%rsp)         # 8-byte Spill
@@ -604,22 +596,22 @@ uniform_testdata:                       # @uniform_testdata
 	movsd	%xmm1, 168(%rsp)
 	mulsd	128(%rsp), %xmm1
 	movsd	%xmm1, 104(%rsp)
-	jmp	.LBB2_24
+	jmp	.LBB2_21
 	.p2align	4, 0x90
-.LBB2_30:                               #   in Loop: Header=BB2_24 Depth=2
+.LBB2_27:                               #   in Loop: Header=BB2_21 Depth=2
 	movsd	56(%rsp), %xmm0         # xmm0 = mem[0],zero
 	ucomisd	%xmm1, %xmm0
-	jbe	.LBB2_31
-.LBB2_24:                               #   Parent Loop BB2_10 Depth=1
+	jbe	.LBB2_28
+.LBB2_21:                               #   Parent Loop BB2_7 Depth=1
                                         # =>  This Loop Header: Depth=2
+                                        #       Child Loop BB2_23 Depth 3
                                         #       Child Loop BB2_26 Depth 3
-                                        #       Child Loop BB2_29 Depth 3
 	movl	$0, 4(%rsp)
 	cmpl	$2, 4(%rsp)
-	jg	.LBB2_27
+	jg	.LBB2_24
 	.p2align	4, 0x90
-.LBB2_26:                               #   Parent Loop BB2_10 Depth=1
-                                        #     Parent Loop BB2_24 Depth=2
+.LBB2_23:                               #   Parent Loop BB2_7 Depth=1
+                                        #     Parent Loop BB2_21 Depth=2
                                         # =>    This Inner Loop Header: Depth=3
 	movsd	8(%rsp), %xmm0          # xmm0 = mem[0],zero
 	movb	$1, %al
@@ -635,16 +627,16 @@ uniform_testdata:                       # @uniform_testdata
 	movsd	%xmm0, 48(%rax,%rcx,8)
 	addl	$1, 4(%rsp)
 	cmpl	$2, 4(%rsp)
-	jle	.LBB2_26
-.LBB2_27:                               #   in Loop: Header=BB2_24 Depth=2
+	jle	.LBB2_23
+.LBB2_24:                               #   in Loop: Header=BB2_21 Depth=2
 	movq	$0, 56(%rsp)
 	movl	$0, (%rsp)
 	movsd	.LCPI2_2(%rip), %xmm1   # xmm1 = mem[0],zero
 	cmpl	$2, (%rsp)
-	jg	.LBB2_30
+	jg	.LBB2_27
 	.p2align	4, 0x90
-.LBB2_29:                               #   Parent Loop BB2_10 Depth=1
-                                        #     Parent Loop BB2_24 Depth=2
+.LBB2_26:                               #   Parent Loop BB2_7 Depth=1
+                                        #     Parent Loop BB2_21 Depth=2
                                         # =>    This Inner Loop Header: Depth=3
 	movq	24(%rsp), %rax
 	movslq	(%rsp), %rcx
@@ -655,33 +647,33 @@ uniform_testdata:                       # @uniform_testdata
 	leal	1(%rcx), %eax
 	movl	%eax, (%rsp)
 	cmpl	$2, (%rsp)
-	jle	.LBB2_29
-	jmp	.LBB2_30
+	jle	.LBB2_26
+	jmp	.LBB2_27
 	.p2align	4, 0x90
-.LBB2_31:                               #   in Loop: Header=BB2_10 Depth=1
+.LBB2_28:                               #   in Loop: Header=BB2_7 Depth=1
 	movsd	104(%rsp), %xmm1        # xmm1 = mem[0],zero
 	movsd	56(%rsp), %xmm0         # xmm0 = mem[0],zero
 	ucomisd	.LCPI2_10, %xmm0
-	jb	.LBB2_33
-# %bb.32:                               #   in Loop: Header=BB2_10 Depth=1
+	jb	.LBB2_30
+# %bb.29:                               #   in Loop: Header=BB2_7 Depth=1
 	sqrtsd	%xmm0, %xmm0
-	jmp	.LBB2_34
+	jmp	.LBB2_31
 	.p2align	4, 0x90
-.LBB2_33:                               # %call.sqrt6
-                                        #   in Loop: Header=BB2_10 Depth=1
+.LBB2_30:                               # %call.sqrt6
+                                        #   in Loop: Header=BB2_7 Depth=1
 	movsd	%xmm1, 32(%rsp)         # 8-byte Spill
 	callq	sqrt
 	movsd	32(%rsp), %xmm1         # 8-byte Reload
                                         # xmm1 = mem[0],zero
-.LBB2_34:                               # %.split5
-                                        #   in Loop: Header=BB2_10 Depth=1
+.LBB2_31:                               # %.split5
+                                        #   in Loop: Header=BB2_7 Depth=1
 	divsd	%xmm0, %xmm1
 	movsd	%xmm1, 112(%rsp)
 	movl	$0, (%rsp)
 	cmpl	$2, (%rsp)
-	jg	.LBB2_37
+	jg	.LBB2_34
 	.p2align	4, 0x90
-.LBB2_36:                               #   Parent Loop BB2_10 Depth=1
+.LBB2_33:                               #   Parent Loop BB2_7 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
 	movq	24(%rsp), %rax
 	movslq	(%rsp), %rcx
@@ -690,13 +682,13 @@ uniform_testdata:                       # @uniform_testdata
 	movsd	%xmm0, 48(%rax,%rcx,8)
 	addl	$1, (%rsp)
 	cmpl	$2, (%rsp)
-	jle	.LBB2_36
-.LBB2_37:                               #   in Loop: Header=BB2_10 Depth=1
+	jle	.LBB2_33
+.LBB2_34:                               #   in Loop: Header=BB2_7 Depth=1
 	movl	$0, (%rsp)
 	cmpl	$2, (%rsp)
-	jg	.LBB2_40
+	jg	.LBB2_37
 	.p2align	4, 0x90
-.LBB2_39:                               #   Parent Loop BB2_10 Depth=1
+.LBB2_36:                               #   Parent Loop BB2_7 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
 	movslq	(%rsp), %rax
 	movsd	24(%rbx,%rax,8), %xmm0  # xmm0 = mem[0],zero
@@ -705,9 +697,9 @@ uniform_testdata:                       # @uniform_testdata
 	movsd	%xmm0, 24(%rbx,%rax,8)
 	addl	$1, (%rsp)
 	cmpl	$2, (%rsp)
-	jle	.LBB2_39
-	jmp	.LBB2_40
-.LBB2_41:
+	jle	.LBB2_36
+	jmp	.LBB2_37
+.LBB2_38:
 	movq	64(%rsp), %rax
 	movq	$0, 128(%rax)
 	movq	120(%rsp), %rax
