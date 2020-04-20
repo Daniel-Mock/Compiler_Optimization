@@ -420,7 +420,9 @@ sha_final:                              # @sha_final
 	movl	%ecx, 12(%rsp)
 	shrl	$3, %eax
 	andl	$63, %eax
-	movl	%eax, 20(%rsp)
+	movl	%eax, %ecx
+	addl	$1, %ecx
+	movl	%ecx, 20(%rsp)
 	movb	$-128, 28(%rdi,%rax)
 	movslq	20(%rsp), %rax
 	movq	(%rsp), %rcx

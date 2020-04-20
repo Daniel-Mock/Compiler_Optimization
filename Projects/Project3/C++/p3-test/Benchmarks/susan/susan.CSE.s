@@ -425,6 +425,7 @@ setup_brightness_lut:                   # @setup_brightness_lut
 	xorps	%xmm1, %xmm1
 	cvtsi2ssl	20(%rsp), %xmm1
 	divss	%xmm1, %xmm0
+	mulss	%xmm0, %xmm0
 	movss	%xmm0, (%rsp)
 	cmpl	$6, 16(%rsp)
 	jne	.LBB5_4
@@ -489,276 +490,340 @@ susan_principle:                        # @susan_principle
 	jge	.LBB6_7
 # %bb.4:                                #   in Loop: Header=BB6_3 Depth=2
 	movl	$100, 4(%rsp)
-	movslq	36(%rsp), %rdx
-	leaq	-3(%rdx), %rax
-	movslq	28(%rsp), %r8
-	imulq	%r8, %rax
-	movq	64(%rsp), %r9
-	addq	%r9, %rax
-	movslq	32(%rsp), %rsi
-	leaq	(%rax,%rsi), %r10
-	leaq	(%rsi,%rax), %rdi
+	movslq	36(%rsp), %rsi
+	leaq	-3(%rsi), %rcx
+	movslq	28(%rsp), %r9
+	imulq	%r9, %rcx
+	movq	64(%rsp), %r8
+	addq	%r8, %rcx
+	movslq	32(%rsp), %rdx
+	leaq	(%rcx,%rdx), %r10
+	leaq	(%rdx,%rcx), %rdi
 	addq	$-1, %rdi
 	movq	%rdi, 8(%rsp)
-	imulq	%r8, %rdx
-	addq	%rsi, %rdx
-	movzbl	(%r9,%rdx), %edi
-	addq	48(%rsp), %rdi
-	movq	%rdi, 16(%rsp)
+	imulq	%r9, %rsi
+	addq	%rdx, %rsi
+	movzbl	(%r8,%rsi), %eax
+	addq	48(%rsp), %rax
+	movq	%rax, 16(%rsp)
 	movq	%r10, 8(%rsp)
-	movzbl	-1(%rsi,%rax), %r8d
-	movq	%rdi, %rdx
-	subq	%r8, %rdx
-	movzbl	(%rdx), %r8d
-	leal	100(%r8), %edx
-	movl	%edx, 4(%rsp)
-	leaq	(%rsi,%rax), %rdx
-	addq	$1, %rdx
-	movq	%rdx, 8(%rsp)
-	movzbl	(%rsi,%rax), %eax
-	subq	%rax, %rdi
-	movzbl	(%rdi), %eax
-	leal	(%r8,%rax), %r8d
-	addl	$100, %r8d
-	movl	%r8d, 4(%rsp)
-	movslq	28(%rsp), %rdx
-	leaq	1(%rdx,%r10), %rax
-	leaq	-2(%rdx,%r10), %rdi
-	movq	%rdi, 8(%rsp)
-	movq	16(%rsp), %rdi
-	movzbl	-2(%rdx,%r10), %esi
+	movzbl	-1(%rdx,%rcx), %r8d
+	movq	%rax, %rsi
+	subq	%r8, %rsi
+	movzbl	(%rsi), %r8d
+	leal	100(%r8), %esi
+	movl	%esi, 4(%rsp)
+	leaq	(%rdx,%rcx), %rsi
+	addq	$1, %rsi
+	movq	%rsi, 8(%rsp)
+	movzbl	(%rdx,%rcx), %esi
+	movq	%rax, %rdi
 	subq	%rsi, %rdi
 	movzbl	(%rdi), %esi
-	addl	%r8d, %esi
+	leal	(%r8,%rsi), %esi
+	addl	$100, %esi
 	movl	%esi, 4(%rsp)
-	movq	16(%rsp), %rdi
-	leaq	(%rdx,%r10), %rcx
-	addq	$-1, %rcx
-	movq	%rcx, 8(%rsp)
-	movzbl	-2(%rdx,%r10), %ecx
-	subq	%rcx, %rdi
-	movzbl	(%rdi), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 4(%rsp)
-	movq	16(%rsp), %rsi
-	leaq	-1(%rax), %rdi
-	movq	%rdi, 8(%rsp)
-	movzbl	-1(%rdx,%r10), %edi
-	subq	%rdi, %rsi
-	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 4(%rsp)
-	movq	16(%rsp), %rcx
-	movq	%rax, 8(%rsp)
-	movzbl	(%rdx,%r10), %edx
-	subq	%rdx, %rcx
-	movzbl	(%rcx), %edi
-	addl	%esi, %edi
-	movl	%edi, 4(%rsp)
+	movzbl	1(%rdx,%rcx), %ecx
+	subq	%rcx, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 4(%rsp)
 	movslq	28(%rsp), %rdx
-	leaq	(%rdx,%rax), %r8
-	leaq	(%rdx,%rax), %rsi
-	addq	$-5, %rsi
+	leaq	(%rdx,%r10), %rcx
+	addq	$1, %rcx
+	leaq	-2(%rdx,%r10), %rsi
 	movq	%rsi, 8(%rsp)
 	movq	16(%rsp), %rsi
-	movzbl	-5(%rdx,%rax), %ecx
-	subq	%rcx, %rsi
-	movzbl	(%rsi), %ecx
-	addl	%edi, %ecx
-	movl	%ecx, 4(%rsp)
-	movq	16(%rsp), %rsi
-	leaq	(%rdx,%rax), %rdi
-	addq	$-4, %rdi
-	movq	%rdi, 8(%rsp)
-	movzbl	-5(%rdx,%rax), %edi
-	subq	%rdi, %rsi
-	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 4(%rsp)
-	movq	16(%rsp), %rcx
-	leaq	(%rdx,%rax), %rdi
-	addq	$-3, %rdi
-	movq	%rdi, 8(%rsp)
-	movzbl	-4(%rdx,%rax), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 4(%rsp)
-	movq	16(%rsp), %rsi
-	leaq	(%rdx,%rax), %rdi
-	addq	$-2, %rdi
-	movq	%rdi, 8(%rsp)
-	movzbl	-3(%rdx,%rax), %edi
-	subq	%rdi, %rsi
-	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 4(%rsp)
-	movq	16(%rsp), %rcx
-	leaq	(%rdx,%rax), %rdi
+	leaq	(%rdx,%r10), %rdi
 	addq	$-1, %rdi
 	movq	%rdi, 8(%rsp)
-	movzbl	-2(%rdx,%rax), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 4(%rsp)
-	movq	16(%rsp), %rsi
-	movq	%r8, 8(%rsp)
-	movzbl	-1(%rdx,%rax), %eax
-	subq	%rax, %rsi
-	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 4(%rsp)
-	movslq	28(%rsp), %rdx
-	leaq	(%rdx,%r8), %rax
-	leaq	(%rdx,%r8), %rcx
-	addq	$-6, %rcx
-	movq	%rcx, 8(%rsp)
-	movq	16(%rsp), %rcx
-	movzbl	-6(%rdx,%r8), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 4(%rsp)
-	movq	16(%rsp), %rsi
-	leaq	(%rdx,%r8), %rdi
-	addq	$-5, %rdi
-	movq	%rdi, 8(%rsp)
-	movzbl	-6(%rdx,%r8), %edi
+	movzbl	-2(%rdx,%r10), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
+	addl	%eax, %esi
 	movl	%esi, 4(%rsp)
-	leaq	(%rdx,%r8), %rcx
-	addq	$-3, %rcx
-	movq	%rcx, 8(%rsp)
-	movq	16(%rsp), %rcx
-	movzbl	-3(%rdx,%r8), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 4(%rsp)
-	movq	16(%rsp), %rsi
-	leaq	(%rdx,%r8), %rdi
-	addq	$-2, %rdi
+	movq	16(%rsp), %rax
+	leaq	-1(%rcx), %rdi
 	movq	%rdi, 8(%rsp)
-	movzbl	-3(%rdx,%r8), %edx
+	movzbl	-1(%rdx,%r10), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 4(%rsp)
+	movq	16(%rsp), %rsi
+	movq	%rcx, 8(%rsp)
+	movzbl	(%rdx,%r10), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 4(%rsp)
+	movq	16(%rsp), %rax
+	leaq	(%rdx,%r10), %rdi
+	addq	$2, %rdi
+	movq	%rdi, 8(%rsp)
+	movzbl	1(%rdx,%r10), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 4(%rsp)
+	movq	16(%rsp), %rsi
+	movzbl	2(%rdx,%r10), %edx
 	subq	%rdx, %rsi
 	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
+	addl	%eax, %esi
 	movl	%esi, 4(%rsp)
 	movslq	28(%rsp), %rdx
-	leaq	(%rdx,%rax), %r8
-	addq	$-2, %r8
-	leaq	-8(%rdx,%rax), %rdi
+	leaq	(%rdx,%rcx), %r8
+	addq	$1, %r8
+	leaq	-4(%rdx,%rcx), %rdi
 	movq	%rdi, 8(%rsp)
 	movq	16(%rsp), %rdi
-	movzbl	-8(%rdx,%rax), %ecx
-	subq	%rcx, %rdi
-	movzbl	(%rdi), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 4(%rsp)
+	leaq	(%rdx,%rcx), %rax
+	addq	$-3, %rax
+	movq	%rax, 8(%rsp)
+	movzbl	-4(%rdx,%rcx), %eax
+	subq	%rax, %rdi
+	movzbl	(%rdi), %eax
+	addl	%esi, %eax
+	movl	%eax, 4(%rsp)
 	movq	16(%rsp), %rsi
-	leaq	(%rdx,%rax), %rdi
-	addq	$-7, %rdi
+	leaq	(%rdx,%rcx), %rdi
+	addq	$-2, %rdi
 	movq	%rdi, 8(%rsp)
-	movzbl	-8(%rdx,%rax), %edi
+	movzbl	-3(%rdx,%rcx), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
+	addl	%eax, %esi
 	movl	%esi, 4(%rsp)
-	movq	16(%rsp), %rcx
-	leaq	(%rdx,%rax), %rdi
-	addq	$-6, %rdi
+	movq	16(%rsp), %rax
+	leaq	(%rdx,%rcx), %rdi
+	addq	$-1, %rdi
 	movq	%rdi, 8(%rsp)
-	movzbl	-7(%rdx,%rax), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 4(%rsp)
+	movzbl	-2(%rdx,%rcx), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 4(%rsp)
 	movq	16(%rsp), %rsi
-	leaq	(%rdx,%rax), %rdi
-	addq	$-5, %rdi
+	leaq	-1(%r8), %rdi
 	movq	%rdi, 8(%rsp)
-	movzbl	-6(%rdx,%rax), %edi
+	movzbl	-1(%rdx,%rcx), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
+	addl	%eax, %esi
 	movl	%esi, 4(%rsp)
-	movq	16(%rsp), %rcx
-	leaq	(%rdx,%rax), %rdi
-	addq	$-4, %rdi
-	movq	%rdi, 8(%rsp)
-	movzbl	-5(%rdx,%rax), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 4(%rsp)
+	movq	16(%rsp), %rax
+	movq	%r8, 8(%rsp)
+	movzbl	(%rdx,%rcx), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 4(%rsp)
 	movq	16(%rsp), %rsi
-	leaq	(%rdx,%rax), %rdi
-	addq	$-3, %rdi
+	leaq	(%rdx,%rcx), %rdi
+	addq	$2, %rdi
 	movq	%rdi, 8(%rsp)
-	movzbl	-4(%rdx,%rax), %eax
-	subq	%rax, %rsi
+	movzbl	1(%rdx,%rcx), %edi
+	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
+	addl	%eax, %esi
 	movl	%esi, 4(%rsp)
+	movq	16(%rsp), %rax
+	movzbl	2(%rdx,%rcx), %ecx
+	subq	%rcx, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 4(%rsp)
 	movslq	28(%rsp), %rdx
-	leaq	(%rdx,%r8), %rax
-	addq	$-1, %rax
-	leaq	-6(%rdx,%r8), %rcx
-	movq	%rcx, 8(%rsp)
-	movq	16(%rsp), %rcx
-	movzbl	-6(%rdx,%r8), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 4(%rsp)
+	leaq	(%rdx,%r8), %rcx
+	addq	$1, %rcx
+	leaq	-5(%rdx,%r8), %rsi
+	movq	%rsi, 8(%rsp)
 	movq	16(%rsp), %rsi
-	leaq	(%rdx,%r8), %rdi
-	addq	$-5, %rdi
-	movq	%rdi, 8(%rsp)
-	movzbl	-6(%rdx,%r8), %edi
-	subq	%rdi, %rsi
-	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 4(%rsp)
-	movq	16(%rsp), %rcx
 	leaq	(%rdx,%r8), %rdi
 	addq	$-4, %rdi
 	movq	%rdi, 8(%rsp)
 	movzbl	-5(%rdx,%r8), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 4(%rsp)
-	movq	16(%rsp), %rsi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 4(%rsp)
+	movq	16(%rsp), %rax
 	leaq	(%rdx,%r8), %rdi
 	addq	$-3, %rdi
 	movq	%rdi, 8(%rsp)
-	movzbl	-4(%rdx,%r8), %edx
-	subq	%rdx, %rsi
-	movzbl	(%rsi), %edx
-	addl	%ecx, %edx
-	movl	%edx, 4(%rsp)
-	movslq	28(%rsp), %rcx
-	leaq	(%rcx,%rax), %rsi
+	movzbl	-4(%rdx,%r8), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 4(%rsp)
+	movq	16(%rsp), %rsi
+	movzbl	-3(%rdx,%r8), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 4(%rsp)
+	leaq	(%rdx,%r8), %rax
+	addq	$-1, %rax
+	movq	%rax, 8(%rsp)
+	movq	16(%rsp), %rax
+	leaq	-1(%rcx), %rdi
+	movq	%rdi, 8(%rsp)
+	movzbl	-1(%rdx,%r8), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 4(%rsp)
+	movq	16(%rsp), %rsi
+	movq	%rcx, 8(%rsp)
+	movzbl	(%rdx,%r8), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 4(%rsp)
+	movq	16(%rsp), %rax
+	movzbl	1(%rdx,%r8), %edx
+	subq	%rdx, %rax
+	movzbl	(%rax), %edi
+	addl	%esi, %edi
+	movl	%edi, 4(%rsp)
+	movslq	28(%rsp), %rdx
+	leaq	(%rdx,%rcx), %r8
+	leaq	(%rdx,%rcx), %rsi
+	addq	$-6, %rsi
+	movq	%rsi, 8(%rsp)
+	movq	16(%rsp), %rsi
+	leaq	(%rdx,%rcx), %rax
+	addq	$-5, %rax
+	movq	%rax, 8(%rsp)
+	movzbl	-6(%rdx,%rcx), %eax
+	subq	%rax, %rsi
+	movzbl	(%rsi), %eax
+	addl	%edi, %eax
+	movl	%eax, 4(%rsp)
+	movq	16(%rsp), %rsi
+	leaq	(%rdx,%rcx), %rdi
+	addq	$-4, %rdi
+	movq	%rdi, 8(%rsp)
+	movzbl	-5(%rdx,%rcx), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 4(%rsp)
+	movq	16(%rsp), %rax
+	leaq	(%rdx,%rcx), %rdi
+	addq	$-3, %rdi
+	movq	%rdi, 8(%rsp)
+	movzbl	-4(%rdx,%rcx), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 4(%rsp)
+	movq	16(%rsp), %rsi
+	leaq	(%rdx,%rcx), %rdi
+	addq	$-2, %rdi
+	movq	%rdi, 8(%rsp)
+	movzbl	-3(%rdx,%rcx), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 4(%rsp)
+	movq	16(%rsp), %rax
+	leaq	(%rdx,%rcx), %rdi
+	addq	$-1, %rdi
+	movq	%rdi, 8(%rsp)
+	movzbl	-2(%rdx,%rcx), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 4(%rsp)
+	movq	16(%rsp), %rsi
+	movq	%r8, 8(%rsp)
+	movzbl	-1(%rdx,%rcx), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 4(%rsp)
+	movq	16(%rsp), %rax
+	movzbl	(%rdx,%rcx), %ecx
+	subq	%rcx, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 4(%rsp)
+	movslq	28(%rsp), %rdx
+	leaq	(%rdx,%r8), %rcx
+	leaq	(%rdx,%r8), %rsi
 	addq	$-5, %rsi
 	movq	%rsi, 8(%rsp)
 	movq	16(%rsp), %rsi
-	movzbl	-5(%rcx,%rax), %edi
+	leaq	(%rdx,%r8), %rdi
+	addq	$-4, %rdi
+	movq	%rdi, 8(%rsp)
+	movzbl	-5(%rdx,%r8), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 4(%rsp)
+	movq	16(%rsp), %rax
+	leaq	(%rdx,%r8), %rdi
+	addq	$-3, %rdi
+	movq	%rdi, 8(%rsp)
+	movzbl	-4(%rdx,%r8), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 4(%rsp)
+	movq	16(%rsp), %rsi
+	leaq	(%rdx,%r8), %rdi
+	addq	$-2, %rdi
+	movq	%rdi, 8(%rsp)
+	movzbl	-3(%rdx,%r8), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 4(%rsp)
+	movq	16(%rsp), %rax
+	leaq	(%rdx,%r8), %rdi
+	addq	$-1, %rdi
+	movq	%rdi, 8(%rsp)
+	movzbl	-2(%rdx,%r8), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 4(%rsp)
+	movq	16(%rsp), %rsi
+	movzbl	-1(%rdx,%r8), %edx
+	subq	%rdx, %rsi
+	movzbl	(%rsi), %edx
+	addl	%eax, %edx
+	movl	%edx, 4(%rsp)
+	movslq	28(%rsp), %rax
+	leaq	(%rax,%rcx), %rsi
+	addq	$-4, %rsi
+	movq	%rsi, 8(%rsp)
+	movq	16(%rsp), %rsi
+	leaq	(%rax,%rcx), %rdi
+	addq	$-3, %rdi
+	movq	%rdi, 8(%rsp)
+	movzbl	-4(%rax,%rcx), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
 	addl	%edx, %esi
 	movl	%esi, 4(%rsp)
 	movq	16(%rsp), %rdx
-	leaq	(%rcx,%rax), %rdi
-	addq	$-4, %rdi
+	leaq	(%rax,%rcx), %rdi
+	addq	$-2, %rdi
 	movq	%rdi, 8(%rsp)
-	movzbl	-5(%rcx,%rax), %eax
-	subq	%rax, %rdx
-	movzbl	(%rdx), %eax
-	addl	%esi, %eax
+	movzbl	-3(%rax,%rcx), %edi
+	subq	%rdi, %rdx
+	movzbl	(%rdx), %edx
+	addl	%esi, %edx
+	movl	%edx, 4(%rsp)
+	movq	16(%rsp), %rsi
+	movzbl	-2(%rax,%rcx), %eax
+	subq	%rax, %rsi
+	movzbl	(%rsi), %eax
+	addl	%edx, %eax
 	movl	%eax, 4(%rsp)
 	cmpl	40(%rsp), %eax
 	jg	.LBB6_6
@@ -792,8 +857,8 @@ susan_principle_small:                  # @susan_principle_small
 	movq	%rdi, 64(%rsp)
 	movq	%rsi, 56(%rsp)
 	movq	%rdx, 48(%rsp)
-	movl	%ecx, 20(%rsp)
-	movl	%r8d, 8(%rsp)
+	movl	%ecx, 28(%rsp)
+	movl	%r8d, 4(%rsp)
 	movl	%r9d, 44(%rsp)
 	movslq	%r8d, %rax
 	movslq	%r9d, %rdx
@@ -802,110 +867,125 @@ susan_principle_small:                  # @susan_principle_small
 	movq	%rsi, %rdi
 	xorl	%esi, %esi
 	callq	memset
-	movl	$730, 20(%rsp)          # imm = 0x2DA
-	movl	$1, 16(%rsp)
+	movl	$730, 28(%rsp)          # imm = 0x2DA
+	movl	$1, 12(%rsp)
 	jmp	.LBB7_1
 	.p2align	4, 0x90
 .LBB7_7:                                #   in Loop: Header=BB7_1 Depth=1
-	addl	$1, 16(%rsp)
+	addl	$1, 12(%rsp)
 .LBB7_1:                                # =>This Loop Header: Depth=1
                                         #     Child Loop BB7_3 Depth 2
 	movl	44(%rsp), %eax
 	addl	$-1, %eax
-	cmpl	%eax, 16(%rsp)
+	cmpl	%eax, 12(%rsp)
 	jge	.LBB7_8
 # %bb.2:                                #   in Loop: Header=BB7_1 Depth=1
-	movl	$1, 12(%rsp)
+	movl	$1, 8(%rsp)
 	jmp	.LBB7_3
 	.p2align	4, 0x90
 .LBB7_6:                                #   in Loop: Header=BB7_3 Depth=2
-	addl	$1, 12(%rsp)
+	addl	$1, 8(%rsp)
 .LBB7_3:                                #   Parent Loop BB7_1 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	movl	8(%rsp), %eax
+	movl	4(%rsp), %eax
 	addl	$-1, %eax
-	cmpl	%eax, 12(%rsp)
+	cmpl	%eax, 8(%rsp)
 	jge	.LBB7_7
 # %bb.4:                                #   in Loop: Header=BB7_3 Depth=2
-	movl	$100, 4(%rsp)
-	movslq	16(%rsp), %rdx
-	leaq	-1(%rdx), %rcx
-	movslq	8(%rsp), %r9
-	imulq	%r9, %rcx
+	movl	$100, (%rsp)
+	movslq	12(%rsp), %rcx
+	leaq	-1(%rcx), %rax
+	movslq	4(%rsp), %r8
+	imulq	%r8, %rax
 	movq	64(%rsp), %rdi
-	addq	%rdi, %rcx
-	movslq	12(%rsp), %rax
-	leaq	(%rcx,%rax), %r8
-	leaq	(%rax,%rcx), %rsi
+	addq	%rdi, %rax
+	movslq	8(%rsp), %rdx
+	leaq	(%rdx,%rax), %rsi
 	addq	$-1, %rsi
-	movq	%rsi, 24(%rsp)
-	imulq	%r9, %rdx
-	addq	%rax, %rdx
-	movzbl	(%rdi,%rdx), %edx
-	addq	48(%rsp), %rdx
-	movq	%rdx, 32(%rsp)
-	movq	%r8, 24(%rsp)
-	movzbl	-1(%rax,%rcx), %esi
-	movq	%rdx, %rdi
+	movq	%rsi, 16(%rsp)
+	imulq	%r8, %rcx
+	addq	%rdx, %rcx
+	movzbl	(%rdi,%rcx), %ecx
+	addq	48(%rsp), %rcx
+	leaq	(%rax,%rdx), %r9
+	movq	%rcx, 32(%rsp)
+	movq	%r9, 16(%rsp)
+	movzbl	-1(%rdx,%rax), %r8d
+	movq	%rcx, %rsi
+	subq	%r8, %rsi
+	movzbl	(%rsi), %r8d
+	leal	100(%r8), %esi
+	movl	%esi, (%rsp)
+	leaq	(%rdx,%rax), %rsi
+	addq	$1, %rsi
+	movq	%rsi, 16(%rsp)
+	movzbl	(%rdx,%rax), %esi
+	movq	%rcx, %rdi
 	subq	%rsi, %rdi
 	movzbl	(%rdi), %esi
-	leal	100(%rsi), %edi
-	movl	%edi, 4(%rsp)
-	leaq	(%rax,%rcx), %rdi
-	addq	$1, %rdi
-	movq	%rdi, 24(%rsp)
-	movzbl	(%rax,%rcx), %eax
-	subq	%rax, %rdx
-	movzbl	(%rdx), %eax
-	leal	(%rsi,%rax), %eax
-	addl	$100, %eax
-	movl	%eax, 4(%rsp)
-	movslq	8(%rsp), %rdx
-	leaq	1(%rdx,%r8), %rcx
-	leaq	-1(%rdx,%r8), %rsi
-	movq	%rsi, 24(%rsp)
+	leal	(%r8,%rsi), %esi
+	addl	$100, %esi
+	movl	%esi, (%rsp)
+	movzbl	1(%rdx,%rax), %eax
+	subq	%rax, %rcx
+	movzbl	(%rcx), %ecx
+	addl	%esi, %ecx
+	movl	%ecx, (%rsp)
+	movslq	4(%rsp), %rdx
+	leaq	(%rdx,%r9), %rax
+	addq	$1, %rax
+	leaq	-1(%rdx,%r9), %rsi
+	movq	%rsi, 16(%rsp)
 	movq	32(%rsp), %rsi
-	movzbl	-1(%rdx,%r8), %edi
+	movzbl	-1(%rdx,%r9), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	addl	%eax, %esi
-	movl	%esi, 4(%rsp)
-	movq	%rcx, 24(%rsp)
-	movq	32(%rsp), %rax
-	movzbl	1(%rdx,%r8), %edx
-	subq	%rdx, %rax
-	movzbl	(%rax), %eax
-	addl	%esi, %eax
-	movl	%eax, 4(%rsp)
-	movslq	8(%rsp), %rdx
-	leaq	(%rdx,%rcx), %rsi
-	addq	$-2, %rsi
-	movq	%rsi, 24(%rsp)
+	addl	%ecx, %esi
+	movl	%esi, (%rsp)
+	movq	%rax, 16(%rsp)
+	movq	32(%rsp), %rcx
+	movzbl	1(%rdx,%r9), %edx
+	subq	%rdx, %rcx
+	movzbl	(%rcx), %ecx
+	addl	%esi, %ecx
+	movl	%ecx, (%rsp)
+	movslq	4(%rsp), %rdx
+	leaq	(%rdx,%rax), %r8
+	leaq	(%rdx,%rax), %rdi
+	addq	$-2, %rdi
+	movq	%rdi, 16(%rsp)
+	movq	32(%rsp), %rdi
+	leaq	(%rdx,%rax), %rsi
+	addq	$-1, %rsi
+	movq	%rsi, 16(%rsp)
+	movzbl	-2(%rdx,%rax), %esi
+	subq	%rsi, %rdi
+	movzbl	(%rdi), %esi
+	addl	%ecx, %esi
+	movl	%esi, (%rsp)
+	movq	32(%rsp), %rcx
+	movq	%r8, 16(%rsp)
+	movzbl	-1(%rdx,%rax), %edi
+	subq	%rdi, %rcx
+	movzbl	(%rcx), %ecx
+	addl	%esi, %ecx
+	movl	%ecx, (%rsp)
 	movq	32(%rsp), %rsi
-	movzbl	-2(%rdx,%rcx), %edi
-	subq	%rdi, %rsi
-	movzbl	(%rsi), %esi
-	addl	%eax, %esi
-	movl	%esi, 4(%rsp)
-	movq	32(%rsp), %rax
-	leaq	(%rdx,%rcx), %rdi
-	addq	$-1, %rdi
-	movq	%rdi, 24(%rsp)
-	movzbl	-2(%rdx,%rcx), %ecx
-	subq	%rcx, %rax
-	movzbl	(%rax), %eax
-	addl	%esi, %eax
-	movl	%eax, 4(%rsp)
-	cmpl	20(%rsp), %eax
+	movzbl	(%rdx,%rax), %eax
+	subq	%rax, %rsi
+	movzbl	(%rsi), %eax
+	addl	%ecx, %eax
+	movl	%eax, (%rsp)
+	cmpl	28(%rsp), %eax
 	jg	.LBB7_6
 # %bb.5:                                #   in Loop: Header=BB7_3 Depth=2
-	movl	20(%rsp), %eax
-	subl	4(%rsp), %eax
+	movl	28(%rsp), %eax
+	subl	(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	16(%rsp), %rdx
-	movslq	8(%rsp), %rsi
-	imulq	%rdx, %rsi
 	movslq	12(%rsp), %rdx
+	movslq	4(%rsp), %rsi
+	imulq	%rdx, %rsi
+	movslq	8(%rsp), %rdx
 	addq	%rsi, %rdx
 	movl	%eax, (%rcx,%rdx,4)
 	jmp	.LBB7_6
@@ -1356,23 +1436,21 @@ susan_smoothing:                        # @susan_smoothing
 	movslq	28(%rsp), %rcx
 	movq	48(%rsp), %rdx
 	leaq	(%rcx,%rdx), %rsi
-	addq	$-2, %rsi
-	movq	%rsi, 48(%rsp)
-	movzbl	-2(%rcx,%rdx), %esi
-	movl	%esi, 40(%rsp)
-	movq	56(%rsp), %rbp
-	subq	%rsi, %rbp
-	movzbl	(%rbp), %ebp
-	movl	%ebp, 32(%rsp)
-	addl	%ebp, %eax
+	leaq	-1(%rcx,%rdx), %rbp
+	movq	%rbp, 48(%rsp)
+	movzbl	-2(%rcx,%rdx), %ebp
+	movl	%ebp, 40(%rsp)
+	movq	56(%rsp), %rbx
+	subq	%rbp, %rbx
+	movzbl	(%rbx), %ebx
+	movl	%ebx, 32(%rsp)
+	addl	%ebx, %eax
 	movl	%eax, 36(%rsp)
-	imull	%esi, %ebp
-	addl	%edi, %ebp
-	movl	%ebp, 16(%rsp)
-	leaq	(%rcx,%rdx), %rsi
-	addq	$-1, %rsi
+	imull	%ebp, %ebx
+	addl	%edi, %ebx
+	movl	%ebx, 16(%rsp)
 	movq	%rsi, 48(%rsp)
-	movzbl	-2(%rcx,%rdx), %esi
+	movzbl	-1(%rcx,%rdx), %esi
 	movl	%esi, 40(%rsp)
 	movq	56(%rsp), %rdi
 	subq	%rsi, %rdi
@@ -1381,9 +1459,9 @@ susan_smoothing:                        # @susan_smoothing
 	addl	%edi, %eax
 	movl	%eax, 36(%rsp)
 	imull	%esi, %edi
-	addl	%ebp, %edi
+	addl	%ebx, %edi
 	movl	%edi, 16(%rsp)
-	movzbl	-1(%rcx,%rdx), %ecx
+	movzbl	(%rcx,%rdx), %ecx
 	movl	%ecx, 40(%rsp)
 	movq	56(%rsp), %rdx
 	subq	%rcx, %rdx
@@ -1397,23 +1475,21 @@ susan_smoothing:                        # @susan_smoothing
 	movslq	28(%rsp), %rcx
 	movq	48(%rsp), %rdx
 	leaq	(%rcx,%rdx), %rdi
-	addq	$-2, %rdi
-	movq	%rdi, 48(%rsp)
-	movzbl	-2(%rcx,%rdx), %edi
-	movl	%edi, 40(%rsp)
-	movq	56(%rsp), %rbp
-	subq	%rdi, %rbp
-	movzbl	(%rbp), %ebp
-	movl	%ebp, 32(%rsp)
-	addl	%ebp, %eax
+	leaq	-1(%rcx,%rdx), %rbp
+	movq	%rbp, 48(%rsp)
+	movzbl	-2(%rcx,%rdx), %ebp
+	movl	%ebp, 40(%rsp)
+	movq	56(%rsp), %rbx
+	subq	%rbp, %rbx
+	movzbl	(%rbx), %ebx
+	movl	%ebx, 32(%rsp)
+	addl	%ebx, %eax
 	movl	%eax, 36(%rsp)
-	imull	%edi, %ebp
-	addl	%esi, %ebp
-	movl	%ebp, 16(%rsp)
-	leaq	(%rcx,%rdx), %rsi
-	addq	$-1, %rsi
-	movq	%rsi, 48(%rsp)
-	movzbl	-2(%rcx,%rdx), %esi
+	imull	%ebp, %ebx
+	addl	%esi, %ebx
+	movl	%ebx, 16(%rsp)
+	movq	%rdi, 48(%rsp)
+	movzbl	-1(%rcx,%rdx), %esi
 	movl	%esi, 40(%rsp)
 	movq	56(%rsp), %rdi
 	subq	%rsi, %rdi
@@ -1422,9 +1498,9 @@ susan_smoothing:                        # @susan_smoothing
 	addl	%edi, %eax
 	movl	%eax, 36(%rsp)
 	imull	%esi, %edi
-	addl	%ebp, %edi
+	addl	%ebx, %edi
 	movl	%edi, 16(%rsp)
-	movzbl	-1(%rcx,%rdx), %ecx
+	movzbl	(%rcx,%rdx), %ecx
 	movl	%ecx, 40(%rsp)
 	movq	56(%rsp), %rdx
 	subq	%rcx, %rdx
@@ -1708,10 +1784,9 @@ edge_draw:                              # @edge_draw
 	subq	-24(%rsp), %rax
 	addq	-16(%rsp), %rax
 	movslq	-44(%rsp), %rcx
-	notq	%rcx
-	leaq	(%rcx,%rax), %rdx
-	movq	%rdx, -56(%rsp)
-	movb	$-1, (%rcx,%rax)
+	subq	%rcx, %rax
+	movq	%rax, -56(%rsp)
+	movb	$-1, -1(%rax)
 	movq	-56(%rsp), %rax
 	leaq	1(%rax), %rcx
 	movq	%rcx, -56(%rsp)
@@ -1720,7 +1795,7 @@ edge_draw:                              # @edge_draw
 	movb	$-1, (%rax)
 	movslq	-44(%rsp), %rax
 	movq	-56(%rsp), %rcx
-	leaq	-2(%rax,%rcx), %rdx
+	leaq	-1(%rax,%rcx), %rdx
 	movq	%rdx, -56(%rsp)
 	movb	$-1, -2(%rax,%rcx)
 	movq	-56(%rsp), %rax
@@ -1729,7 +1804,7 @@ edge_draw:                              # @edge_draw
 	movb	$-1, 1(%rax)
 	movslq	-44(%rsp), %rax
 	movq	-56(%rsp), %rcx
-	leaq	-2(%rax,%rcx), %rdx
+	leaq	-1(%rax,%rcx), %rdx
 	movq	%rdx, -56(%rsp)
 	movb	$-1, -2(%rax,%rcx)
 	movq	-56(%rsp), %rax
@@ -2730,14 +2805,17 @@ susan_thin:                             # @susan_thin
 susan_edges:                            # @susan_edges
 	.cfi_startproc
 # %bb.0:
-	subq	$120, %rsp
+	pushq	%rbx
+	.cfi_def_cfa_offset 16
+	subq	$112, %rsp
 	.cfi_def_cfa_offset 128
-	movq	%rdi, 96(%rsp)
-	movq	%rsi, 80(%rsp)
-	movq	%rdx, 112(%rsp)
-	movq	%rcx, 104(%rsp)
-	movl	%r8d, 92(%rsp)
-	movl	%r9d, 44(%rsp)
+	.cfi_offset %rbx, -16
+	movq	%rdi, 88(%rsp)
+	movq	%rsi, 72(%rsp)
+	movq	%rdx, 104(%rsp)
+	movq	%rcx, 96(%rsp)
+	movl	%r8d, 84(%rsp)
+	movl	%r9d, 40(%rsp)
 	movslq	%r9d, %rax
 	movslq	128(%rsp), %rdx
 	imulq	%rax, %rdx
@@ -2745,796 +2823,878 @@ susan_edges:                            # @susan_edges
 	movq	%rsi, %rdi
 	xorl	%esi, %esi
 	callq	memset
-	movl	$3, 60(%rsp)
+	movl	$3, 52(%rsp)
 	jmp	.LBB13_1
 	.p2align	4, 0x90
 .LBB13_7:                               #   in Loop: Header=BB13_1 Depth=1
-	addl	$1, 60(%rsp)
+	addl	$1, 52(%rsp)
 .LBB13_1:                               # =>This Loop Header: Depth=1
                                         #     Child Loop BB13_3 Depth 2
 	movl	128(%rsp), %eax
 	addl	$-3, %eax
-	cmpl	%eax, 60(%rsp)
+	cmpl	%eax, 52(%rsp)
 	jge	.LBB13_8
 # %bb.2:                                #   in Loop: Header=BB13_1 Depth=1
-	movl	$3, 56(%rsp)
+	movl	$3, 48(%rsp)
 	jmp	.LBB13_3
 	.p2align	4, 0x90
 .LBB13_6:                               #   in Loop: Header=BB13_3 Depth=2
-	addl	$1, 56(%rsp)
+	addl	$1, 48(%rsp)
 .LBB13_3:                               #   Parent Loop BB13_1 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	movl	44(%rsp), %eax
+	movl	40(%rsp), %eax
 	addl	$-3, %eax
-	cmpl	%eax, 56(%rsp)
+	cmpl	%eax, 48(%rsp)
 	jge	.LBB13_7
 # %bb.4:                                #   in Loop: Header=BB13_3 Depth=2
-	movl	$100, 52(%rsp)
-	movslq	60(%rsp), %rdx
-	leaq	-3(%rdx), %rax
-	movslq	44(%rsp), %r8
-	imulq	%r8, %rax
-	movq	96(%rsp), %r9
-	addq	%r9, %rax
-	movslq	56(%rsp), %rsi
-	leaq	(%rax,%rsi), %r10
-	leaq	(%rsi,%rax), %rdi
+	movl	$100, 36(%rsp)
+	movslq	52(%rsp), %rsi
+	leaq	-3(%rsi), %rcx
+	movslq	40(%rsp), %r9
+	imulq	%r9, %rcx
+	movq	88(%rsp), %r8
+	addq	%r8, %rcx
+	movslq	48(%rsp), %rdx
+	leaq	(%rcx,%rdx), %r10
+	leaq	(%rdx,%rcx), %rdi
 	addq	$-1, %rdi
-	movq	%rdi, 32(%rsp)
-	imulq	%r8, %rdx
-	addq	%rsi, %rdx
-	movzbl	(%r9,%rdx), %edi
-	addq	104(%rsp), %rdi
-	movq	%rdi, 24(%rsp)
-	movq	%r10, 32(%rsp)
-	movzbl	-1(%rsi,%rax), %r8d
-	movq	%rdi, %rdx
-	subq	%r8, %rdx
-	movzbl	(%rdx), %r8d
-	leal	100(%r8), %edx
-	movl	%edx, 52(%rsp)
-	leaq	(%rsi,%rax), %rdx
-	addq	$1, %rdx
-	movq	%rdx, 32(%rsp)
-	movzbl	(%rsi,%rax), %eax
-	subq	%rax, %rdi
-	movzbl	(%rdi), %eax
-	leal	(%r8,%rax), %r8d
-	addl	$100, %r8d
-	movl	%r8d, 52(%rsp)
-	movslq	44(%rsp), %rdx
-	leaq	1(%rdx,%r10), %rax
-	leaq	-2(%rdx,%r10), %rdi
-	movq	%rdi, 32(%rsp)
-	movq	24(%rsp), %rdi
-	movzbl	-2(%rdx,%r10), %esi
+	movq	%rdi, 16(%rsp)
+	imulq	%r9, %rsi
+	addq	%rdx, %rsi
+	movzbl	(%r8,%rsi), %eax
+	addq	96(%rsp), %rax
+	movq	%rax, 24(%rsp)
+	movq	%r10, 16(%rsp)
+	movzbl	-1(%rdx,%rcx), %r8d
+	movq	%rax, %rsi
+	subq	%r8, %rsi
+	movzbl	(%rsi), %r8d
+	leal	100(%r8), %esi
+	movl	%esi, 36(%rsp)
+	leaq	(%rdx,%rcx), %rsi
+	addq	$1, %rsi
+	movq	%rsi, 16(%rsp)
+	movzbl	(%rdx,%rcx), %esi
+	movq	%rax, %rdi
 	subq	%rsi, %rdi
 	movzbl	(%rdi), %esi
-	addl	%r8d, %esi
-	movl	%esi, 52(%rsp)
-	movq	24(%rsp), %rdi
+	leal	(%r8,%rsi), %esi
+	addl	$100, %esi
+	movl	%esi, 36(%rsp)
+	movzbl	1(%rdx,%rcx), %ecx
+	subq	%rcx, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 36(%rsp)
+	movslq	40(%rsp), %rdx
 	leaq	(%rdx,%r10), %rcx
-	addq	$-1, %rcx
-	movq	%rcx, 32(%rsp)
-	movzbl	-2(%rdx,%r10), %ecx
-	subq	%rcx, %rdi
-	movzbl	(%rdi), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 52(%rsp)
+	addq	$1, %rcx
+	leaq	-2(%rdx,%r10), %rsi
+	movq	%rsi, 16(%rsp)
 	movq	24(%rsp), %rsi
-	leaq	-1(%rax), %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-1(%rdx,%r10), %edi
-	subq	%rdi, %rsi
-	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 52(%rsp)
-	movq	24(%rsp), %rcx
-	movq	%rax, 32(%rsp)
-	movzbl	(%rdx,%r10), %edx
-	subq	%rdx, %rcx
-	movzbl	(%rcx), %edi
-	addl	%esi, %edi
-	movl	%edi, 52(%rsp)
-	movslq	44(%rsp), %rdx
-	leaq	(%rdx,%rax), %r8
-	leaq	(%rdx,%rax), %rsi
-	addq	$-5, %rsi
-	movq	%rsi, 32(%rsp)
-	movq	24(%rsp), %rsi
-	movzbl	-5(%rdx,%rax), %ecx
-	subq	%rcx, %rsi
-	movzbl	(%rsi), %ecx
-	addl	%edi, %ecx
-	movl	%ecx, 52(%rsp)
-	movq	24(%rsp), %rsi
-	leaq	(%rdx,%rax), %rdi
-	addq	$-4, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-5(%rdx,%rax), %edi
-	subq	%rdi, %rsi
-	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 52(%rsp)
-	movq	24(%rsp), %rcx
-	leaq	(%rdx,%rax), %rdi
-	addq	$-3, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-4(%rdx,%rax), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 52(%rsp)
-	movq	24(%rsp), %rsi
-	leaq	(%rdx,%rax), %rdi
-	addq	$-2, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-3(%rdx,%rax), %edi
-	subq	%rdi, %rsi
-	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 52(%rsp)
-	movq	24(%rsp), %rcx
-	leaq	(%rdx,%rax), %rdi
+	leaq	(%rdx,%r10), %rdi
 	addq	$-1, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-2(%rdx,%rax), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 52(%rsp)
-	movq	24(%rsp), %rsi
-	movq	%r8, 32(%rsp)
-	movzbl	-1(%rdx,%rax), %eax
-	subq	%rax, %rsi
-	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 52(%rsp)
-	movslq	44(%rsp), %rdx
-	leaq	(%rdx,%r8), %rax
-	leaq	(%rdx,%r8), %rcx
-	addq	$-6, %rcx
-	movq	%rcx, 32(%rsp)
-	movq	24(%rsp), %rcx
-	movzbl	-6(%rdx,%r8), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 52(%rsp)
-	movq	24(%rsp), %rsi
-	leaq	(%rdx,%r8), %rdi
-	addq	$-5, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-6(%rdx,%r8), %edi
+	movq	%rdi, 16(%rsp)
+	movzbl	-2(%rdx,%r10), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 52(%rsp)
-	leaq	(%rdx,%r8), %rcx
-	addq	$-3, %rcx
-	movq	%rcx, 32(%rsp)
-	movq	24(%rsp), %rcx
-	movzbl	-3(%rdx,%r8), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 52(%rsp)
+	addl	%eax, %esi
+	movl	%esi, 36(%rsp)
+	movq	24(%rsp), %rax
+	leaq	-1(%rcx), %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-1(%rdx,%r10), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 36(%rsp)
 	movq	24(%rsp), %rsi
-	leaq	(%rdx,%r8), %rdi
-	addq	$-2, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-3(%rdx,%r8), %edx
+	movq	%rcx, 16(%rsp)
+	movzbl	(%rdx,%r10), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 36(%rsp)
+	movq	24(%rsp), %rax
+	leaq	(%rdx,%r10), %rdi
+	addq	$2, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	1(%rdx,%r10), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 36(%rsp)
+	movq	24(%rsp), %rsi
+	movzbl	2(%rdx,%r10), %edx
 	subq	%rdx, %rsi
 	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 52(%rsp)
-	movslq	44(%rsp), %rdx
-	leaq	(%rdx,%rax), %r8
-	addq	$-2, %r8
-	leaq	-8(%rdx,%rax), %rdi
-	movq	%rdi, 32(%rsp)
+	addl	%eax, %esi
+	movl	%esi, 36(%rsp)
+	movslq	40(%rsp), %rdx
+	leaq	(%rdx,%rcx), %r8
+	addq	$1, %r8
+	leaq	-4(%rdx,%rcx), %rdi
+	movq	%rdi, 16(%rsp)
 	movq	24(%rsp), %rdi
-	movzbl	-8(%rdx,%rax), %ecx
-	subq	%rcx, %rdi
-	movzbl	(%rdi), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 52(%rsp)
+	leaq	(%rdx,%rcx), %rax
+	addq	$-3, %rax
+	movq	%rax, 16(%rsp)
+	movzbl	-4(%rdx,%rcx), %eax
+	subq	%rax, %rdi
+	movzbl	(%rdi), %eax
+	addl	%esi, %eax
+	movl	%eax, 36(%rsp)
 	movq	24(%rsp), %rsi
-	leaq	(%rdx,%rax), %rdi
-	addq	$-7, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-8(%rdx,%rax), %edi
+	leaq	(%rdx,%rcx), %rdi
+	addq	$-2, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-3(%rdx,%rcx), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 52(%rsp)
-	movq	24(%rsp), %rcx
-	leaq	(%rdx,%rax), %rdi
-	addq	$-6, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-7(%rdx,%rax), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 52(%rsp)
+	addl	%eax, %esi
+	movl	%esi, 36(%rsp)
+	movq	24(%rsp), %rax
+	leaq	(%rdx,%rcx), %rdi
+	addq	$-1, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-2(%rdx,%rcx), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 36(%rsp)
 	movq	24(%rsp), %rsi
-	leaq	(%rdx,%rax), %rdi
-	addq	$-5, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-6(%rdx,%rax), %edi
+	leaq	-1(%r8), %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-1(%rdx,%rcx), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 52(%rsp)
-	movq	24(%rsp), %rcx
-	leaq	(%rdx,%rax), %rdi
+	addl	%eax, %esi
+	movl	%esi, 36(%rsp)
+	movq	24(%rsp), %rax
+	movq	%r8, 16(%rsp)
+	movzbl	(%rdx,%rcx), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 36(%rsp)
+	movq	24(%rsp), %rsi
+	leaq	(%rdx,%rcx), %rdi
+	addq	$2, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	1(%rdx,%rcx), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 36(%rsp)
+	movq	24(%rsp), %rax
+	movzbl	2(%rdx,%rcx), %ecx
+	subq	%rcx, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 36(%rsp)
+	movslq	40(%rsp), %rdx
+	leaq	(%rdx,%r8), %rcx
+	addq	$1, %rcx
+	leaq	-5(%rdx,%r8), %rsi
+	movq	%rsi, 16(%rsp)
+	movq	24(%rsp), %rsi
+	leaq	(%rdx,%r8), %rdi
 	addq	$-4, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-5(%rdx,%rax), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 52(%rsp)
-	movq	24(%rsp), %rsi
-	leaq	(%rdx,%rax), %rdi
-	addq	$-3, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-4(%rdx,%rax), %eax
-	subq	%rax, %rsi
+	movq	%rdi, 16(%rsp)
+	movzbl	-5(%rdx,%r8), %edi
+	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 52(%rsp)
-	movslq	44(%rsp), %rdx
+	addl	%eax, %esi
+	movl	%esi, 36(%rsp)
+	movq	24(%rsp), %rax
+	leaq	(%rdx,%r8), %rdi
+	addq	$-3, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-4(%rdx,%r8), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 36(%rsp)
+	movq	24(%rsp), %rsi
+	movzbl	-3(%rdx,%r8), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 36(%rsp)
 	leaq	(%rdx,%r8), %rax
 	addq	$-1, %rax
-	leaq	-6(%rdx,%r8), %rcx
-	movq	%rcx, 32(%rsp)
-	movq	24(%rsp), %rcx
-	movzbl	-6(%rdx,%r8), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 52(%rsp)
+	movq	%rax, 16(%rsp)
+	movq	24(%rsp), %rax
+	leaq	-1(%rcx), %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-1(%rdx,%r8), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 36(%rsp)
 	movq	24(%rsp), %rsi
-	leaq	(%rdx,%r8), %rdi
-	addq	$-5, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-6(%rdx,%r8), %edi
+	movq	%rcx, 16(%rsp)
+	movzbl	(%rdx,%r8), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 52(%rsp)
-	movq	24(%rsp), %rcx
+	addl	%eax, %esi
+	movl	%esi, 36(%rsp)
+	movq	24(%rsp), %rax
+	movzbl	1(%rdx,%r8), %edx
+	subq	%rdx, %rax
+	movzbl	(%rax), %edi
+	addl	%esi, %edi
+	movl	%edi, 36(%rsp)
+	movslq	40(%rsp), %rdx
+	leaq	(%rdx,%rcx), %r8
+	leaq	(%rdx,%rcx), %rsi
+	addq	$-6, %rsi
+	movq	%rsi, 16(%rsp)
+	movq	24(%rsp), %rsi
+	leaq	(%rdx,%rcx), %rax
+	addq	$-5, %rax
+	movq	%rax, 16(%rsp)
+	movzbl	-6(%rdx,%rcx), %eax
+	subq	%rax, %rsi
+	movzbl	(%rsi), %eax
+	addl	%edi, %eax
+	movl	%eax, 36(%rsp)
+	movq	24(%rsp), %rsi
+	leaq	(%rdx,%rcx), %rdi
+	addq	$-4, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-5(%rdx,%rcx), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 36(%rsp)
+	movq	24(%rsp), %rax
+	leaq	(%rdx,%rcx), %rdi
+	addq	$-3, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-4(%rdx,%rcx), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 36(%rsp)
+	movq	24(%rsp), %rsi
+	leaq	(%rdx,%rcx), %rdi
+	addq	$-2, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-3(%rdx,%rcx), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 36(%rsp)
+	movq	24(%rsp), %rax
+	leaq	(%rdx,%rcx), %rdi
+	addq	$-1, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-2(%rdx,%rcx), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 36(%rsp)
+	movq	24(%rsp), %rsi
+	movq	%r8, 16(%rsp)
+	movzbl	-1(%rdx,%rcx), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 36(%rsp)
+	movq	24(%rsp), %rax
+	movzbl	(%rdx,%rcx), %ecx
+	subq	%rcx, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 36(%rsp)
+	movslq	40(%rsp), %rdx
+	leaq	(%rdx,%r8), %rcx
+	leaq	(%rdx,%r8), %rsi
+	addq	$-5, %rsi
+	movq	%rsi, 16(%rsp)
+	movq	24(%rsp), %rsi
 	leaq	(%rdx,%r8), %rdi
 	addq	$-4, %rdi
-	movq	%rdi, 32(%rsp)
+	movq	%rdi, 16(%rsp)
 	movzbl	-5(%rdx,%r8), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	addl	%esi, %ecx
-	movl	%ecx, 52(%rsp)
-	movq	24(%rsp), %rsi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 36(%rsp)
+	movq	24(%rsp), %rax
 	leaq	(%rdx,%r8), %rdi
 	addq	$-3, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-4(%rdx,%r8), %edx
+	movq	%rdi, 16(%rsp)
+	movzbl	-4(%rdx,%r8), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 36(%rsp)
+	movq	24(%rsp), %rsi
+	leaq	(%rdx,%r8), %rdi
+	addq	$-2, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-3(%rdx,%r8), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%eax, %esi
+	movl	%esi, 36(%rsp)
+	movq	24(%rsp), %rax
+	leaq	(%rdx,%r8), %rdi
+	addq	$-1, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-2(%rdx,%r8), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	addl	%esi, %eax
+	movl	%eax, 36(%rsp)
+	movq	24(%rsp), %rsi
+	movzbl	-1(%rdx,%r8), %edx
 	subq	%rdx, %rsi
 	movzbl	(%rsi), %edx
-	addl	%ecx, %edx
-	movl	%edx, 52(%rsp)
-	movslq	44(%rsp), %rcx
-	leaq	(%rcx,%rax), %rsi
-	addq	$-5, %rsi
-	movq	%rsi, 32(%rsp)
+	addl	%eax, %edx
+	movl	%edx, 36(%rsp)
+	movslq	40(%rsp), %rax
+	leaq	(%rax,%rcx), %rsi
+	addq	$-4, %rsi
+	movq	%rsi, 16(%rsp)
 	movq	24(%rsp), %rsi
-	movzbl	-5(%rcx,%rax), %edi
+	leaq	(%rax,%rcx), %rdi
+	addq	$-3, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-4(%rax,%rcx), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
 	addl	%edx, %esi
-	movl	%esi, 52(%rsp)
+	movl	%esi, 36(%rsp)
 	movq	24(%rsp), %rdx
-	leaq	(%rcx,%rax), %rdi
-	addq	$-4, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-5(%rcx,%rax), %eax
-	subq	%rax, %rdx
-	movzbl	(%rdx), %eax
-	addl	%esi, %eax
-	movl	%eax, 52(%rsp)
-	cmpl	92(%rsp), %eax
+	leaq	(%rax,%rcx), %rdi
+	addq	$-2, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-3(%rax,%rcx), %edi
+	subq	%rdi, %rdx
+	movzbl	(%rdx), %edx
+	addl	%esi, %edx
+	movl	%edx, 36(%rsp)
+	movq	24(%rsp), %rsi
+	movzbl	-2(%rax,%rcx), %eax
+	subq	%rax, %rsi
+	movzbl	(%rsi), %eax
+	addl	%edx, %eax
+	movl	%eax, 36(%rsp)
+	cmpl	84(%rsp), %eax
 	jg	.LBB13_6
 # %bb.5:                                #   in Loop: Header=BB13_3 Depth=2
-	movl	92(%rsp), %eax
-	subl	52(%rsp), %eax
-	movq	80(%rsp), %rcx
-	movslq	60(%rsp), %rdx
-	movslq	44(%rsp), %rsi
+	movl	84(%rsp), %eax
+	subl	36(%rsp), %eax
+	movq	72(%rsp), %rcx
+	movslq	52(%rsp), %rdx
+	movslq	40(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	56(%rsp), %rdx
+	movslq	48(%rsp), %rdx
 	addq	%rsi, %rdx
 	movl	%eax, (%rcx,%rdx,4)
 	jmp	.LBB13_6
 .LBB13_8:
-	movl	$4, 60(%rsp)
+	movl	$4, 52(%rsp)
 	xorps	%xmm2, %xmm2
 	movsd	.LCPI13_0(%rip), %xmm3  # xmm3 = mem[0],zero
 	movsd	.LCPI13_2(%rip), %xmm4  # xmm4 = mem[0],zero
 	jmp	.LBB13_9
 	.p2align	4, 0x90
 .LBB13_56:                              #   in Loop: Header=BB13_9 Depth=1
-	addl	$1, 60(%rsp)
+	addl	$1, 52(%rsp)
 .LBB13_9:                               # =>This Loop Header: Depth=1
                                         #     Child Loop BB13_11 Depth 2
 	movl	128(%rsp), %eax
 	addl	$-4, %eax
-	cmpl	%eax, 60(%rsp)
+	cmpl	%eax, 52(%rsp)
 	jge	.LBB13_57
 # %bb.10:                               #   in Loop: Header=BB13_9 Depth=1
-	movl	$4, 56(%rsp)
+	movl	$4, 48(%rsp)
 	jmp	.LBB13_11
 	.p2align	4, 0x90
 .LBB13_55:                              #   in Loop: Header=BB13_11 Depth=2
-	addl	$1, 56(%rsp)
+	addl	$1, 48(%rsp)
 .LBB13_11:                              #   Parent Loop BB13_9 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	movl	44(%rsp), %eax
+	movl	40(%rsp), %eax
 	addl	$-4, %eax
-	cmpl	%eax, 56(%rsp)
+	cmpl	%eax, 48(%rsp)
 	jge	.LBB13_56
 # %bb.12:                               #   in Loop: Header=BB13_11 Depth=2
-	movq	80(%rsp), %rax
-	movslq	60(%rsp), %rcx
-	movslq	44(%rsp), %rdx
+	movq	72(%rsp), %rax
+	movslq	52(%rsp), %rcx
+	movslq	40(%rsp), %rdx
 	imulq	%rcx, %rdx
-	movslq	56(%rsp), %rcx
+	movslq	48(%rsp), %rcx
 	addq	%rdx, %rcx
 	cmpl	$0, (%rax,%rcx,4)
 	jle	.LBB13_55
 # %bb.13:                               #   in Loop: Header=BB13_11 Depth=2
-	movq	80(%rsp), %rax
-	movslq	60(%rsp), %rcx
-	movslq	44(%rsp), %rdx
+	movq	72(%rsp), %rax
+	movslq	52(%rsp), %rcx
+	movslq	40(%rsp), %rdx
 	imulq	%rcx, %rdx
-	movslq	56(%rsp), %rcx
+	movslq	48(%rsp), %rcx
 	addq	%rdx, %rcx
 	movl	(%rax,%rcx,4), %eax
-	movl	%eax, 76(%rsp)
-	movl	92(%rsp), %edx
+	movl	%eax, 68(%rsp)
+	movl	84(%rsp), %edx
 	subl	%eax, %edx
-	movl	%edx, 52(%rsp)
-	movq	96(%rsp), %rax
+	movl	%edx, 36(%rsp)
+	movq	88(%rsp), %rax
 	movzbl	(%rax,%rcx), %eax
-	addq	104(%rsp), %rax
+	addq	96(%rsp), %rax
 	movq	%rax, 24(%rsp)
 	cmpl	$601, %edx              # imm = 0x259
 	jl	.LBB13_37
 # %bb.14:                               #   in Loop: Header=BB13_11 Depth=2
-	movslq	60(%rsp), %rax
+	movslq	52(%rsp), %rax
 	addq	$-3, %rax
-	movslq	44(%rsp), %rdx
+	movslq	40(%rsp), %rdx
 	imulq	%rax, %rdx
-	addq	96(%rsp), %rdx
-	movslq	56(%rsp), %rsi
+	addq	88(%rsp), %rdx
+	movslq	48(%rsp), %rsi
 	leaq	(%rdx,%rsi), %r8
-	movl	$0, 16(%rsp)
-	movl	$0, 20(%rsp)
+	movl	$0, 8(%rsp)
+	movl	$0, 12(%rsp)
 	movq	24(%rsp), %rax
-	movq	%r8, 32(%rsp)
+	movq	%r8, 16(%rsp)
 	movzbl	-1(%rsi,%rdx), %edi
 	subq	%rdi, %rax
 	movzbl	(%rax), %edi
-	movb	%dil, 15(%rsp)
+	movb	%dil, 7(%rsp)
 	leal	(%rdi,%rdi,2), %eax
                                         # kill: def $edi killed $edi killed $rdi
 	negl	%edi
-	movl	%edi, 16(%rsp)
+	movl	%edi, 8(%rsp)
 	negl	%eax
-	movl	%eax, 20(%rsp)
+	movl	%eax, 12(%rsp)
 	movq	24(%rsp), %rdi
 	leaq	(%rsi,%rdx), %rcx
 	addq	$1, %rcx
-	movq	%rcx, 32(%rsp)
+	movq	%rcx, 16(%rsp)
 	movzbl	(%rsi,%rdx), %ecx
 	subq	%rcx, %rdi
 	movzbl	(%rdi), %ecx
-	movb	%cl, 15(%rsp)
+	movb	%cl, 7(%rsp)
 	leal	(%rcx,%rcx,2), %ecx
 	subl	%ecx, %eax
-	movl	%eax, 20(%rsp)
+	movl	%eax, 12(%rsp)
 	movq	24(%rsp), %rcx
 	movzbl	1(%rsi,%rdx), %edx
 	subq	%rdx, %rcx
 	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
-	leal	(%rcx,%rcx,2), %edx
-	movl	%ecx, %edi
-	addl	16(%rsp), %edi
-	movl	%edi, 16(%rsp)
-	subl	%edx, %eax
-	movl	%eax, 20(%rsp)
-	movslq	44(%rsp), %rdx
+	movb	%cl, 7(%rsp)
+	movl	%ecx, %esi
+	addl	8(%rsp), %esi
+	leal	(%rcx,%rcx,2), %ecx
+	movl	%esi, 8(%rsp)
+	subl	%ecx, %eax
+	movl	%eax, 12(%rsp)
+	movslq	40(%rsp), %rdx
 	leaq	(%rdx,%r8), %r9
 	addq	$1, %r9
 	leaq	-2(%rdx,%r8), %rcx
-	movq	%rcx, 32(%rsp)
+	movq	%rcx, 16(%rsp)
 	movq	24(%rsp), %rcx
-	movzbl	-2(%rdx,%r8), %esi
-	subq	%rsi, %rcx
+	leaq	(%rdx,%r8), %rdi
+	addq	$-1, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-2(%rdx,%r8), %edi
+	subq	%rdi, %rcx
 	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
+	movb	%cl, 7(%rsp)
 	addl	%ecx, %ecx
-	subl	%ecx, %edi
-	movl	%edi, 16(%rsp)
+	subl	%ecx, %esi
+	movl	%esi, 8(%rsp)
 	subl	%ecx, %eax
-	movl	%eax, 20(%rsp)
+	movl	%eax, 12(%rsp)
 	movq	24(%rsp), %rcx
-	leaq	(%rdx,%r8), %rsi
-	addq	$-1, %rsi
-	movq	%rsi, 32(%rsp)
-	movzbl	-2(%rdx,%r8), %esi
-	subq	%rsi, %rcx
+	leaq	-1(%r9), %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-1(%rdx,%r8), %edi
+	subq	%rdi, %rcx
 	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
-	subl	%ecx, %edi
-	movl	%edi, 16(%rsp)
-	addl	%ecx, %ecx
-	subl	%ecx, %eax
-	movl	%eax, 20(%rsp)
-	movq	24(%rsp), %rcx
-	leaq	-1(%r9), %rsi
-	movq	%rsi, 32(%rsp)
-	movzbl	-1(%rdx,%r8), %esi
-	subq	%rsi, %rcx
-	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
+	movb	%cl, 7(%rsp)
+	subl	%ecx, %esi
+	movl	%esi, 8(%rsp)
 	addl	%ecx, %ecx
 	subl	%ecx, %eax
-	movl	%eax, 20(%rsp)
+	movl	%eax, 12(%rsp)
 	movq	24(%rsp), %rcx
-	movq	%r9, 32(%rsp)
+	movq	%r9, 16(%rsp)
 	movzbl	(%rdx,%r8), %esi
 	subq	%rsi, %rcx
 	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
-	movl	16(%rsp), %esi
-	addl	%ecx, %esi
-	movl	%esi, 16(%rsp)
+	movb	%cl, 7(%rsp)
 	addl	%ecx, %ecx
 	subl	%ecx, %eax
-	movl	%eax, 20(%rsp)
+	movl	%eax, 12(%rsp)
 	movq	24(%rsp), %rcx
-	movzbl	1(%rdx,%r8), %edx
+	leaq	(%rdx,%r8), %rsi
+	addq	$2, %rsi
+	movq	%rsi, 16(%rsp)
+	movzbl	1(%rdx,%r8), %esi
+	subq	%rsi, %rcx
+	movzbl	(%rcx), %ecx
+	movb	%cl, 7(%rsp)
+	movl	8(%rsp), %esi
+	addl	%ecx, %esi
+	movl	%esi, 8(%rsp)
+	addl	%ecx, %ecx
+	subl	%ecx, %eax
+	movl	%eax, 12(%rsp)
+	movq	24(%rsp), %rcx
+	movzbl	2(%rdx,%r8), %edx
 	subq	%rdx, %rcx
 	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
+	movb	%cl, 7(%rsp)
 	leal	(%rsi,%rcx,2), %edi
-	movl	%edi, 16(%rsp)
+	movl	%edi, 8(%rsp)
 	addl	%ecx, %ecx
 	subl	%ecx, %eax
-	movl	%eax, 20(%rsp)
-	movslq	44(%rsp), %r9
-	movq	32(%rsp), %rdx
+	movl	%eax, 12(%rsp)
+	movslq	40(%rsp), %r9
+	movq	16(%rsp), %rdx
 	leaq	(%r9,%rdx), %r8
 	leaq	-5(%r9,%rdx), %rsi
-	movq	%rsi, 32(%rsp)
+	movq	%rsi, 16(%rsp)
 	movq	24(%rsp), %rsi
+	leaq	(%r9,%rdx), %rcx
+	addq	$-4, %rcx
+	movq	%rcx, 16(%rsp)
 	movzbl	-5(%r9,%rdx), %ecx
 	subq	%rcx, %rsi
 	movzbl	(%rsi), %ecx
-	movb	%cl, 15(%rsp)
+	movb	%cl, 7(%rsp)
 	leal	(%rcx,%rcx,2), %esi
 	subl	%esi, %edi
-	movl	%edi, 16(%rsp)
+	movl	%edi, 8(%rsp)
 	subl	%ecx, %eax
-	movl	%eax, 20(%rsp)
-	movq	24(%rsp), %rcx
-	leaq	(%r9,%rdx), %rsi
-	addq	$-4, %rsi
-	movq	%rsi, 32(%rsp)
-	movzbl	-5(%r9,%rdx), %esi
-	subq	%rsi, %rcx
-	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
-	leal	(%rcx,%rcx), %esi
-	subl	%esi, %edi
-	movl	%edi, 16(%rsp)
-	subl	%ecx, %eax
-	movl	%eax, 20(%rsp)
+	movl	%eax, 12(%rsp)
 	movq	24(%rsp), %rcx
 	leaq	(%r9,%rdx), %rsi
 	addq	$-3, %rsi
-	movq	%rsi, 32(%rsp)
+	movq	%rsi, 16(%rsp)
 	movzbl	-4(%r9,%rdx), %esi
 	subq	%rsi, %rcx
 	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
-	subl	%ecx, %edi
-	movl	%edi, 16(%rsp)
+	movb	%cl, 7(%rsp)
+	leal	(%rcx,%rcx), %esi
+	subl	%esi, %edi
+	movl	%edi, 8(%rsp)
 	subl	%ecx, %eax
-	movl	%eax, 20(%rsp)
+	movl	%eax, 12(%rsp)
 	movq	24(%rsp), %rcx
 	leaq	(%r9,%rdx), %rsi
 	addq	$-2, %rsi
-	movq	%rsi, 32(%rsp)
+	movq	%rsi, 16(%rsp)
 	movzbl	-3(%r9,%rdx), %esi
 	subq	%rsi, %rcx
 	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
+	movb	%cl, 7(%rsp)
+	subl	%ecx, %edi
+	movl	%edi, 8(%rsp)
 	subl	%ecx, %eax
-	movl	%eax, 20(%rsp)
+	movl	%eax, 12(%rsp)
 	movq	24(%rsp), %rcx
 	leaq	(%r9,%rdx), %rsi
 	addq	$-1, %rsi
-	movq	%rsi, 32(%rsp)
+	movq	%rsi, 16(%rsp)
 	movzbl	-2(%r9,%rdx), %esi
 	subq	%rsi, %rcx
 	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
+	movb	%cl, 7(%rsp)
 	subl	%ecx, %eax
-	addl	16(%rsp), %ecx
-	movl	%ecx, 16(%rsp)
-	movl	%eax, 20(%rsp)
+	movl	%eax, 12(%rsp)
+	movq	24(%rsp), %rcx
+	movq	%r8, 16(%rsp)
+	movzbl	-1(%r9,%rdx), %esi
+	subq	%rsi, %rcx
+	movzbl	(%rcx), %ecx
+	movb	%cl, 7(%rsp)
+	subl	%ecx, %eax
+	addl	8(%rsp), %ecx
+	movl	%ecx, 8(%rsp)
+	movl	%eax, 12(%rsp)
 	movq	24(%rsp), %rsi
-	movq	%r8, 32(%rsp)
-	movzbl	-1(%r9,%rdx), %edi
+	leaq	(%r9,%rdx), %rdi
+	addq	$1, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	(%r9,%rdx), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	movb	%sil, 15(%rsp)
+	movb	%sil, 7(%rsp)
 	leal	(%rcx,%rsi,2), %edi
-	movl	%edi, 16(%rsp)
+	movl	%edi, 8(%rsp)
 	subl	%esi, %eax
-	movl	%eax, 20(%rsp)
+	movl	%eax, 12(%rsp)
 	movq	24(%rsp), %rcx
-	movzbl	(%r9,%rdx), %edx
+	movzbl	1(%r9,%rdx), %edx
 	subq	%rdx, %rcx
 	movzbl	(%rcx), %edx
-	movb	%dl, 15(%rsp)
+	movb	%dl, 7(%rsp)
 	leal	(%rdx,%rdx,2), %ecx
 	addl	%edi, %ecx
-	movl	%ecx, 16(%rsp)
+	movl	%ecx, 8(%rsp)
 	subl	%edx, %eax
-	movl	%eax, 20(%rsp)
-	movslq	44(%rsp), %rdx
-	movq	32(%rsp), %rsi
+	movl	%eax, 12(%rsp)
+	movslq	40(%rsp), %rdx
+	movq	16(%rsp), %rsi
 	leaq	(%rdx,%rsi), %r8
 	leaq	-6(%rdx,%rsi), %rdi
-	movq	%rdi, 32(%rsp)
+	movq	%rdi, 16(%rsp)
 	movq	24(%rsp), %rdi
+	leaq	(%rdx,%rsi), %rax
+	addq	$-5, %rax
+	movq	%rax, 16(%rsp)
 	movzbl	-6(%rdx,%rsi), %eax
 	subq	%rax, %rdi
 	movzbl	(%rdi), %eax
-	movb	%al, 15(%rsp)
+	movb	%al, 7(%rsp)
 	leal	(%rax,%rax,2), %eax
 	subl	%eax, %ecx
-	movl	%ecx, 16(%rsp)
+	movl	%ecx, 8(%rsp)
 	movq	24(%rsp), %rax
 	leaq	(%rdx,%rsi), %rdi
-	addq	$-5, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-6(%rdx,%rsi), %edi
-	subq	%rdi, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	addl	%eax, %eax
-	subl	%eax, %ecx
-	movl	%ecx, 16(%rsp)
-	movq	24(%rsp), %rax
+	addq	$-4, %rdi
+	movq	%rdi, 16(%rsp)
 	movzbl	-5(%rdx,%rsi), %edi
 	subq	%rdi, %rax
 	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
+	movb	%al, 7(%rsp)
+	addl	%eax, %eax
 	subl	%eax, %ecx
-	movl	%ecx, 16(%rsp)
-	leaq	(%rdx,%rsi), %rax
-	addq	$-3, %rax
-	movq	%rax, 32(%rsp)
+	movl	%ecx, 8(%rsp)
 	movq	24(%rsp), %rax
-	movzbl	-3(%rdx,%rsi), %edi
+	movzbl	-4(%rdx,%rsi), %edi
 	subq	%rdi, %rax
 	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	addl	%eax, %ecx
-	movl	%ecx, 16(%rsp)
+	movb	%al, 7(%rsp)
+	subl	%eax, %ecx
+	movl	%ecx, 8(%rsp)
+	leaq	(%rdx,%rsi), %rax
+	addq	$-2, %rax
+	movq	%rax, 16(%rsp)
 	movq	24(%rsp), %rax
 	leaq	(%rdx,%rsi), %rdi
-	addq	$-2, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-3(%rdx,%rsi), %edi
+	addq	$-1, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-2(%rdx,%rsi), %edi
 	subq	%rdi, %rax
 	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
+	movb	%al, 7(%rsp)
+	addl	%eax, %ecx
+	movl	%ecx, 8(%rsp)
+	movq	24(%rsp), %rax
+	movq	%r8, 16(%rsp)
+	movzbl	-1(%rdx,%rsi), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	movb	%al, 7(%rsp)
 	leal	(%rcx,%rax,2), %eax
-	movl	%eax, 16(%rsp)
+	movl	%eax, 8(%rsp)
 	movq	24(%rsp), %rcx
-	movzbl	-2(%rdx,%rsi), %edx
+	movzbl	(%rdx,%rsi), %edx
 	subq	%rdx, %rcx
 	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
-	leal	(%rcx,%rcx,2), %esi
-	addl	%eax, %esi
-	movl	%esi, 16(%rsp)
-	movslq	44(%rsp), %rdx
+	movb	%cl, 7(%rsp)
+	leal	(%rcx,%rcx,2), %edi
+	addl	%eax, %edi
+	movl	%edi, 8(%rsp)
+	movslq	40(%rsp), %rdx
+	leaq	(%rdx,%r8), %r9
 	leaq	(%rdx,%r8), %rax
-	addq	$-8, %rax
-	movq	%rax, 32(%rsp)
+	addq	$-6, %rax
+	movq	%rax, 16(%rsp)
 	movq	24(%rsp), %rax
-	movzbl	-8(%rdx,%r8), %ecx
+	leaq	(%rdx,%r8), %rcx
+	addq	$-5, %rcx
+	movq	%rcx, 16(%rsp)
+	movzbl	-6(%rdx,%r8), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %ecx
-	movb	%cl, 15(%rsp)
+	movb	%cl, 7(%rsp)
 	leal	(%rcx,%rcx,2), %eax
-	subl	%eax, %esi
-	movl	%esi, 16(%rsp)
-	addl	20(%rsp), %ecx
-	movl	%ecx, 20(%rsp)
-	movq	24(%rsp), %rax
-	leaq	(%rdx,%r8), %rdi
-	addq	$-7, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-8(%rdx,%r8), %edi
-	subq	%rdi, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	leal	(%rax,%rax), %edi
-	subl	%edi, %esi
-	movl	%esi, 16(%rsp)
-	addl	%eax, %ecx
-	movl	%ecx, 20(%rsp)
-	movq	24(%rsp), %rax
-	leaq	(%rdx,%r8), %rdi
-	addq	$-6, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-7(%rdx,%r8), %edi
-	subq	%rdi, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	subl	%eax, %esi
-	movl	%esi, 16(%rsp)
-	addl	%eax, %ecx
-	movl	%ecx, 20(%rsp)
-	movq	24(%rsp), %rax
-	leaq	(%rdx,%r8), %rsi
-	addq	$-5, %rsi
-	movq	%rsi, 32(%rsp)
-	movzbl	-6(%rdx,%r8), %esi
-	subq	%rsi, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	addl	%eax, %ecx
-	movl	%ecx, 20(%rsp)
+	subl	%eax, %edi
+	movl	%edi, 8(%rsp)
+	addl	12(%rsp), %ecx
+	movl	%ecx, 12(%rsp)
 	movq	24(%rsp), %rax
 	leaq	(%rdx,%r8), %rsi
 	addq	$-4, %rsi
-	movq	%rsi, 32(%rsp)
+	movq	%rsi, 16(%rsp)
 	movzbl	-5(%rdx,%r8), %esi
 	subq	%rsi, %rax
 	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
+	movb	%al, 7(%rsp)
+	leal	(%rax,%rax), %esi
+	subl	%esi, %edi
+	movl	%edi, 8(%rsp)
 	addl	%eax, %ecx
-	addl	16(%rsp), %eax
-	movl	%eax, 16(%rsp)
-	movl	%ecx, 20(%rsp)
+	movl	%ecx, 12(%rsp)
+	movq	24(%rsp), %rax
+	leaq	(%rdx,%r8), %rsi
+	addq	$-3, %rsi
+	movq	%rsi, 16(%rsp)
+	movzbl	-4(%rdx,%r8), %esi
+	subq	%rsi, %rax
+	movzbl	(%rax), %eax
+	movb	%al, 7(%rsp)
+	subl	%eax, %edi
+	movl	%edi, 8(%rsp)
+	addl	%eax, %ecx
+	movl	%ecx, 12(%rsp)
+	movq	24(%rsp), %rax
+	leaq	(%rdx,%r8), %rsi
+	addq	$-2, %rsi
+	movq	%rsi, 16(%rsp)
+	movzbl	-3(%rdx,%r8), %esi
+	subq	%rsi, %rax
+	movzbl	(%rax), %eax
+	movb	%al, 7(%rsp)
+	addl	%eax, %ecx
+	movl	%ecx, 12(%rsp)
+	movq	24(%rsp), %rax
+	leaq	(%rdx,%r8), %rsi
+	addq	$-1, %rsi
+	movq	%rsi, 16(%rsp)
+	movzbl	-2(%rdx,%r8), %esi
+	subq	%rsi, %rax
+	movzbl	(%rax), %eax
+	movb	%al, 7(%rsp)
+	addl	%eax, %ecx
+	addl	8(%rsp), %eax
+	movl	%eax, 8(%rsp)
+	movl	%ecx, 12(%rsp)
 	movq	24(%rsp), %rsi
-	leaq	(%rdx,%r8), %rdi
-	addq	$-3, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-4(%rdx,%r8), %edi
+	movq	%r9, 16(%rsp)
+	movzbl	-1(%rdx,%r8), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	movb	%sil, 15(%rsp)
+	movb	%sil, 7(%rsp)
 	leal	(%rax,%rsi,2), %eax
-	movl	%eax, 16(%rsp)
+	movl	%eax, 8(%rsp)
 	addl	%esi, %ecx
-	movl	%ecx, 20(%rsp)
+	movl	%ecx, 12(%rsp)
 	movq	24(%rsp), %rsi
-	movzbl	-3(%rdx,%r8), %edx
+	movzbl	(%rdx,%r8), %edx
 	subq	%rdx, %rsi
 	movzbl	(%rsi), %edx
-	movb	%dl, 15(%rsp)
+	movb	%dl, 7(%rsp)
 	leal	(%rdx,%rdx,2), %esi
 	addl	%eax, %esi
-	movl	%esi, 16(%rsp)
+	movl	%esi, 8(%rsp)
 	addl	%edx, %ecx
-	movl	%ecx, 20(%rsp)
-	movslq	44(%rsp), %r8
-	movq	32(%rsp), %rdx
+	movl	%ecx, 12(%rsp)
+	movslq	40(%rsp), %r8
+	movq	16(%rsp), %rdx
 	leaq	(%r8,%rdx), %rdi
 	addq	$-5, %rdi
-	movq	%rdi, 32(%rsp)
+	movq	%rdi, 16(%rsp)
 	movq	24(%rsp), %rdi
+	leaq	(%r8,%rdx), %rax
+	addq	$-4, %rax
+	movq	%rax, 16(%rsp)
 	movzbl	-5(%r8,%rdx), %eax
 	subq	%rax, %rdi
 	movzbl	(%rdi), %eax
-	movb	%al, 15(%rsp)
+	movb	%al, 7(%rsp)
 	leal	(%rax,%rax), %edi
 	subl	%edi, %esi
-	movl	%esi, 16(%rsp)
+	movl	%esi, 8(%rsp)
 	leal	(%rcx,%rax,2), %eax
-	movl	%eax, 20(%rsp)
+	movl	%eax, 12(%rsp)
 	movq	24(%rsp), %rcx
 	leaq	(%r8,%rdx), %rdi
-	addq	$-4, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-5(%r8,%rdx), %edi
+	addq	$-3, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-4(%r8,%rdx), %edi
 	subq	%rdi, %rcx
 	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
+	movb	%cl, 7(%rsp)
 	subl	%ecx, %esi
-	movl	%esi, 16(%rsp)
+	movl	%esi, 8(%rsp)
 	leal	(%rax,%rcx,2), %eax
-	movl	%eax, 20(%rsp)
-	movq	24(%rsp), %rcx
-	leaq	(%r8,%rdx), %rsi
-	addq	$-3, %rsi
-	movq	%rsi, 32(%rsp)
-	movzbl	-4(%r8,%rdx), %esi
-	subq	%rsi, %rcx
-	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
-	leal	(%rax,%rcx,2), %eax
-	movl	%eax, 20(%rsp)
+	movl	%eax, 12(%rsp)
 	movq	24(%rsp), %rcx
 	leaq	(%r8,%rdx), %rsi
 	addq	$-2, %rsi
-	movq	%rsi, 32(%rsp)
+	movq	%rsi, 16(%rsp)
 	movzbl	-3(%r8,%rdx), %esi
 	subq	%rsi, %rcx
 	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
-	movl	%ecx, %esi
-	addl	16(%rsp), %esi
+	movb	%cl, 7(%rsp)
 	leal	(%rax,%rcx,2), %eax
-	movl	%esi, 16(%rsp)
-	movl	%eax, 20(%rsp)
+	movl	%eax, 12(%rsp)
 	movq	24(%rsp), %rcx
-	movzbl	-2(%r8,%rdx), %edx
-	subq	%rdx, %rcx
+	leaq	(%r8,%rdx), %rsi
+	addq	$-1, %rsi
+	movq	%rsi, 16(%rsp)
+	movzbl	-2(%r8,%rdx), %esi
+	subq	%rsi, %rcx
 	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
-	leal	(%rsi,%rcx,2), %edx
-	movl	%edx, 16(%rsp)
-	leal	(%rax,%rcx,2), %r8d
-	movl	%r8d, 20(%rsp)
-	movslq	44(%rsp), %rax
-	movq	32(%rsp), %rcx
+	movb	%cl, 7(%rsp)
+	leal	(%rax,%rcx,2), %eax
+                                        # kill: def $ecx killed $ecx killed $rcx def $rcx
+	addl	8(%rsp), %ecx
+	movl	%ecx, 8(%rsp)
+	movl	%eax, 12(%rsp)
+	movq	24(%rsp), %rsi
+	movzbl	-1(%r8,%rdx), %edx
+	subq	%rdx, %rsi
+	movzbl	(%rsi), %edx
+	movb	%dl, 7(%rsp)
+	leal	(%rcx,%rdx,2), %esi
+	movl	%esi, 8(%rsp)
+	leal	(%rax,%rdx,2), %r8d
+	movl	%r8d, 12(%rsp)
+	movslq	40(%rsp), %rax
+	movq	16(%rsp), %rcx
 	leaq	-3(%rax,%rcx), %rdi
-	movq	%rdi, 32(%rsp)
+	movq	%rdi, 16(%rsp)
 	movq	24(%rsp), %rdi
-	movzbl	-3(%rax,%rcx), %esi
-	subq	%rsi, %rdi
-	movzbl	(%rdi), %esi
-	movb	%sil, 15(%rsp)
-	subl	%esi, %edx
-	movl	%edx, 16(%rsp)
-	leal	(%rsi,%rsi,2), %edx
+	leaq	(%rax,%rcx), %rdx
+	addq	$-2, %rdx
+	movq	%rdx, 16(%rsp)
+	movzbl	-3(%rax,%rcx), %edx
+	subq	%rdx, %rdi
+	movzbl	(%rdi), %edx
+	movb	%dl, 7(%rsp)
+	subl	%edx, %esi
+	movl	%esi, 8(%rsp)
+	leal	(%rdx,%rdx,2), %edx
 	addl	%r8d, %edx
-	movl	%edx, 20(%rsp)
+	movl	%edx, 12(%rsp)
 	movq	24(%rsp), %rsi
 	leaq	(%rax,%rcx), %rdi
-	addq	$-2, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-3(%rax,%rcx), %edi
+	addq	$-1, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-2(%rax,%rcx), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	movb	%sil, 15(%rsp)
+	movb	%sil, 7(%rsp)
 	leal	(%rsi,%rsi,2), %esi
 	addl	%edx, %esi
-	movl	%esi, 20(%rsp)
+	movl	%esi, 12(%rsp)
 	movq	24(%rsp), %rdx
-	movzbl	-2(%rax,%rcx), %eax
+	movzbl	-1(%rax,%rcx), %eax
 	subq	%rax, %rdx
 	movzbl	(%rdx), %eax
 	leal	(%rax,%rax,2), %ecx
 	movl	%eax, %edx
-	addl	16(%rsp), %edx
-	movl	%edx, 16(%rsp)
+	addl	8(%rsp), %edx
+	movl	%edx, 8(%rsp)
 	addl	%esi, %ecx
-	movl	%ecx, 20(%rsp)
+	movl	%ecx, 12(%rsp)
 	imull	%edx, %edx
 	imull	%ecx, %ecx
 	addl	%edx, %ecx
 	cvtsi2ss	%ecx, %xmm0
-	movb	%al, 15(%rsp)
+	movb	%al, 7(%rsp)
 	cvtss2sd	%xmm0, %xmm0
 	ucomisd	%xmm2, %xmm0
 	jb	.LBB13_16
@@ -3550,727 +3710,745 @@ susan_edges:                            # @susan_edges
 .LBB13_17:                              # %.split
                                         #   in Loop: Header=BB13_11 Depth=2
 	cvtsd2ss	%xmm0, %xmm0
-	movss	%xmm0, 72(%rsp)
+	movss	%xmm0, 64(%rsp)
 	cvtss2sd	%xmm0, %xmm0
-	cvtsi2ssl	52(%rsp), %xmm1
+	cvtsi2ssl	36(%rsp), %xmm1
 	cvtss2sd	%xmm1, %xmm1
 	mulsd	%xmm3, %xmm1
 	ucomisd	%xmm1, %xmm0
 	jbe	.LBB13_37
 # %bb.18:                               #   in Loop: Header=BB13_11 Depth=2
-	movl	$0, 88(%rsp)
-	cmpl	$0, 16(%rsp)
+	movl	$0, 80(%rsp)
+	cmpl	$0, 8(%rsp)
 	je	.LBB13_19
 # %bb.20:                               #   in Loop: Header=BB13_11 Depth=2
 	xorps	%xmm0, %xmm0
-	cvtsi2ssl	20(%rsp), %xmm0
+	cvtsi2ssl	12(%rsp), %xmm0
 	xorps	%xmm1, %xmm1
-	cvtsi2ssl	16(%rsp), %xmm1
+	cvtsi2ssl	8(%rsp), %xmm1
 	divss	%xmm1, %xmm0
-	movss	%xmm0, 72(%rsp)
+	movss	%xmm0, 64(%rsp)
 	jmp	.LBB13_21
 	.p2align	4, 0x90
 .LBB13_37:                              #   in Loop: Header=BB13_11 Depth=2
-	movl	$1, 88(%rsp)
+	movl	$1, 80(%rsp)
 .LBB13_38:                              #   in Loop: Header=BB13_11 Depth=2
-	cmpl	$1, 88(%rsp)
+	cmpl	$1, 80(%rsp)
 	jne	.LBB13_55
 .LBB13_39:                              #   in Loop: Header=BB13_11 Depth=2
-	movslq	60(%rsp), %rcx
+	movslq	52(%rsp), %rcx
 	addq	$-3, %rcx
-	movslq	44(%rsp), %rax
+	movslq	40(%rsp), %rax
 	imulq	%rcx, %rax
-	addq	96(%rsp), %rax
-	movslq	56(%rsp), %rcx
+	addq	88(%rsp), %rax
+	movslq	48(%rsp), %rcx
 	leaq	(%rax,%rcx), %rdx
-	movl	$0, 16(%rsp)
-	movl	$0, 20(%rsp)
-	movl	$0, 48(%rsp)
+	movl	$0, 8(%rsp)
+	movl	$0, 12(%rsp)
+	movl	$0, 44(%rsp)
 	movq	24(%rsp), %rsi
-	movq	%rdx, 32(%rsp)
+	movq	%rdx, 16(%rsp)
 	movzbl	-1(%rcx,%rax), %edx
 	subq	%rdx, %rsi
 	movzbl	(%rsi), %edx
-	movb	%dl, 15(%rsp)
-	movl	%edx, 16(%rsp)
+	movb	%dl, 7(%rsp)
+	movl	%edx, 8(%rsp)
 	leal	(%rdx,%rdx,8), %esi
-	movl	%esi, 20(%rsp)
+	movl	%esi, 12(%rsp)
 	leal	(%rdx,%rdx,2), %edx
-	movl	%edx, 48(%rsp)
+	movl	%edx, 44(%rsp)
 	movq	24(%rsp), %rdx
 	leaq	(%rcx,%rax), %rdi
 	addq	$1, %rdi
-	movq	%rdi, 32(%rsp)
+	movq	%rdi, 16(%rsp)
 	movzbl	(%rcx,%rax), %edi
 	subq	%rdi, %rdx
 	movzbl	(%rdx), %edx
-	movb	%dl, 15(%rsp)
+	movb	%dl, 7(%rsp)
 	leal	(%rdx,%rdx,8), %edx
 	addl	%esi, %edx
-	movl	%edx, 20(%rsp)
+	movl	%edx, 12(%rsp)
 	movq	24(%rsp), %rsi
 	movzbl	1(%rcx,%rax), %eax
 	subq	%rax, %rsi
 	movzbl	(%rsi), %eax
-	movb	%al, 15(%rsp)
-	leal	(%rax,%rax,8), %esi
-	leal	(%rax,%rax,2), %ecx
-	movl	%eax, %edi
-	addl	16(%rsp), %edi
-	movl	%edi, 16(%rsp)
+	movb	%al, 7(%rsp)
+	addl	%eax, 8(%rsp)
+	leal	(%rax,%rax,8), %r9d
+	addl	%edx, %r9d
+	movl	%r9d, 12(%rsp)
+	leal	(%rax,%rax,2), %eax
+	movl	44(%rsp), %edi
+	subl	%eax, %edi
+	movl	%edi, 44(%rsp)
+	movslq	40(%rsp), %rax
+	movq	16(%rsp), %rcx
+	leaq	(%rax,%rcx), %r8
+	leaq	-3(%rax,%rcx), %rdx
+	movq	%rdx, 16(%rsp)
+	movq	24(%rsp), %rdx
+	leaq	(%rax,%rcx), %rsi
+	addq	$-2, %rsi
+	movq	%rsi, 16(%rsp)
+	movzbl	-3(%rax,%rcx), %esi
+	subq	%rsi, %rdx
+	movzbl	(%rdx), %edx
+	movb	%dl, 7(%rsp)
+	leal	(,%rdx,4), %esi
+	addl	8(%rsp), %esi
+	movl	%esi, 8(%rsp)
+	leal	(%r9,%rdx,4), %r9d
+	movl	%r9d, 12(%rsp)
+	leal	(%rdi,%rdx,4), %r10d
+	movl	%r10d, 44(%rsp)
+	movq	24(%rsp), %rdi
+	leaq	(%rax,%rcx), %rdx
+	addq	$-1, %rdx
+	movq	%rdx, 16(%rsp)
+	movzbl	-2(%rax,%rcx), %edx
+	subq	%rdx, %rdi
+	movzbl	(%rdi), %edx
+	movb	%dl, 7(%rsp)
 	addl	%edx, %esi
-	movl	%esi, 20(%rsp)
-	movl	48(%rsp), %edx
-	subl	%ecx, %edx
-	movl	%edx, 48(%rsp)
-	movslq	44(%rsp), %r9
-	movq	32(%rsp), %r10
+	movl	%esi, 8(%rsp)
+	leal	(%r9,%rdx,4), %esi
+	movl	%esi, 12(%rsp)
+	leal	(%r10,%rdx,2), %edx
+	movl	%edx, 44(%rsp)
+	movq	24(%rsp), %rdx
+	movq	%r8, 16(%rsp)
+	movzbl	-1(%rax,%rcx), %edi
+	subq	%rdi, %rdx
+	movzbl	(%rdx), %edx
+	movb	%dl, 7(%rsp)
+	leal	(%rsi,%rdx,4), %r8d
+	movl	%r8d, 12(%rsp)
+	movq	24(%rsp), %rsi
+	leaq	(%rax,%rcx), %rdi
+	addq	$1, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	(%rax,%rcx), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	movb	%sil, 7(%rsp)
+	movl	8(%rsp), %edx
+	addl	%esi, %edx
+	movl	%edx, 8(%rsp)
+	leal	(%r8,%rsi,4), %r8d
+	movl	%r8d, 12(%rsp)
+	addl	%esi, %esi
+	movl	44(%rsp), %edi
+	subl	%esi, %edi
+	movl	%edi, 44(%rsp)
+	movq	24(%rsp), %rsi
+	movzbl	1(%rax,%rcx), %eax
+	subq	%rax, %rsi
+	movzbl	(%rsi), %ecx
+	movb	%cl, 7(%rsp)
+	leal	(%rdx,%rcx,4), %eax
+	movl	%eax, 8(%rsp)
+	leal	(%r8,%rcx,4), %eax
+	movl	%eax, 12(%rsp)
+	shll	$2, %ecx
+	subl	%ecx, %edi
+	movl	%edi, 44(%rsp)
+	movslq	40(%rsp), %r9
+	movq	16(%rsp), %r10
 	leaq	(%r9,%r10), %r8
-	leaq	-3(%r9,%r10), %rax
-	movq	%rax, 32(%rsp)
-	movq	24(%rsp), %rax
-	movzbl	-3(%r9,%r10), %ecx
-	subq	%rcx, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	leal	(%rdi,%rax,4), %ecx
-	movl	%ecx, 16(%rsp)
-	leal	(%rsi,%rax,4), %esi
-	movl	%esi, 20(%rsp)
-	leal	(%rdx,%rax,4), %eax
-	movl	%eax, 48(%rsp)
+	leaq	-5(%r9,%r10), %rsi
+	movq	%rsi, 16(%rsp)
+	movq	24(%rsp), %rsi
+	leaq	(%r9,%r10), %rcx
+	addq	$-4, %rcx
+	movq	%rcx, 16(%rsp)
+	movzbl	-5(%r9,%r10), %ecx
+	subq	%rcx, %rsi
+	movzbl	(%rsi), %ecx
+	movb	%cl, 7(%rsp)
+	leal	(%rcx,%rcx,8), %esi
+	addl	8(%rsp), %esi
+	movl	%esi, 8(%rsp)
+	addl	%ecx, %eax
+	movl	%eax, 12(%rsp)
+	leal	(%rcx,%rcx,2), %ecx
+	addl	%edi, %ecx
+	movl	%ecx, 44(%rsp)
+	movq	24(%rsp), %rdi
+	leaq	(%r9,%r10), %rdx
+	addq	$-3, %rdx
+	movq	%rdx, 16(%rsp)
+	movzbl	-4(%r9,%r10), %edx
+	subq	%rdx, %rdi
+	movzbl	(%rdi), %edx
+	movb	%dl, 7(%rsp)
+	leal	(%rsi,%rdx,4), %esi
+	movl	%esi, 8(%rsp)
+	addl	%edx, %eax
+	movl	%eax, 12(%rsp)
+	leal	(%rcx,%rdx,2), %ecx
+	movl	%ecx, 44(%rsp)
 	movq	24(%rsp), %rdx
 	leaq	(%r9,%r10), %rdi
 	addq	$-2, %rdi
-	movq	%rdi, 32(%rsp)
+	movq	%rdi, 16(%rsp)
 	movzbl	-3(%r9,%r10), %edi
 	subq	%rdi, %rdx
 	movzbl	(%rdx), %edx
-	movb	%dl, 15(%rsp)
+	movb	%dl, 7(%rsp)
+	addl	%edx, %esi
+	movl	%esi, 8(%rsp)
+	addl	%edx, %eax
+	movl	%eax, 12(%rsp)
 	addl	%edx, %ecx
-	movl	%ecx, 16(%rsp)
-	leal	(%rsi,%rdx,4), %ecx
-	movl	%ecx, 20(%rsp)
-	leal	(%rax,%rdx,2), %eax
-	movl	%eax, 48(%rsp)
-	movq	24(%rsp), %rax
+	movl	%ecx, 44(%rsp)
+	movq	24(%rsp), %rcx
 	leaq	(%r9,%r10), %rdx
 	addq	$-1, %rdx
-	movq	%rdx, 32(%rsp)
+	movq	%rdx, 16(%rsp)
 	movzbl	-2(%r9,%r10), %edx
-	subq	%rdx, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	leal	(%rcx,%rax,4), %eax
-	movl	%eax, 20(%rsp)
+	subq	%rdx, %rcx
+	movzbl	(%rcx), %ecx
+	movb	%cl, 7(%rsp)
+	addl	%ecx, %eax
+	movl	%eax, 12(%rsp)
 	movq	24(%rsp), %rcx
-	movq	%r8, 32(%rsp)
+	movq	%r8, 16(%rsp)
 	movzbl	-1(%r9,%r10), %edx
 	subq	%rdx, %rcx
 	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
-	movl	16(%rsp), %edx
+	movb	%cl, 7(%rsp)
+	movl	8(%rsp), %edx
 	addl	%ecx, %edx
-	movl	%edx, 16(%rsp)
-	leal	(%rax,%rcx,4), %eax
-	movl	%eax, 20(%rsp)
-	addl	%ecx, %ecx
-	movl	48(%rsp), %edi
-	subl	%ecx, %edi
-	movl	%edi, 48(%rsp)
-	movq	24(%rsp), %rcx
-	movzbl	(%r9,%r10), %esi
-	subq	%rsi, %rcx
-	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
-	leal	(%rdx,%rcx,4), %r9d
-	movl	%r9d, 16(%rsp)
-	leal	(%rax,%rcx,4), %eax
-	movl	%eax, 20(%rsp)
-	shll	$2, %ecx
-	subl	%ecx, %edi
-	movl	%edi, 48(%rsp)
-	movslq	44(%rsp), %r10
-	movq	32(%rsp), %r11
-	leaq	(%r10,%r11), %r8
-	leaq	-5(%r10,%r11), %rsi
-	movq	%rsi, 32(%rsp)
-	movq	24(%rsp), %rsi
-	movzbl	-5(%r10,%r11), %ecx
-	subq	%rcx, %rsi
-	movzbl	(%rsi), %ecx
-	movb	%cl, 15(%rsp)
-	leal	(%rcx,%rcx,8), %esi
-	addl	%r9d, %esi
-	movl	%esi, 16(%rsp)
+	movl	%edx, 8(%rsp)
 	addl	%ecx, %eax
-	movl	%eax, 20(%rsp)
-	leal	(%rcx,%rcx,2), %ecx
-	addl	%edi, %ecx
-	movl	%ecx, 48(%rsp)
-	movq	24(%rsp), %rdi
-	leaq	(%r10,%r11), %rdx
-	addq	$-4, %rdx
-	movq	%rdx, 32(%rsp)
-	movzbl	-5(%r10,%r11), %edx
-	subq	%rdx, %rdi
-	movzbl	(%rdi), %edx
-	movb	%dl, 15(%rsp)
-	leal	(%rsi,%rdx,4), %esi
-	movl	%esi, 16(%rsp)
-	addl	%edx, %eax
-	movl	%eax, 20(%rsp)
-	leal	(%rcx,%rdx,2), %ecx
-	movl	%ecx, 48(%rsp)
-	movq	24(%rsp), %rdx
-	leaq	(%r10,%r11), %rdi
-	addq	$-3, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-4(%r10,%r11), %edi
-	subq	%rdi, %rdx
-	movzbl	(%rdx), %edx
-	movb	%dl, 15(%rsp)
-	addl	%edx, %esi
-	movl	%esi, 16(%rsp)
-	addl	%edx, %eax
-	movl	%eax, 20(%rsp)
-	addl	%edx, %ecx
-	movl	%ecx, 48(%rsp)
+	movl	%eax, 12(%rsp)
+	movl	44(%rsp), %esi
+	subl	%ecx, %esi
+	movl	%esi, 44(%rsp)
 	movq	24(%rsp), %rcx
-	leaq	(%r10,%r11), %rdx
-	addq	$-2, %rdx
-	movq	%rdx, 32(%rsp)
-	movzbl	-3(%r10,%r11), %edx
-	subq	%rdx, %rcx
+	leaq	(%r9,%r10), %rdi
+	addq	$1, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	(%r9,%r10), %edi
+	subq	%rdi, %rcx
 	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
-	addl	%ecx, %eax
-	movl	%eax, 20(%rsp)
-	movq	24(%rsp), %rcx
-	leaq	(%r10,%r11), %rdx
-	addq	$-1, %rdx
-	movq	%rdx, 32(%rsp)
-	movzbl	-2(%r10,%r11), %edx
-	subq	%rdx, %rcx
-	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
-	movl	16(%rsp), %edx
-	addl	%ecx, %edx
-	movl	%edx, 16(%rsp)
-	addl	%ecx, %eax
-	movl	%eax, 20(%rsp)
-	movl	48(%rsp), %edi
-	subl	%ecx, %edi
-	movl	%edi, 48(%rsp)
-	movq	24(%rsp), %rcx
-	movq	%r8, 32(%rsp)
-	movzbl	-1(%r10,%r11), %esi
-	subq	%rsi, %rcx
-	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
+	movb	%cl, 7(%rsp)
 	leal	(%rdx,%rcx,4), %edx
-	movl	%edx, 16(%rsp)
+	movl	%edx, 8(%rsp)
 	addl	%ecx, %eax
-	movl	%eax, 20(%rsp)
+	movl	%eax, 12(%rsp)
 	addl	%ecx, %ecx
-	subl	%ecx, %edi
-	movl	%edi, 48(%rsp)
+	subl	%ecx, %esi
+	movl	%esi, 44(%rsp)
 	movq	24(%rsp), %rcx
-	movzbl	(%r10,%r11), %esi
-	subq	%rsi, %rcx
+	movzbl	1(%r9,%r10), %edi
+	subq	%rdi, %rcx
 	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
-	leal	(%rcx,%rcx,8), %esi
-	addl	%edx, %esi
-	movl	%esi, 16(%rsp)
+	movb	%cl, 7(%rsp)
+	leal	(%rcx,%rcx,8), %edi
+	addl	%edx, %edi
+	movl	%edi, 8(%rsp)
 	addl	%ecx, %eax
-	movl	%eax, 20(%rsp)
+	movl	%eax, 12(%rsp)
 	leal	(%rcx,%rcx,2), %eax
-	subl	%eax, %edi
-	movl	%edi, 48(%rsp)
-	movslq	44(%rsp), %rcx
-	movq	32(%rsp), %rdx
+	subl	%eax, %esi
+	movl	%esi, 44(%rsp)
+	movslq	40(%rsp), %rcx
+	movq	16(%rsp), %rdx
 	leaq	(%rcx,%rdx), %r8
-	leaq	-6(%rcx,%rdx), %rdi
-	movq	%rdi, 32(%rsp)
-	movq	24(%rsp), %rdi
-	movzbl	-6(%rcx,%rdx), %eax
-	subq	%rax, %rdi
-	movzbl	(%rdi), %eax
-	movb	%al, 15(%rsp)
-	leal	(%rax,%rax,8), %eax
-	addl	%esi, %eax
-	movl	%eax, 16(%rsp)
+	leaq	-6(%rcx,%rdx), %rsi
+	movq	%rsi, 16(%rsp)
 	movq	24(%rsp), %rsi
 	leaq	(%rcx,%rdx), %rdi
 	addq	$-5, %rdi
-	movq	%rdi, 32(%rsp)
+	movq	%rdi, 16(%rsp)
 	movzbl	-6(%rcx,%rdx), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	movb	%sil, 15(%rsp)
-	leal	(%rax,%rsi,4), %esi
-	movl	%esi, 16(%rsp)
-	movq	24(%rsp), %rax
-	movzbl	-5(%rcx,%rdx), %edi
-	subq	%rdi, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	addl	%eax, %esi
-	movl	%esi, 16(%rsp)
-	leaq	(%rcx,%rdx), %rax
-	addq	$-3, %rax
-	movq	%rax, 32(%rsp)
-	movq	24(%rsp), %rax
-	movzbl	-3(%rcx,%rdx), %edi
-	subq	%rdi, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	addl	%eax, %esi
-	movl	%esi, 16(%rsp)
-	movq	24(%rsp), %rax
-	leaq	(%rcx,%rdx), %rdi
-	addq	$-2, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-3(%rcx,%rdx), %edi
-	subq	%rdi, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	leal	(%rsi,%rax,4), %eax
-	movl	%eax, 16(%rsp)
-	movq	24(%rsp), %rsi
-	movzbl	-2(%rcx,%rdx), %ecx
-	subq	%rcx, %rsi
-	movzbl	(%rsi), %ecx
-	movb	%cl, 15(%rsp)
-	leal	(%rcx,%rcx,8), %ecx
-	addl	%eax, %ecx
-	movl	%ecx, 16(%rsp)
-	movslq	44(%rsp), %r10
-	leaq	(%r10,%r8), %rax
-	addq	$-8, %rax
-	movq	%rax, 32(%rsp)
-	movq	24(%rsp), %rax
-	movzbl	-8(%r10,%r8), %esi
-	subq	%rsi, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	leal	(%rax,%rax,8), %edi
-	addl	%ecx, %edi
-	movl	%edi, 16(%rsp)
-	leal	(%rax,%rax,2), %r9d
-	movl	%eax, %ecx
-	addl	20(%rsp), %ecx
-	movl	%ecx, 20(%rsp)
-	movl	48(%rsp), %esi
-	subl	%r9d, %esi
-	movl	%esi, 48(%rsp)
-	movq	24(%rsp), %rax
-	leaq	(%r10,%r8), %rdx
-	addq	$-7, %rdx
-	movq	%rdx, 32(%rsp)
-	movzbl	-8(%r10,%r8), %edx
-	subq	%rdx, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	leal	(%rdi,%rax,4), %edx
-	movl	%edx, 16(%rsp)
-	addl	%eax, %ecx
-	movl	%ecx, 20(%rsp)
-	addl	%eax, %eax
-	subl	%eax, %esi
-	movl	%esi, 48(%rsp)
-	movq	24(%rsp), %rax
-	leaq	(%r10,%r8), %rdi
-	addq	$-6, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-7(%r10,%r8), %edi
-	subq	%rdi, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	addl	%eax, %edx
-	movl	%edx, 16(%rsp)
-	addl	%eax, %ecx
-	movl	%ecx, 20(%rsp)
-	subl	%eax, %esi
-	movl	%esi, 48(%rsp)
-	movq	24(%rsp), %rax
-	leaq	(%r10,%r8), %rdx
-	addq	$-5, %rdx
-	movq	%rdx, 32(%rsp)
-	movzbl	-6(%r10,%r8), %edx
-	subq	%rdx, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	addl	%eax, %ecx
-	movl	%ecx, 20(%rsp)
-	movq	24(%rsp), %rax
-	leaq	(%r10,%r8), %rdx
-	addq	$-4, %rdx
-	movq	%rdx, 32(%rsp)
-	movzbl	-5(%r10,%r8), %edx
-	subq	%rdx, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	movl	16(%rsp), %edx
-	addl	%eax, %edx
-	movl	%edx, 16(%rsp)
-	addl	%eax, %ecx
-	movl	%ecx, 20(%rsp)
-	addl	48(%rsp), %eax
-	movl	%eax, 48(%rsp)
-	movq	24(%rsp), %rsi
-	leaq	(%r10,%r8), %rdi
-	addq	$-3, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-4(%r10,%r8), %edi
-	subq	%rdi, %rsi
-	movzbl	(%rsi), %esi
-	movb	%sil, 15(%rsp)
-	leal	(%rdx,%rsi,4), %edx
-	movl	%edx, 16(%rsp)
-	addl	%esi, %ecx
-	movl	%ecx, 20(%rsp)
-	leal	(%rax,%rsi,2), %eax
-	movl	%eax, 48(%rsp)
-	movq	24(%rsp), %rsi
-	movzbl	-3(%r10,%r8), %edi
-	subq	%rdi, %rsi
-	movzbl	(%rsi), %esi
-	movb	%sil, 15(%rsp)
-	leal	(%rsi,%rsi,8), %edi
-	addl	%edx, %edi
-	movl	%edi, 16(%rsp)
-	addl	%esi, %ecx
-	movl	%ecx, 20(%rsp)
-	leal	(%rsi,%rsi,2), %esi
-	addl	%eax, %esi
-	movl	%esi, 48(%rsp)
-	movslq	44(%rsp), %r8
-	movq	32(%rsp), %r9
-	leaq	(%r8,%r9), %rax
-	addq	$-5, %rax
-	movq	%rax, 32(%rsp)
-	movq	24(%rsp), %rax
-	movzbl	-5(%r8,%r9), %edx
-	subq	%rdx, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	leal	(%rdi,%rax,4), %edx
-	movl	%edx, 16(%rsp)
-	leal	(%rcx,%rax,4), %ecx
-	movl	%ecx, 20(%rsp)
-	shll	$2, %eax
-	subl	%eax, %esi
-	movl	%esi, 48(%rsp)
-	movq	24(%rsp), %rax
-	leaq	(%r8,%r9), %rdi
-	addq	$-4, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-5(%r8,%r9), %edi
-	subq	%rdi, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	addl	%eax, %edx
-	movl	%edx, 16(%rsp)
-	leal	(%rcx,%rax,4), %ecx
-	movl	%ecx, 20(%rsp)
-	addl	%eax, %eax
-	subl	%eax, %esi
-	movl	%esi, 48(%rsp)
-	movq	24(%rsp), %rax
-	leaq	(%r8,%r9), %rdx
-	addq	$-3, %rdx
-	movq	%rdx, 32(%rsp)
-	movzbl	-4(%r8,%r9), %edx
-	subq	%rdx, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	leal	(%rcx,%rax,4), %eax
-	movl	%eax, 20(%rsp)
-	movq	24(%rsp), %rcx
-	leaq	(%r8,%r9), %rdx
-	addq	$-2, %rdx
-	movq	%rdx, 32(%rsp)
-	movzbl	-3(%r8,%r9), %edx
-	subq	%rdx, %rcx
-	movzbl	(%rcx), %ecx
-	movb	%cl, 15(%rsp)
-	movl	16(%rsp), %edx
-	addl	%ecx, %edx
-	movl	%edx, 16(%rsp)
-	leal	(%rax,%rcx,4), %eax
-	addl	%ecx, %ecx
-	addl	48(%rsp), %ecx
-	movl	%eax, 20(%rsp)
-	movl	%ecx, 48(%rsp)
-	movq	24(%rsp), %rsi
-	movzbl	-2(%r8,%r9), %edi
-	subq	%rdi, %rsi
-	movzbl	(%rsi), %esi
-	movb	%sil, 15(%rsp)
-	leal	(%rdx,%rsi,4), %edx
-	movl	%edx, 16(%rsp)
-	leal	(%rax,%rsi,4), %r8d
-	movl	%r8d, 20(%rsp)
-	leal	(%rcx,%rsi,4), %esi
-	movl	%esi, 48(%rsp)
-	movslq	44(%rsp), %r9
-	movq	32(%rsp), %rcx
-	leaq	-3(%r9,%rcx), %rdi
-	movq	%rdi, 32(%rsp)
+	movb	%sil, 7(%rsp)
+	leal	(%rsi,%rsi,8), %esi
+	addl	8(%rsp), %esi
+	movl	%esi, 8(%rsp)
 	movq	24(%rsp), %rdi
-	movzbl	-3(%r9,%rcx), %eax
+	leaq	(%rcx,%rdx), %rax
+	addq	$-4, %rax
+	movq	%rax, 16(%rsp)
+	movzbl	-5(%rcx,%rdx), %eax
 	subq	%rax, %rdi
 	movzbl	(%rdi), %eax
-	movb	%al, 15(%rsp)
-	addl	%eax, %edx
-	movl	%edx, 16(%rsp)
-	leal	(%rax,%rax,8), %edx
-	addl	%r8d, %edx
-	movl	%edx, 20(%rsp)
-	leal	(%rax,%rax,2), %eax
-	subl	%eax, %esi
-	movl	%esi, 48(%rsp)
+	movb	%al, 7(%rsp)
+	leal	(%rsi,%rax,4), %esi
+	movl	%esi, 8(%rsp)
 	movq	24(%rsp), %rax
-	leaq	(%r9,%rcx), %rsi
-	addq	$-2, %rsi
-	movq	%rsi, 32(%rsp)
-	movzbl	-3(%r9,%rcx), %esi
+	movzbl	-4(%rcx,%rdx), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	movb	%al, 7(%rsp)
+	addl	%eax, %esi
+	movl	%esi, 8(%rsp)
+	leaq	(%rcx,%rdx), %rax
+	addq	$-2, %rax
+	movq	%rax, 16(%rsp)
+	movq	24(%rsp), %rax
+	leaq	(%rcx,%rdx), %rdi
+	addq	$-1, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-2(%rcx,%rdx), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	movb	%al, 7(%rsp)
+	addl	%eax, %esi
+	movl	%esi, 8(%rsp)
+	movq	24(%rsp), %rax
+	movq	%r8, 16(%rsp)
+	movzbl	-1(%rcx,%rdx), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	movb	%al, 7(%rsp)
+	leal	(%rsi,%rax,4), %eax
+	movl	%eax, 8(%rsp)
+	movq	24(%rsp), %rsi
+	movzbl	(%rcx,%rdx), %ecx
+	subq	%rcx, %rsi
+	movzbl	(%rsi), %ecx
+	movb	%cl, 7(%rsp)
+	leal	(%rcx,%rcx,8), %ecx
+	addl	%eax, %ecx
+	movl	%ecx, 8(%rsp)
+	movslq	40(%rsp), %rbx
+	leaq	(%rbx,%r8), %r9
+	leaq	(%rbx,%r8), %rax
+	addq	$-6, %rax
+	movq	%rax, 16(%rsp)
+	movq	24(%rsp), %rax
+	leaq	(%rbx,%r8), %rdi
+	addq	$-5, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-6(%rbx,%r8), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	movb	%al, 7(%rsp)
+	leal	(%rax,%rax,8), %r11d
+	addl	%ecx, %r11d
+	leal	(%rax,%rax,2), %r10d
+	movl	%eax, %ecx
+	addl	12(%rsp), %ecx
+	movl	%r11d, 8(%rsp)
+	movl	%ecx, 12(%rsp)
+	movl	44(%rsp), %edi
+	subl	%r10d, %edi
+	movl	%edi, 44(%rsp)
+	movq	24(%rsp), %rax
+	leaq	(%rbx,%r8), %rsi
+	addq	$-4, %rsi
+	movq	%rsi, 16(%rsp)
+	movzbl	-5(%rbx,%r8), %esi
 	subq	%rsi, %rax
 	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	leal	(%rax,%rax,8), %eax
-	addl	%edx, %eax
-	movl	%eax, 20(%rsp)
-	movq	24(%rsp), %rdx
-	movzbl	-2(%r9,%rcx), %ecx
-	subq	%rcx, %rdx
-	movzbl	(%rdx), %ecx
-	movb	%cl, 15(%rsp)
-	addl	%ecx, 16(%rsp)
-	leal	(%rcx,%rcx,8), %edx
-	leal	(%rax,%rdx), %esi
-	movl	%esi, 20(%rsp)
-	leal	(%rcx,%rcx,2), %ecx
-	addl	%ecx, 48(%rsp)
+	movb	%al, 7(%rsp)
+	leal	(%r11,%rax,4), %esi
+	movl	%esi, 8(%rsp)
+	addl	%eax, %ecx
+	movl	%ecx, 12(%rsp)
+	addl	%eax, %eax
+	subl	%eax, %edi
+	movl	%edi, 44(%rsp)
+	movq	24(%rsp), %rax
+	leaq	(%rbx,%r8), %rdx
+	addq	$-3, %rdx
+	movq	%rdx, 16(%rsp)
+	movzbl	-4(%rbx,%r8), %edx
+	subq	%rdx, %rax
+	movzbl	(%rax), %eax
+	movb	%al, 7(%rsp)
+	addl	%eax, %esi
+	movl	%esi, 8(%rsp)
+	addl	%eax, %ecx
+	movl	%ecx, 12(%rsp)
+	subl	%eax, %edi
+	movl	%edi, 44(%rsp)
+	movq	24(%rsp), %rax
+	leaq	(%rbx,%r8), %rdx
+	addq	$-2, %rdx
+	movq	%rdx, 16(%rsp)
+	movzbl	-3(%rbx,%r8), %edx
+	subq	%rdx, %rax
+	movzbl	(%rax), %eax
+	movb	%al, 7(%rsp)
+	addl	%eax, %ecx
+	movl	%ecx, 12(%rsp)
+	movq	24(%rsp), %rax
+	leaq	(%rbx,%r8), %rdx
+	addq	$-1, %rdx
+	movq	%rdx, 16(%rsp)
+	movzbl	-2(%rbx,%r8), %edx
+	subq	%rdx, %rax
+	movzbl	(%rax), %eax
+	movb	%al, 7(%rsp)
+	movl	8(%rsp), %edx
 	addl	%eax, %edx
+	movl	%edx, 8(%rsp)
+	addl	%eax, %ecx
+	movl	%ecx, 12(%rsp)
+	addl	44(%rsp), %eax
+	movl	%eax, 44(%rsp)
+	movq	24(%rsp), %rsi
+	movq	%r9, 16(%rsp)
+	movzbl	-1(%rbx,%r8), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	movb	%sil, 7(%rsp)
+	leal	(%rdx,%rsi,4), %edx
+	movl	%edx, 8(%rsp)
+	addl	%esi, %ecx
+	movl	%ecx, 12(%rsp)
+	leal	(%rax,%rsi,2), %eax
+	movl	%eax, 44(%rsp)
+	movq	24(%rsp), %rsi
+	movzbl	(%rbx,%r8), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	movb	%sil, 7(%rsp)
+	leal	(%rsi,%rsi,8), %edi
+	addl	%edx, %edi
+	movl	%edi, 8(%rsp)
+	addl	%esi, %ecx
+	movl	%ecx, 12(%rsp)
+	leal	(%rsi,%rsi,2), %esi
+	addl	%eax, %esi
+	movl	%esi, 44(%rsp)
+	movslq	40(%rsp), %rax
+	movq	16(%rsp), %rdx
+	leaq	(%rax,%rdx), %rdi
+	addq	$-5, %rdi
+	movq	%rdi, 16(%rsp)
+	movq	24(%rsp), %rdi
+	leaq	(%rax,%rdx), %rbx
+	addq	$-4, %rbx
+	movq	%rbx, 16(%rsp)
+	movzbl	-5(%rax,%rdx), %ebx
+	subq	%rbx, %rdi
+	movzbl	(%rdi), %edi
+	movb	%dil, 7(%rsp)
+	leal	(,%rdi,4), %ebx
+	subl	%ebx, %esi
+	addl	8(%rsp), %ebx
+	movl	%ebx, 8(%rsp)
+	leal	(%rcx,%rdi,4), %r8d
+	movl	%r8d, 12(%rsp)
+	movl	%esi, 44(%rsp)
+	movq	24(%rsp), %rdi
+	leaq	(%rax,%rdx), %rcx
+	addq	$-3, %rcx
+	movq	%rcx, 16(%rsp)
+	movzbl	-4(%rax,%rdx), %ecx
+	subq	%rcx, %rdi
+	movzbl	(%rdi), %ecx
+	movb	%cl, 7(%rsp)
+	addl	%ecx, %ebx
+	movl	%ebx, 8(%rsp)
+	leal	(%r8,%rcx,4), %edi
+	movl	%edi, 12(%rsp)
+	addl	%ecx, %ecx
+	subl	%ecx, %esi
+	movl	%esi, 44(%rsp)
+	movq	24(%rsp), %rcx
+	leaq	(%rax,%rdx), %rsi
+	addq	$-2, %rsi
+	movq	%rsi, 16(%rsp)
+	movzbl	-3(%rax,%rdx), %esi
+	subq	%rsi, %rcx
+	movzbl	(%rcx), %ecx
+	movb	%cl, 7(%rsp)
+	leal	(%rdi,%rcx,4), %esi
+	movl	%esi, 12(%rsp)
+	movq	24(%rsp), %rcx
+	leaq	(%rax,%rdx), %rdi
+	addq	$-1, %rdi
+	movq	%rdi, 16(%rsp)
+	movzbl	-2(%rax,%rdx), %edi
+	subq	%rdi, %rcx
+	movzbl	(%rcx), %ecx
+	movb	%cl, 7(%rsp)
+	movl	8(%rsp), %edi
+	addl	%ecx, %edi
+	movl	%edi, 8(%rsp)
+	leal	(%rsi,%rcx,4), %esi
+	movl	%esi, 12(%rsp)
+	addl	%ecx, %ecx
+	addl	44(%rsp), %ecx
+	movl	%ecx, 44(%rsp)
+	movq	24(%rsp), %rbx
+	movzbl	-1(%rax,%rdx), %eax
+	subq	%rax, %rbx
+	movzbl	(%rbx), %eax
+	movb	%al, 7(%rsp)
+	leal	(%rdi,%rax,4), %edx
+	movl	%edx, 8(%rsp)
+	leal	(%rsi,%rax,4), %edx
+	movl	%edx, 12(%rsp)
+	leal	(%rcx,%rax,4), %esi
+	movl	%esi, 44(%rsp)
+	movslq	40(%rsp), %rax
+	movq	16(%rsp), %rcx
+	leaq	-3(%rax,%rcx), %rdi
+	movq	%rdi, 16(%rsp)
+	movq	24(%rsp), %rdi
+	leaq	(%rax,%rcx), %rbx
+	addq	$-2, %rbx
+	movq	%rbx, 16(%rsp)
+	movzbl	-3(%rax,%rcx), %ebx
+	subq	%rbx, %rdi
+	movzbl	(%rdi), %edi
+	movb	%dil, 7(%rsp)
+	addl	%edi, 8(%rsp)
+	leal	(%rdi,%rdi,8), %ebx
+	addl	%edx, %ebx
+	movl	%ebx, 12(%rsp)
+	leal	(%rdi,%rdi,2), %edx
+	subl	%edx, %esi
+	movl	%esi, 44(%rsp)
+	movq	24(%rsp), %rdx
+	leaq	(%rax,%rcx), %rsi
+	addq	$-1, %rsi
+	movq	%rsi, 16(%rsp)
+	movzbl	-2(%rax,%rcx), %esi
+	subq	%rsi, %rdx
+	movzbl	(%rdx), %edx
+	movb	%dl, 7(%rsp)
+	leal	(%rdx,%rdx,8), %edx
+	addl	%ebx, %edx
+	movl	%edx, 12(%rsp)
+	movq	24(%rsp), %rsi
+	movzbl	-1(%rax,%rcx), %eax
+	subq	%rax, %rsi
+	movzbl	(%rsi), %eax
+	movb	%al, 7(%rsp)
+	addl	%eax, 8(%rsp)
+	leal	(%rax,%rax,8), %ecx
+	leal	(%rdx,%rcx), %esi
+	movl	%esi, 12(%rsp)
+	leal	(%rax,%rax,2), %eax
+	addl	%eax, 44(%rsp)
+	addl	%edx, %ecx
 	je	.LBB13_40
 # %bb.41:                               #   in Loop: Header=BB13_11 Depth=2
-	cvtsi2ssl	16(%rsp), %xmm0
-	cvtsi2ssl	20(%rsp), %xmm1
+	cvtsi2ssl	8(%rsp), %xmm0
+	cvtsi2ssl	12(%rsp), %xmm1
 	divss	%xmm1, %xmm0
-	movss	%xmm0, 72(%rsp)
+	movss	%xmm0, 64(%rsp)
 	jmp	.LBB13_42
 .LBB13_40:                              #   in Loop: Header=BB13_11 Depth=2
-	movl	$1232348160, 72(%rsp)   # imm = 0x49742400
+	movl	$1232348160, 64(%rsp)   # imm = 0x49742400
 .LBB13_42:                              #   in Loop: Header=BB13_11 Depth=2
-	movss	72(%rsp), %xmm0         # xmm0 = mem[0],zero,zero,zero
+	movss	64(%rsp), %xmm0         # xmm0 = mem[0],zero,zero,zero
 	cvtss2sd	%xmm0, %xmm0
 	ucomisd	%xmm0, %xmm4
 	jbe	.LBB13_44
 # %bb.43:                               #   in Loop: Header=BB13_11 Depth=2
-	movl	$0, 68(%rsp)
+	movl	$0, 60(%rsp)
 	jmp	.LBB13_49
 .LBB13_44:                              #   in Loop: Header=BB13_11 Depth=2
-	movss	72(%rsp), %xmm0         # xmm0 = mem[0],zero,zero,zero
+	movss	64(%rsp), %xmm0         # xmm0 = mem[0],zero,zero,zero
 	cvtss2sd	%xmm0, %xmm0
 	ucomisd	.LCPI13_3(%rip), %xmm0
 	jbe	.LBB13_46
 # %bb.45:                               #   in Loop: Header=BB13_11 Depth=2
-	movl	$1, 68(%rsp)
-	movl	$0, 64(%rsp)
+	movl	$1, 60(%rsp)
+	movl	$0, 56(%rsp)
 	jmp	.LBB13_50
 .LBB13_46:                              #   in Loop: Header=BB13_11 Depth=2
-	cmpl	$0, 48(%rsp)
+	cmpl	$0, 44(%rsp)
 	jle	.LBB13_48
 # %bb.47:                               #   in Loop: Header=BB13_11 Depth=2
-	movl	$-1, 68(%rsp)
+	movl	$-1, 60(%rsp)
 	jmp	.LBB13_49
 .LBB13_19:                              #   in Loop: Header=BB13_11 Depth=2
-	movl	$1232348160, 72(%rsp)   # imm = 0x49742400
+	movl	$1232348160, 64(%rsp)   # imm = 0x49742400
 .LBB13_21:                              #   in Loop: Header=BB13_11 Depth=2
 	xorps	%xmm0, %xmm0
-	ucomiss	72(%rsp), %xmm0
+	ucomiss	64(%rsp), %xmm0
 	jbe	.LBB13_23
 # %bb.22:                               #   in Loop: Header=BB13_11 Depth=2
-	movss	72(%rsp), %xmm0         # xmm0 = mem[0],zero,zero,zero
+	movss	64(%rsp), %xmm0         # xmm0 = mem[0],zero,zero,zero
 	xorps	.LCPI13_1(%rip), %xmm0
-	movss	%xmm0, 72(%rsp)
-	movl	$-1, 48(%rsp)
+	movss	%xmm0, 64(%rsp)
+	movl	$-1, 44(%rsp)
 	jmp	.LBB13_24
 .LBB13_23:                              #   in Loop: Header=BB13_11 Depth=2
-	movl	$1, 48(%rsp)
+	movl	$1, 44(%rsp)
 .LBB13_24:                              #   in Loop: Header=BB13_11 Depth=2
-	movss	72(%rsp), %xmm0         # xmm0 = mem[0],zero,zero,zero
+	movss	64(%rsp), %xmm0         # xmm0 = mem[0],zero,zero,zero
 	cvtss2sd	%xmm0, %xmm0
 	ucomisd	%xmm0, %xmm4
 	jbe	.LBB13_26
 # %bb.25:                               #   in Loop: Header=BB13_11 Depth=2
-	movl	$0, 68(%rsp)
+	movl	$0, 60(%rsp)
 	jmp	.LBB13_31
 .LBB13_26:                              #   in Loop: Header=BB13_11 Depth=2
-	movss	72(%rsp), %xmm0         # xmm0 = mem[0],zero,zero,zero
+	movss	64(%rsp), %xmm0         # xmm0 = mem[0],zero,zero,zero
 	cvtss2sd	%xmm0, %xmm0
 	ucomisd	.LCPI13_3(%rip), %xmm0
 	jbe	.LBB13_28
 # %bb.27:                               #   in Loop: Header=BB13_11 Depth=2
-	movl	$1, 68(%rsp)
-	movl	$0, 64(%rsp)
+	movl	$1, 60(%rsp)
+	movl	$0, 56(%rsp)
 	jmp	.LBB13_32
 .LBB13_28:                              #   in Loop: Header=BB13_11 Depth=2
-	cmpl	$0, 48(%rsp)
+	cmpl	$0, 44(%rsp)
 	jle	.LBB13_30
 # %bb.29:                               #   in Loop: Header=BB13_11 Depth=2
-	movl	$1, 68(%rsp)
+	movl	$1, 60(%rsp)
 	jmp	.LBB13_31
 .LBB13_48:                              #   in Loop: Header=BB13_11 Depth=2
-	movl	$1, 68(%rsp)
+	movl	$1, 60(%rsp)
 	.p2align	4, 0x90
 .LBB13_49:                              #   in Loop: Header=BB13_11 Depth=2
-	movl	$1, 64(%rsp)
+	movl	$1, 56(%rsp)
 .LBB13_50:                              #   in Loop: Header=BB13_11 Depth=2
-	movl	76(%rsp), %eax
-	movq	80(%rsp), %rcx
-	movslq	60(%rsp), %rdx
-	movslq	68(%rsp), %rsi
+	movl	68(%rsp), %eax
+	movq	72(%rsp), %rcx
+	movslq	52(%rsp), %rdx
+	movslq	60(%rsp), %rsi
 	addq	%rdx, %rsi
-	movslq	44(%rsp), %rdx
+	movslq	40(%rsp), %rdx
 	imulq	%rsi, %rdx
-	movslq	56(%rsp), %rsi
+	movslq	48(%rsp), %rsi
 	addq	%rdx, %rsi
-	movslq	64(%rsp), %rdx
+	movslq	56(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jle	.LBB13_55
 # %bb.51:                               #   in Loop: Header=BB13_11 Depth=2
-	movl	76(%rsp), %eax
-	movq	80(%rsp), %rcx
-	movslq	60(%rsp), %rdx
-	movslq	68(%rsp), %rsi
+	movl	68(%rsp), %eax
+	movq	72(%rsp), %rcx
+	movslq	52(%rsp), %rdx
+	movslq	60(%rsp), %rsi
 	subq	%rsi, %rdx
-	movslq	44(%rsp), %rsi
+	movslq	40(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	56(%rsp), %rdx
+	movslq	48(%rsp), %rdx
 	addq	%rsi, %rdx
-	movslq	64(%rsp), %rsi
+	movslq	56(%rsp), %rsi
 	subq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jl	.LBB13_55
 # %bb.52:                               #   in Loop: Header=BB13_11 Depth=2
-	movl	76(%rsp), %eax
-	movq	80(%rsp), %rcx
-	movslq	60(%rsp), %rdx
-	movslq	68(%rsp), %rsi
+	movl	68(%rsp), %eax
+	movq	72(%rsp), %rcx
+	movslq	52(%rsp), %rdx
+	movslq	60(%rsp), %rsi
 	leaq	(%rdx,%rsi,2), %rdx
-	movslq	44(%rsp), %rsi
+	movslq	40(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	56(%rsp), %rdx
+	movslq	48(%rsp), %rdx
 	addq	%rsi, %rdx
-	movslq	64(%rsp), %rsi
+	movslq	56(%rsp), %rsi
 	leaq	(%rdx,%rsi,2), %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jle	.LBB13_55
 # %bb.53:                               #   in Loop: Header=BB13_11 Depth=2
-	movl	76(%rsp), %eax
-	movq	80(%rsp), %rcx
-	movslq	60(%rsp), %rdx
-	movslq	68(%rsp), %rsi
+	movl	68(%rsp), %eax
+	movq	72(%rsp), %rcx
+	movslq	52(%rsp), %rdx
+	movslq	60(%rsp), %rsi
 	addq	%rsi, %rsi
 	subq	%rsi, %rdx
-	movslq	44(%rsp), %rsi
+	movslq	40(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	56(%rsp), %rdx
+	movslq	48(%rsp), %rdx
 	addq	%rsi, %rdx
-	movslq	64(%rsp), %rsi
+	movslq	56(%rsp), %rsi
 	addq	%rsi, %rsi
 	subq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jl	.LBB13_55
 # %bb.54:                               #   in Loop: Header=BB13_11 Depth=2
-	movq	112(%rsp), %rax
-	movslq	60(%rsp), %rcx
-	movslq	44(%rsp), %rdx
+	movq	104(%rsp), %rax
+	movslq	52(%rsp), %rcx
+	movslq	40(%rsp), %rdx
 	imulq	%rcx, %rdx
-	movslq	56(%rsp), %rcx
+	movslq	48(%rsp), %rcx
 	addq	%rdx, %rcx
 	movb	$2, (%rax,%rcx)
 	jmp	.LBB13_55
 .LBB13_30:                              #   in Loop: Header=BB13_11 Depth=2
-	movl	$-1, 68(%rsp)
+	movl	$-1, 60(%rsp)
 .LBB13_31:                              #   in Loop: Header=BB13_11 Depth=2
-	movl	$1, 64(%rsp)
+	movl	$1, 56(%rsp)
 .LBB13_32:                              #   in Loop: Header=BB13_11 Depth=2
-	movl	76(%rsp), %eax
-	movq	80(%rsp), %rcx
-	movslq	60(%rsp), %rdx
-	movslq	68(%rsp), %rsi
+	movl	68(%rsp), %eax
+	movq	72(%rsp), %rcx
+	movslq	52(%rsp), %rdx
+	movslq	60(%rsp), %rsi
 	addq	%rdx, %rsi
-	movslq	44(%rsp), %rdx
+	movslq	40(%rsp), %rdx
 	imulq	%rsi, %rdx
-	movslq	56(%rsp), %rsi
+	movslq	48(%rsp), %rsi
 	addq	%rdx, %rsi
-	movslq	64(%rsp), %rdx
+	movslq	56(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jle	.LBB13_38
 # %bb.33:                               #   in Loop: Header=BB13_11 Depth=2
-	movl	76(%rsp), %eax
-	movq	80(%rsp), %rcx
-	movslq	60(%rsp), %rdx
-	movslq	68(%rsp), %rsi
+	movl	68(%rsp), %eax
+	movq	72(%rsp), %rcx
+	movslq	52(%rsp), %rdx
+	movslq	60(%rsp), %rsi
 	subq	%rsi, %rdx
-	movslq	44(%rsp), %rsi
+	movslq	40(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	56(%rsp), %rdx
+	movslq	48(%rsp), %rdx
 	addq	%rsi, %rdx
-	movslq	64(%rsp), %rsi
+	movslq	56(%rsp), %rsi
 	subq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jl	.LBB13_38
 # %bb.34:                               #   in Loop: Header=BB13_11 Depth=2
-	movl	76(%rsp), %eax
-	movq	80(%rsp), %rcx
-	movslq	60(%rsp), %rdx
-	movslq	68(%rsp), %rsi
+	movl	68(%rsp), %eax
+	movq	72(%rsp), %rcx
+	movslq	52(%rsp), %rdx
+	movslq	60(%rsp), %rsi
 	leaq	(%rdx,%rsi,2), %rdx
-	movslq	44(%rsp), %rsi
+	movslq	40(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	56(%rsp), %rdx
+	movslq	48(%rsp), %rdx
 	addq	%rsi, %rdx
-	movslq	64(%rsp), %rsi
+	movslq	56(%rsp), %rsi
 	leaq	(%rdx,%rsi,2), %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jle	.LBB13_38
 # %bb.35:                               #   in Loop: Header=BB13_11 Depth=2
-	movl	76(%rsp), %eax
-	movq	80(%rsp), %rcx
-	movslq	60(%rsp), %rdx
-	movslq	68(%rsp), %rsi
+	movl	68(%rsp), %eax
+	movq	72(%rsp), %rcx
+	movslq	52(%rsp), %rdx
+	movslq	60(%rsp), %rsi
 	addq	%rsi, %rsi
 	subq	%rsi, %rdx
-	movslq	44(%rsp), %rsi
+	movslq	40(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	56(%rsp), %rdx
+	movslq	48(%rsp), %rdx
 	addq	%rsi, %rdx
-	movslq	64(%rsp), %rsi
+	movslq	56(%rsp), %rsi
 	addq	%rsi, %rsi
 	subq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jl	.LBB13_38
 # %bb.36:                               #   in Loop: Header=BB13_11 Depth=2
-	movq	112(%rsp), %rax
-	movslq	60(%rsp), %rcx
-	movslq	44(%rsp), %rdx
+	movq	104(%rsp), %rax
+	movslq	52(%rsp), %rcx
+	movslq	40(%rsp), %rdx
 	imulq	%rcx, %rdx
-	movslq	56(%rsp), %rcx
+	movslq	48(%rsp), %rcx
 	addq	%rdx, %rcx
 	movb	$1, (%rax,%rcx)
-	cmpl	$1, 88(%rsp)
+	cmpl	$1, 80(%rsp)
 	jne	.LBB13_55
 	jmp	.LBB13_39
 .LBB13_57:
-	addq	$120, %rsp
+	addq	$112, %rsp
+	.cfi_def_cfa_offset 16
+	popq	%rbx
 	.cfi_def_cfa_offset 8
 	retq
 .Lfunc_end13:
@@ -4310,7 +4488,7 @@ susan_edges_small:                      # @susan_edges_small
 	movq	%rdx, 112(%rsp)
 	movq	%rcx, 104(%rsp)
 	movl	%r8d, 76(%rsp)
-	movl	%r9d, 16(%rsp)
+	movl	%r9d, 12(%rsp)
 	movslq	%r9d, %rax
 	movslq	128(%rsp), %rdx
 	imulq	%rax, %rdx
@@ -4319,160 +4497,175 @@ susan_edges_small:                      # @susan_edges_small
 	xorl	%esi, %esi
 	callq	memset
 	movl	$730, 76(%rsp)          # imm = 0x2DA
-	movl	$1, 32(%rsp)
+	movl	$1, 28(%rsp)
 	jmp	.LBB14_1
 	.p2align	4, 0x90
 .LBB14_7:                               #   in Loop: Header=BB14_1 Depth=1
-	addl	$1, 32(%rsp)
+	addl	$1, 28(%rsp)
 .LBB14_1:                               # =>This Loop Header: Depth=1
                                         #     Child Loop BB14_3 Depth 2
 	movl	128(%rsp), %eax
 	addl	$-1, %eax
-	cmpl	%eax, 32(%rsp)
+	cmpl	%eax, 28(%rsp)
 	jge	.LBB14_8
 # %bb.2:                                #   in Loop: Header=BB14_1 Depth=1
-	movl	$1, 28(%rsp)
+	movl	$1, 24(%rsp)
 	jmp	.LBB14_3
 	.p2align	4, 0x90
 .LBB14_6:                               #   in Loop: Header=BB14_3 Depth=2
-	addl	$1, 28(%rsp)
+	addl	$1, 24(%rsp)
 .LBB14_3:                               #   Parent Loop BB14_1 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	movl	16(%rsp), %eax
+	movl	12(%rsp), %eax
 	addl	$-1, %eax
-	cmpl	%eax, 28(%rsp)
+	cmpl	%eax, 24(%rsp)
 	jge	.LBB14_7
 # %bb.4:                                #   in Loop: Header=BB14_3 Depth=2
-	movl	$100, 64(%rsp)
-	movslq	32(%rsp), %rdx
-	leaq	-1(%rdx), %rcx
-	movslq	16(%rsp), %r9
-	imulq	%r9, %rcx
+	movl	$100, 40(%rsp)
+	movslq	28(%rsp), %rcx
+	leaq	-1(%rcx), %rax
+	movslq	12(%rsp), %r8
+	imulq	%r8, %rax
 	movq	96(%rsp), %rdi
-	addq	%rdi, %rcx
-	movslq	28(%rsp), %rax
-	leaq	(%rcx,%rax), %r8
-	leaq	(%rax,%rcx), %rsi
+	addq	%rdi, %rax
+	movslq	24(%rsp), %rdx
+	leaq	(%rdx,%rax), %rsi
 	addq	$-1, %rsi
 	movq	%rsi, 56(%rsp)
-	imulq	%r9, %rdx
-	addq	%rax, %rdx
-	movzbl	(%rdi,%rdx), %edx
-	addq	104(%rsp), %rdx
-	movq	%rdx, 48(%rsp)
-	movq	%r8, 56(%rsp)
-	movzbl	-1(%rax,%rcx), %esi
-	movq	%rdx, %rdi
+	imulq	%r8, %rcx
+	addq	%rdx, %rcx
+	movzbl	(%rdi,%rcx), %ecx
+	addq	104(%rsp), %rcx
+	leaq	(%rax,%rdx), %r9
+	movq	%rcx, 48(%rsp)
+	movq	%r9, 56(%rsp)
+	movzbl	-1(%rdx,%rax), %r8d
+	movq	%rcx, %rsi
+	subq	%r8, %rsi
+	movzbl	(%rsi), %r8d
+	leal	100(%r8), %esi
+	movl	%esi, 40(%rsp)
+	leaq	(%rdx,%rax), %rsi
+	addq	$1, %rsi
+	movq	%rsi, 56(%rsp)
+	movzbl	(%rdx,%rax), %esi
+	movq	%rcx, %rdi
 	subq	%rsi, %rdi
 	movzbl	(%rdi), %esi
-	leal	100(%rsi), %edi
-	movl	%edi, 64(%rsp)
-	leaq	(%rax,%rcx), %rdi
-	addq	$1, %rdi
-	movq	%rdi, 56(%rsp)
-	movzbl	(%rax,%rcx), %eax
-	subq	%rax, %rdx
-	movzbl	(%rdx), %eax
-	leal	(%rsi,%rax), %eax
-	addl	$100, %eax
-	movl	%eax, 64(%rsp)
-	movslq	16(%rsp), %rdx
-	leaq	1(%rdx,%r8), %rcx
-	leaq	-1(%rdx,%r8), %rsi
+	leal	(%r8,%rsi), %esi
+	addl	$100, %esi
+	movl	%esi, 40(%rsp)
+	movzbl	1(%rdx,%rax), %eax
+	subq	%rax, %rcx
+	movzbl	(%rcx), %ecx
+	addl	%esi, %ecx
+	movl	%ecx, 40(%rsp)
+	movslq	12(%rsp), %rdx
+	leaq	(%rdx,%r9), %rax
+	addq	$1, %rax
+	leaq	-1(%rdx,%r9), %rsi
 	movq	%rsi, 56(%rsp)
 	movq	48(%rsp), %rsi
-	movzbl	-1(%rdx,%r8), %edi
+	movzbl	-1(%rdx,%r9), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	addl	%eax, %esi
-	movl	%esi, 64(%rsp)
-	movq	%rcx, 56(%rsp)
-	movq	48(%rsp), %rax
-	movzbl	1(%rdx,%r8), %edx
-	subq	%rdx, %rax
-	movzbl	(%rax), %eax
-	addl	%esi, %eax
-	movl	%eax, 64(%rsp)
-	movslq	16(%rsp), %rdx
-	leaq	(%rdx,%rcx), %rsi
-	addq	$-2, %rsi
-	movq	%rsi, 56(%rsp)
-	movq	48(%rsp), %rsi
-	movzbl	-2(%rdx,%rcx), %edi
-	subq	%rdi, %rsi
-	movzbl	(%rsi), %esi
-	addl	%eax, %esi
-	movl	%esi, 64(%rsp)
-	movq	48(%rsp), %rax
-	leaq	(%rdx,%rcx), %rdi
-	addq	$-1, %rdi
+	addl	%ecx, %esi
+	movl	%esi, 40(%rsp)
+	movq	%rax, 56(%rsp)
+	movq	48(%rsp), %rcx
+	movzbl	1(%rdx,%r9), %edx
+	subq	%rdx, %rcx
+	movzbl	(%rcx), %ecx
+	addl	%esi, %ecx
+	movl	%ecx, 40(%rsp)
+	movslq	12(%rsp), %rdx
+	leaq	(%rdx,%rax), %r8
+	leaq	(%rdx,%rax), %rdi
+	addq	$-2, %rdi
 	movq	%rdi, 56(%rsp)
-	movzbl	-2(%rdx,%rcx), %ecx
-	subq	%rcx, %rax
-	movzbl	(%rax), %eax
-	addl	%esi, %eax
-	movl	%eax, 64(%rsp)
+	movq	48(%rsp), %rdi
+	leaq	(%rdx,%rax), %rsi
+	addq	$-1, %rsi
+	movq	%rsi, 56(%rsp)
+	movzbl	-2(%rdx,%rax), %esi
+	subq	%rsi, %rdi
+	movzbl	(%rdi), %esi
+	addl	%ecx, %esi
+	movl	%esi, 40(%rsp)
+	movq	48(%rsp), %rcx
+	movq	%r8, 56(%rsp)
+	movzbl	-1(%rdx,%rax), %edi
+	subq	%rdi, %rcx
+	movzbl	(%rcx), %ecx
+	addl	%esi, %ecx
+	movl	%ecx, 40(%rsp)
+	movq	48(%rsp), %rsi
+	movzbl	(%rdx,%rax), %eax
+	subq	%rax, %rsi
+	movzbl	(%rsi), %eax
+	addl	%ecx, %eax
+	movl	%eax, 40(%rsp)
 	cmpl	76(%rsp), %eax
 	jg	.LBB14_6
 # %bb.5:                                #   in Loop: Header=BB14_3 Depth=2
 	movl	76(%rsp), %eax
-	subl	64(%rsp), %eax
+	subl	40(%rsp), %eax
 	movq	80(%rsp), %rcx
-	movslq	32(%rsp), %rdx
-	movslq	16(%rsp), %rsi
-	imulq	%rdx, %rsi
 	movslq	28(%rsp), %rdx
+	movslq	12(%rsp), %rsi
+	imulq	%rdx, %rsi
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	movl	%eax, (%rcx,%rdx,4)
 	jmp	.LBB14_6
 .LBB14_8:
-	movl	$2, 32(%rsp)
+	movl	$2, 28(%rsp)
 	xorps	%xmm2, %xmm2
 	movsd	.LCPI14_0(%rip), %xmm3  # xmm3 = mem[0],zero
 	movsd	.LCPI14_2(%rip), %xmm4  # xmm4 = mem[0],zero
 	jmp	.LBB14_9
 	.p2align	4, 0x90
 .LBB14_52:                              #   in Loop: Header=BB14_9 Depth=1
-	addl	$1, 32(%rsp)
+	addl	$1, 28(%rsp)
 .LBB14_9:                               # =>This Loop Header: Depth=1
                                         #     Child Loop BB14_11 Depth 2
 	movl	128(%rsp), %eax
 	addl	$-2, %eax
-	cmpl	%eax, 32(%rsp)
+	cmpl	%eax, 28(%rsp)
 	jge	.LBB14_53
 # %bb.10:                               #   in Loop: Header=BB14_9 Depth=1
-	movl	$2, 28(%rsp)
+	movl	$2, 24(%rsp)
 	jmp	.LBB14_11
 	.p2align	4, 0x90
 .LBB14_51:                              #   in Loop: Header=BB14_11 Depth=2
-	addl	$1, 28(%rsp)
+	addl	$1, 24(%rsp)
 .LBB14_11:                              #   Parent Loop BB14_9 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
-	movl	16(%rsp), %eax
+	movl	12(%rsp), %eax
 	addl	$-2, %eax
-	cmpl	%eax, 28(%rsp)
+	cmpl	%eax, 24(%rsp)
 	jge	.LBB14_52
 # %bb.12:                               #   in Loop: Header=BB14_11 Depth=2
 	movq	80(%rsp), %rax
-	movslq	32(%rsp), %rcx
-	movslq	16(%rsp), %rdx
-	imulq	%rcx, %rdx
 	movslq	28(%rsp), %rcx
+	movslq	12(%rsp), %rdx
+	imulq	%rcx, %rdx
+	movslq	24(%rsp), %rcx
 	addq	%rdx, %rcx
 	cmpl	$0, (%rax,%rcx,4)
 	jle	.LBB14_51
 # %bb.13:                               #   in Loop: Header=BB14_11 Depth=2
 	movq	80(%rsp), %rax
-	movslq	32(%rsp), %rcx
-	movslq	16(%rsp), %rdx
-	imulq	%rcx, %rdx
 	movslq	28(%rsp), %rcx
+	movslq	12(%rsp), %rdx
+	imulq	%rcx, %rdx
+	movslq	24(%rsp), %rcx
 	addq	%rdx, %rcx
 	movl	(%rax,%rcx,4), %eax
 	movl	%eax, 72(%rsp)
 	movl	76(%rsp), %edx
 	subl	%eax, %edx
-	movl	%edx, 64(%rsp)
+	movl	%edx, 40(%rsp)
 	movq	96(%rsp), %rax
 	movzbl	(%rax,%rcx), %eax
 	addq	104(%rsp), %rax
@@ -4480,24 +4673,24 @@ susan_edges_small:                      # @susan_edges_small
 	cmpl	$251, %edx
 	jl	.LBB14_35
 # %bb.14:                               #   in Loop: Header=BB14_11 Depth=2
-	movslq	32(%rsp), %rax
+	movslq	28(%rsp), %rax
 	addq	$-1, %rax
-	movslq	16(%rsp), %rcx
+	movslq	12(%rsp), %rcx
 	imulq	%rax, %rcx
 	addq	96(%rsp), %rcx
-	movslq	28(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	leaq	(%rcx,%rdx), %r8
+	movl	$0, 16(%rsp)
 	movl	$0, 20(%rsp)
-	movl	$0, 24(%rsp)
 	movq	48(%rsp), %rsi
 	movq	%r8, 56(%rsp)
 	movzbl	-1(%rdx,%rcx), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	movb	%sil, 15(%rsp)
+	movb	%sil, 11(%rsp)
 	negl	%esi
+	movl	%esi, 16(%rsp)
 	movl	%esi, 20(%rsp)
-	movl	%esi, 24(%rsp)
 	movq	48(%rsp), %rdi
 	leaq	(%rdx,%rcx), %rax
 	addq	$1, %rax
@@ -4505,19 +4698,19 @@ susan_edges_small:                      # @susan_edges_small
 	movzbl	(%rdx,%rcx), %eax
 	subq	%rax, %rdi
 	movzbl	(%rdi), %eax
-	movb	%al, 15(%rsp)
+	movb	%al, 11(%rsp)
 	subl	%eax, %esi
-	movl	%esi, 24(%rsp)
+	movl	%esi, 20(%rsp)
 	movq	48(%rsp), %rax
 	movzbl	1(%rdx,%rcx), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %edx
-	movb	%dl, 15(%rsp)
+	movb	%dl, 11(%rsp)
 	subl	%edx, %esi
-	addl	20(%rsp), %edx
-	movl	%edx, 20(%rsp)
-	movl	%esi, 24(%rsp)
-	movslq	16(%rsp), %rax
+	addl	16(%rsp), %edx
+	movl	%edx, 16(%rsp)
+	movl	%esi, 20(%rsp)
+	movslq	12(%rsp), %rax
 	leaq	(%rax,%r8), %rcx
 	addq	$1, %rcx
 	leaq	-1(%rax,%r8), %rsi
@@ -4526,49 +4719,51 @@ susan_edges_small:                      # @susan_edges_small
 	movzbl	-1(%rax,%r8), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	movb	%sil, 15(%rsp)
+	movb	%sil, 11(%rsp)
 	subl	%esi, %edx
-	movl	%edx, 20(%rsp)
+	movl	%edx, 16(%rsp)
 	movq	%rcx, 56(%rsp)
 	movq	48(%rsp), %rsi
 	movzbl	1(%rax,%r8), %eax
 	subq	%rax, %rsi
 	movzbl	(%rsi), %eax
-	movb	%al, 15(%rsp)
+	movb	%al, 11(%rsp)
 	addl	%eax, %edx
-	movl	%edx, 20(%rsp)
-	movslq	16(%rsp), %rsi
+	movl	%edx, 16(%rsp)
+	movslq	12(%rsp), %rsi
+	leaq	(%rsi,%rcx), %r8
 	leaq	(%rsi,%rcx), %rax
 	addq	$-2, %rax
 	movq	%rax, 56(%rsp)
 	movq	48(%rsp), %rax
-	movzbl	-2(%rsi,%rcx), %edi
-	subq	%rdi, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
-	subl	%eax, %edx
-	movl	%edx, 20(%rsp)
-	addl	24(%rsp), %eax
-	movl	%eax, 24(%rsp)
-	movq	48(%rsp), %rdx
 	leaq	(%rsi,%rcx), %rdi
 	addq	$-1, %rdi
 	movq	%rdi, 56(%rsp)
 	movzbl	-2(%rsi,%rcx), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %eax
+	movb	%al, 11(%rsp)
+	subl	%eax, %edx
+	movl	%edx, 16(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
+	movq	48(%rsp), %rdx
+	movq	%r8, 56(%rsp)
+	movzbl	-1(%rsi,%rcx), %edi
 	subq	%rdi, %rdx
 	movzbl	(%rdx), %edx
-	movb	%dl, 15(%rsp)
+	movb	%dl, 11(%rsp)
 	addl	%edx, %eax
-	movl	%eax, 24(%rsp)
+	movl	%eax, 20(%rsp)
 	movq	48(%rsp), %rdx
-	movzbl	-1(%rsi,%rcx), %ecx
+	movzbl	(%rsi,%rcx), %ecx
 	subq	%rcx, %rdx
 	movzbl	(%rdx), %ecx
-	movb	%cl, 15(%rsp)
+	movb	%cl, 11(%rsp)
 	addl	%ecx, %eax
-	addl	20(%rsp), %ecx
-	movl	%ecx, 20(%rsp)
-	movl	%eax, 24(%rsp)
+	addl	16(%rsp), %ecx
+	movl	%ecx, 16(%rsp)
+	movl	%eax, 20(%rsp)
 	imull	%ecx, %ecx
 	imull	%eax, %eax
 	addl	%ecx, %eax
@@ -4590,20 +4785,20 @@ susan_edges_small:                      # @susan_edges_small
 	cvtsd2ss	%xmm0, %xmm0
 	movss	%xmm0, 44(%rsp)
 	cvtss2sd	%xmm0, %xmm0
-	cvtsi2ssl	64(%rsp), %xmm1
+	cvtsi2ssl	40(%rsp), %xmm1
 	cvtss2sd	%xmm1, %xmm1
 	mulsd	%xmm3, %xmm1
 	ucomisd	%xmm1, %xmm0
 	jbe	.LBB14_35
 # %bb.18:                               #   in Loop: Header=BB14_11 Depth=2
 	movl	$0, 92(%rsp)
-	cmpl	$0, 20(%rsp)
+	cmpl	$0, 16(%rsp)
 	je	.LBB14_19
 # %bb.20:                               #   in Loop: Header=BB14_11 Depth=2
 	xorps	%xmm0, %xmm0
-	cvtsi2ssl	24(%rsp), %xmm0
+	cvtsi2ssl	20(%rsp), %xmm0
 	xorps	%xmm1, %xmm1
-	cvtsi2ssl	20(%rsp), %xmm1
+	cvtsi2ssl	16(%rsp), %xmm1
 	divss	%xmm1, %xmm0
 	movss	%xmm0, 44(%rsp)
 	jmp	.LBB14_21
@@ -4614,24 +4809,24 @@ susan_edges_small:                      # @susan_edges_small
 	cmpl	$1, 92(%rsp)
 	jne	.LBB14_51
 .LBB14_37:                              #   in Loop: Header=BB14_11 Depth=2
-	movslq	32(%rsp), %rcx
+	movslq	28(%rsp), %rcx
 	addq	$-1, %rcx
-	movslq	16(%rsp), %rax
+	movslq	12(%rsp), %rax
 	imulq	%rcx, %rax
 	addq	96(%rsp), %rax
-	movslq	28(%rsp), %rcx
+	movslq	24(%rsp), %rcx
 	leaq	(%rax,%rcx), %rdx
+	movl	$0, 16(%rsp)
 	movl	$0, 20(%rsp)
-	movl	$0, 24(%rsp)
 	movl	$0, 68(%rsp)
 	movq	48(%rsp), %rsi
 	movq	%rdx, 56(%rsp)
 	movzbl	-1(%rcx,%rax), %edx
 	subq	%rdx, %rsi
 	movzbl	(%rsi), %edx
-	movb	%dl, 15(%rsp)
+	movb	%dl, 11(%rsp)
+	movl	%edx, 16(%rsp)
 	movl	%edx, 20(%rsp)
-	movl	%edx, 24(%rsp)
 	movl	%edx, 68(%rsp)
 	movq	48(%rsp), %rsi
 	leaq	(%rcx,%rax), %rdi
@@ -4640,80 +4835,81 @@ susan_edges_small:                      # @susan_edges_small
 	movzbl	(%rcx,%rax), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
-	movb	%sil, 15(%rsp)
+	movb	%sil, 11(%rsp)
 	addl	%esi, %edx
-	movl	%edx, 24(%rsp)
+	movl	%edx, 20(%rsp)
 	movq	48(%rsp), %rsi
 	movzbl	1(%rcx,%rax), %eax
 	subq	%rax, %rsi
 	movzbl	(%rsi), %eax
-	movb	%al, 15(%rsp)
-	movl	20(%rsp), %ecx
+	movb	%al, 11(%rsp)
+	movl	16(%rsp), %ecx
 	addl	%eax, %ecx
-	movl	%ecx, 20(%rsp)
-	addl	%eax, %edx
-	movl	%edx, 24(%rsp)
+	movl	%ecx, 16(%rsp)
 	subl	%eax, 68(%rsp)
-	movslq	16(%rsp), %rdx
+	addl	%eax, %edx
+	movl	%edx, 20(%rsp)
+	movslq	12(%rsp), %rdx
 	movq	56(%rsp), %rsi
 	leaq	(%rdx,%rsi), %r8
-	leaq	(%rdx,%rsi), %rdi
-	addq	$-2, %rdi
+	leaq	-2(%rdx,%rsi), %rdi
 	movq	%rdi, 56(%rsp)
 	movq	48(%rsp), %rdi
 	movzbl	-2(%rdx,%rsi), %eax
 	subq	%rax, %rdi
 	movzbl	(%rdi), %eax
-	movb	%al, 15(%rsp)
+	movb	%al, 11(%rsp)
 	addl	%eax, %ecx
-	movl	%ecx, 20(%rsp)
+	movl	%ecx, 16(%rsp)
 	movq	%r8, 56(%rsp)
 	movq	48(%rsp), %rax
 	movzbl	(%rdx,%rsi), %edx
 	subq	%rdx, %rax
 	movzbl	(%rax), %eax
-	movb	%al, 15(%rsp)
+	movb	%al, 11(%rsp)
+	addl	%eax, %ecx
+	movl	%ecx, 16(%rsp)
+	movslq	12(%rsp), %rdx
+	leaq	(%rdx,%r8), %rax
+	leaq	(%rdx,%r8), %rsi
+	addq	$-2, %rsi
+	movq	%rsi, 56(%rsp)
+	movq	48(%rsp), %rsi
+	leaq	(%rdx,%r8), %rdi
+	addq	$-1, %rdi
+	movq	%rdi, 56(%rsp)
+	movzbl	-2(%rdx,%r8), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	movb	%sil, 11(%rsp)
+	addl	%esi, %ecx
+	movl	%ecx, 16(%rsp)
+	movl	20(%rsp), %ecx
+	addl	%esi, %ecx
+	subl	%esi, 68(%rsp)
+	movl	%ecx, 20(%rsp)
+	movq	48(%rsp), %rsi
+	movq	%rax, 56(%rsp)
+	movzbl	-1(%rdx,%r8), %eax
+	subq	%rax, %rsi
+	movzbl	(%rsi), %eax
+	movb	%al, 11(%rsp)
 	addl	%eax, %ecx
 	movl	%ecx, 20(%rsp)
-	movslq	16(%rsp), %rax
-	leaq	(%rax,%r8), %rdx
-	addq	$-2, %rdx
-	movq	%rdx, 56(%rsp)
-	movq	48(%rsp), %rdx
-	movzbl	-2(%rax,%r8), %esi
-	subq	%rsi, %rdx
-	movzbl	(%rdx), %edx
-	movb	%dl, 15(%rsp)
-	addl	%edx, %ecx
-	movl	%ecx, 20(%rsp)
-	movl	24(%rsp), %ecx
-	addl	%edx, %ecx
-	movl	%ecx, 24(%rsp)
-	subl	%edx, 68(%rsp)
-	movq	48(%rsp), %rdx
-	leaq	(%rax,%r8), %rsi
-	addq	$-1, %rsi
-	movq	%rsi, 56(%rsp)
-	movzbl	-2(%rax,%r8), %esi
-	subq	%rsi, %rdx
-	movzbl	(%rdx), %edx
-	movb	%dl, 15(%rsp)
-	addl	%edx, %ecx
-	movl	%ecx, 24(%rsp)
-	movq	48(%rsp), %rdx
-	movzbl	-1(%rax,%r8), %eax
-	subq	%rax, %rdx
-	movzbl	(%rdx), %eax
-	addl	%eax, 20(%rsp)
-	movb	%al, 15(%rsp)
+	movq	48(%rsp), %rax
+	movzbl	(%rdx,%r8), %edx
+	subq	%rdx, %rax
+	movzbl	(%rax), %eax
+	addl	%eax, 16(%rsp)
+	movb	%al, 11(%rsp)
 	leal	(%rcx,%rax), %edx
-	movl	%edx, 24(%rsp)
+	movl	%edx, 20(%rsp)
 	addl	%eax, 68(%rsp)
 	addl	%eax, %ecx
 	je	.LBB14_38
 # %bb.39:                               #   in Loop: Header=BB14_11 Depth=2
-	cvtsi2ssl	20(%rsp), %xmm0
-	cvtsi2ssl	24(%rsp), %xmm1
+	cvtsi2ssl	16(%rsp), %xmm0
+	cvtsi2ssl	20(%rsp), %xmm1
 	divss	%xmm1, %xmm0
 	movss	%xmm0, 44(%rsp)
 	jmp	.LBB14_40
@@ -4725,7 +4921,7 @@ susan_edges_small:                      # @susan_edges_small
 	ucomisd	%xmm0, %xmm4
 	jbe	.LBB14_42
 # %bb.41:                               #   in Loop: Header=BB14_11 Depth=2
-	movl	$0, 40(%rsp)
+	movl	$0, 36(%rsp)
 	jmp	.LBB14_47
 .LBB14_42:                              #   in Loop: Header=BB14_11 Depth=2
 	movss	44(%rsp), %xmm0         # xmm0 = mem[0],zero,zero,zero
@@ -4733,14 +4929,14 @@ susan_edges_small:                      # @susan_edges_small
 	ucomisd	.LCPI14_3(%rip), %xmm0
 	jbe	.LBB14_44
 # %bb.43:                               #   in Loop: Header=BB14_11 Depth=2
-	movl	$1, 40(%rsp)
-	movl	$0, 36(%rsp)
+	movl	$1, 36(%rsp)
+	movl	$0, 32(%rsp)
 	jmp	.LBB14_48
 .LBB14_44:                              #   in Loop: Header=BB14_11 Depth=2
 	cmpl	$0, 68(%rsp)
 	jle	.LBB14_46
 # %bb.45:                               #   in Loop: Header=BB14_11 Depth=2
-	movl	$-1, 40(%rsp)
+	movl	$-1, 36(%rsp)
 	jmp	.LBB14_47
 .LBB14_19:                              #   in Loop: Header=BB14_11 Depth=2
 	movl	$1232348160, 44(%rsp)   # imm = 0x49742400
@@ -4762,7 +4958,7 @@ susan_edges_small:                      # @susan_edges_small
 	ucomisd	%xmm0, %xmm4
 	jbe	.LBB14_26
 # %bb.25:                               #   in Loop: Header=BB14_11 Depth=2
-	movl	$0, 40(%rsp)
+	movl	$0, 36(%rsp)
 	jmp	.LBB14_31
 .LBB14_26:                              #   in Loop: Header=BB14_11 Depth=2
 	movss	44(%rsp), %xmm0         # xmm0 = mem[0],zero,zero,zero
@@ -4770,95 +4966,95 @@ susan_edges_small:                      # @susan_edges_small
 	ucomisd	.LCPI14_3(%rip), %xmm0
 	jbe	.LBB14_28
 # %bb.27:                               #   in Loop: Header=BB14_11 Depth=2
-	movl	$1, 40(%rsp)
-	movl	$0, 36(%rsp)
+	movl	$1, 36(%rsp)
+	movl	$0, 32(%rsp)
 	jmp	.LBB14_32
 .LBB14_28:                              #   in Loop: Header=BB14_11 Depth=2
 	cmpl	$0, 68(%rsp)
 	jle	.LBB14_30
 # %bb.29:                               #   in Loop: Header=BB14_11 Depth=2
-	movl	$1, 40(%rsp)
+	movl	$1, 36(%rsp)
 	jmp	.LBB14_31
 .LBB14_46:                              #   in Loop: Header=BB14_11 Depth=2
-	movl	$1, 40(%rsp)
+	movl	$1, 36(%rsp)
 	.p2align	4, 0x90
 .LBB14_47:                              #   in Loop: Header=BB14_11 Depth=2
-	movl	$1, 36(%rsp)
+	movl	$1, 32(%rsp)
 .LBB14_48:                              #   in Loop: Header=BB14_11 Depth=2
 	movl	72(%rsp), %eax
 	movq	80(%rsp), %rcx
-	movslq	32(%rsp), %rdx
-	movslq	40(%rsp), %rsi
+	movslq	28(%rsp), %rdx
+	movslq	36(%rsp), %rsi
 	addq	%rdx, %rsi
-	movslq	16(%rsp), %rdx
+	movslq	12(%rsp), %rdx
 	imulq	%rsi, %rdx
-	movslq	28(%rsp), %rsi
+	movslq	24(%rsp), %rsi
 	addq	%rdx, %rsi
-	movslq	36(%rsp), %rdx
+	movslq	32(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jle	.LBB14_51
 # %bb.49:                               #   in Loop: Header=BB14_11 Depth=2
 	movl	72(%rsp), %eax
 	movq	80(%rsp), %rcx
-	movslq	32(%rsp), %rdx
-	movslq	40(%rsp), %rsi
-	subq	%rsi, %rdx
-	movslq	16(%rsp), %rsi
-	imulq	%rdx, %rsi
 	movslq	28(%rsp), %rdx
-	addq	%rsi, %rdx
 	movslq	36(%rsp), %rsi
+	subq	%rsi, %rdx
+	movslq	12(%rsp), %rsi
+	imulq	%rdx, %rsi
+	movslq	24(%rsp), %rdx
+	addq	%rsi, %rdx
+	movslq	32(%rsp), %rsi
 	subq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jl	.LBB14_51
 # %bb.50:                               #   in Loop: Header=BB14_11 Depth=2
 	movq	112(%rsp), %rax
-	movslq	32(%rsp), %rcx
-	movslq	16(%rsp), %rdx
-	imulq	%rcx, %rdx
 	movslq	28(%rsp), %rcx
+	movslq	12(%rsp), %rdx
+	imulq	%rcx, %rdx
+	movslq	24(%rsp), %rcx
 	addq	%rdx, %rcx
 	movb	$2, (%rax,%rcx)
 	jmp	.LBB14_51
 .LBB14_30:                              #   in Loop: Header=BB14_11 Depth=2
-	movl	$-1, 40(%rsp)
+	movl	$-1, 36(%rsp)
 .LBB14_31:                              #   in Loop: Header=BB14_11 Depth=2
-	movl	$1, 36(%rsp)
+	movl	$1, 32(%rsp)
 .LBB14_32:                              #   in Loop: Header=BB14_11 Depth=2
 	movl	72(%rsp), %eax
 	movq	80(%rsp), %rcx
-	movslq	32(%rsp), %rdx
-	movslq	40(%rsp), %rsi
+	movslq	28(%rsp), %rdx
+	movslq	36(%rsp), %rsi
 	addq	%rdx, %rsi
-	movslq	16(%rsp), %rdx
+	movslq	12(%rsp), %rdx
 	imulq	%rsi, %rdx
-	movslq	28(%rsp), %rsi
+	movslq	24(%rsp), %rsi
 	addq	%rdx, %rsi
-	movslq	36(%rsp), %rdx
+	movslq	32(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jle	.LBB14_36
 # %bb.33:                               #   in Loop: Header=BB14_11 Depth=2
 	movl	72(%rsp), %eax
 	movq	80(%rsp), %rcx
-	movslq	32(%rsp), %rdx
-	movslq	40(%rsp), %rsi
-	subq	%rsi, %rdx
-	movslq	16(%rsp), %rsi
-	imulq	%rdx, %rsi
 	movslq	28(%rsp), %rdx
-	addq	%rsi, %rdx
 	movslq	36(%rsp), %rsi
+	subq	%rsi, %rdx
+	movslq	12(%rsp), %rsi
+	imulq	%rdx, %rsi
+	movslq	24(%rsp), %rdx
+	addq	%rsi, %rdx
+	movslq	32(%rsp), %rsi
 	subq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jl	.LBB14_36
 # %bb.34:                               #   in Loop: Header=BB14_11 Depth=2
 	movq	112(%rsp), %rax
-	movslq	32(%rsp), %rcx
-	movslq	16(%rsp), %rdx
-	imulq	%rcx, %rdx
 	movslq	28(%rsp), %rcx
+	movslq	12(%rsp), %rdx
+	imulq	%rcx, %rdx
+	movslq	24(%rsp), %rcx
 	addq	%rdx, %rcx
 	movb	$1, (%rax,%rcx)
 	cmpl	$1, 92(%rsp)
@@ -4920,7 +5116,7 @@ corner_draw:                            # @corner_draw
 	movslq	-32(%rsp), %rdx
 	leaq	(%rdx,%rdx,2), %rdx
 	movslq	(%rcx,%rdx,8), %rcx
-	leaq	-1(%rcx,%rax), %rdx
+	leaq	(%rax,%rcx), %rdx
 	movq	%rdx, -40(%rsp)
 	movb	$-1, -1(%rcx,%rax)
 	movq	-40(%rsp), %rax
@@ -4931,7 +5127,7 @@ corner_draw:                            # @corner_draw
 	movb	$-1, (%rax)
 	movslq	-28(%rsp), %rax
 	movq	-40(%rsp), %rcx
-	leaq	-2(%rax,%rcx), %rdx
+	leaq	-1(%rax,%rcx), %rdx
 	movq	%rdx, -40(%rsp)
 	movb	$-1, -2(%rax,%rcx)
 	movq	-40(%rsp), %rax
@@ -4942,7 +5138,7 @@ corner_draw:                            # @corner_draw
 	movb	$-1, (%rax)
 	movslq	-28(%rsp), %rax
 	movq	-40(%rsp), %rcx
-	leaq	-2(%rax,%rcx), %rdx
+	leaq	-1(%rax,%rcx), %rdx
 	movq	%rdx, -40(%rsp)
 	movb	$-1, -2(%rax,%rcx)
 	movq	-40(%rsp), %rax
@@ -5004,126 +5200,127 @@ susan_corners:                          # @susan_corners
 	shlq	$2, %rdi
 	callq	malloc
 	movq	%rax, 96(%rsp)
-	movl	$5, 24(%rsp)
+	movl	$5, 28(%rsp)
 	jmp	.LBB16_1
 	.p2align	4, 0x90
 .LBB16_30:                              #   in Loop: Header=BB16_1 Depth=1
-	addl	$1, 24(%rsp)
+	addl	$1, 28(%rsp)
 .LBB16_1:                               # =>This Loop Header: Depth=1
                                         #     Child Loop BB16_3 Depth 2
 	movl	144(%rsp), %eax
 	addl	$-5, %eax
-	cmpl	%eax, 24(%rsp)
+	cmpl	%eax, 28(%rsp)
 	jge	.LBB16_31
 # %bb.2:                                #   in Loop: Header=BB16_1 Depth=1
-	movl	$5, 20(%rsp)
+	movl	$5, 24(%rsp)
 	jmp	.LBB16_3
 	.p2align	4, 0x90
 .LBB16_29:                              #   in Loop: Header=BB16_3 Depth=2
-	addl	$1, 20(%rsp)
+	addl	$1, 24(%rsp)
 .LBB16_3:                               #   Parent Loop BB16_1 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
 	movl	16(%rsp), %eax
 	addl	$-5, %eax
-	cmpl	%eax, 20(%rsp)
+	cmpl	%eax, 24(%rsp)
 	jge	.LBB16_30
 # %bb.4:                                #   in Loop: Header=BB16_3 Depth=2
-	movl	$100, 28(%rsp)
-	movslq	24(%rsp), %rcx
-	leaq	-3(%rcx), %rax
-	movslq	16(%rsp), %r8
-	imulq	%r8, %rax
-	movq	88(%rsp), %rsi
-	addq	%rsi, %rax
-	movslq	20(%rsp), %rdi
-	leaq	(%rdi,%rax), %rdx
-	addq	$-1, %rdx
-	movq	%rdx, 32(%rsp)
-	imulq	%r8, %rcx
-	addq	%rdi, %rcx
-	movzbl	(%rsi,%rcx), %esi
-	addq	120(%rsp), %rsi
-	leaq	(%rax,%rdi), %r9
-	movq	%rsi, 48(%rsp)
-	movq	%r9, 32(%rsp)
-	movzbl	-1(%rdi,%rax), %r8d
-	movq	%rsi, %rdx
-	subq	%r8, %rdx
-	movzbl	(%rdx), %r8d
-	leal	100(%r8), %edx
-	movl	%edx, 28(%rsp)
-	leaq	(%rdi,%rax), %rdx
-	addq	$1, %rdx
-	movq	%rdx, 32(%rsp)
-	movzbl	(%rdi,%rax), %eax
-	subq	%rax, %rsi
-	movzbl	(%rsi), %eax
-	leal	(%r8,%rax), %r8d
-	addl	$100, %r8d
-	movl	%r8d, 28(%rsp)
-	movslq	16(%rsp), %rdx
-	leaq	1(%rdx,%r9), %rax
-	leaq	-2(%rdx,%r9), %rdi
+	movl	$100, 20(%rsp)
+	movslq	28(%rsp), %rsi
+	leaq	-3(%rsi), %rax
+	movslq	16(%rsp), %r9
+	imulq	%r9, %rax
+	movq	88(%rsp), %r8
+	addq	%r8, %rax
+	movslq	24(%rsp), %rdx
+	leaq	(%rax,%rdx), %r10
+	leaq	(%rdx,%rax), %rdi
+	addq	$-1, %rdi
 	movq	%rdi, 32(%rsp)
-	movq	48(%rsp), %rdi
-	movzbl	-2(%rdx,%r9), %esi
+	imulq	%r9, %rsi
+	addq	%rdx, %rsi
+	movzbl	(%r8,%rsi), %ecx
+	addq	120(%rsp), %rcx
+	movq	%rcx, 48(%rsp)
+	movq	%r10, 32(%rsp)
+	movzbl	-1(%rdx,%rax), %r8d
+	movq	%rcx, %rsi
+	subq	%r8, %rsi
+	movzbl	(%rsi), %r8d
+	leal	100(%r8), %esi
+	movl	%esi, 20(%rsp)
+	leaq	(%rdx,%rax), %rsi
+	addq	$1, %rsi
+	movq	%rsi, 32(%rsp)
+	movzbl	(%rdx,%rax), %esi
+	movq	%rcx, %rdi
 	subq	%rsi, %rdi
 	movzbl	(%rdi), %esi
-	addl	%r8d, %esi
-	movl	%esi, 28(%rsp)
-	movq	48(%rsp), %rdi
-	leaq	(%rdx,%r9), %rcx
-	addq	$-1, %rcx
-	movq	%rcx, 32(%rsp)
-	movzbl	-2(%rdx,%r9), %ecx
-	subq	%rcx, %rdi
-	movzbl	(%rdi), %ecx
+	leal	(%r8,%rsi), %esi
+	addl	$100, %esi
+	movl	%esi, 20(%rsp)
+	movzbl	1(%rdx,%rax), %eax
+	subq	%rax, %rcx
+	movzbl	(%rcx), %ecx
 	addl	%esi, %ecx
-	movl	%ecx, 28(%rsp)
-	movq	48(%rsp), %rsi
-	leaq	-1(%rax), %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-1(%rdx,%r9), %edi
-	subq	%rdi, %rsi
-	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 28(%rsp)
-	movq	48(%rsp), %rcx
-	movq	%rax, 32(%rsp)
-	movzbl	(%rdx,%r9), %edx
-	subq	%rdx, %rcx
-	movzbl	(%rcx), %edi
-	addl	%esi, %edi
-	movl	%edi, 28(%rsp)
+	movl	%ecx, 20(%rsp)
 	movslq	16(%rsp), %rdx
-	leaq	(%rdx,%rax), %r8
-	leaq	(%rdx,%rax), %rsi
-	addq	$-5, %rsi
+	leaq	(%rdx,%r10), %rax
+	addq	$1, %rax
+	leaq	-2(%rdx,%r10), %rsi
 	movq	%rsi, 32(%rsp)
 	movq	48(%rsp), %rsi
-	movzbl	-5(%rdx,%rax), %ecx
-	subq	%rcx, %rsi
-	movzbl	(%rsi), %ecx
-	addl	%edi, %ecx
-	movl	%ecx, 28(%rsp)
-	movq	48(%rsp), %rsi
-	leaq	(%rdx,%rax), %rdi
-	addq	$-4, %rdi
+	leaq	(%rdx,%r10), %rdi
+	addq	$-1, %rdi
 	movq	%rdi, 32(%rsp)
-	movzbl	-5(%rdx,%rax), %edi
+	movzbl	-2(%rdx,%r10), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
 	addl	%ecx, %esi
-	movl	%esi, 28(%rsp)
+	movl	%esi, 20(%rsp)
 	movq	48(%rsp), %rcx
-	leaq	(%rdx,%rax), %rdi
-	addq	$-3, %rdi
+	leaq	-1(%rax), %rdi
 	movq	%rdi, 32(%rsp)
-	movzbl	-4(%rdx,%rax), %edi
+	movzbl	-1(%rdx,%r10), %edi
 	subq	%rdi, %rcx
 	movzbl	(%rcx), %ecx
 	addl	%esi, %ecx
-	movl	%ecx, 28(%rsp)
+	movl	%ecx, 20(%rsp)
+	movq	48(%rsp), %rsi
+	movq	%rax, 32(%rsp)
+	movzbl	(%rdx,%r10), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%ecx, %esi
+	movl	%esi, 20(%rsp)
+	movq	48(%rsp), %rcx
+	leaq	(%rdx,%r10), %rdi
+	addq	$2, %rdi
+	movq	%rdi, 32(%rsp)
+	movzbl	1(%rdx,%r10), %edi
+	subq	%rdi, %rcx
+	movzbl	(%rcx), %ecx
+	addl	%esi, %ecx
+	movl	%ecx, 20(%rsp)
+	movq	48(%rsp), %rsi
+	movzbl	2(%rdx,%r10), %edx
+	subq	%rdx, %rsi
+	movzbl	(%rsi), %esi
+	addl	%ecx, %esi
+	movl	%esi, 20(%rsp)
+	movslq	16(%rsp), %rdx
+	leaq	(%rdx,%rax), %r8
+	addq	$1, %r8
+	leaq	-4(%rdx,%rax), %rdi
+	movq	%rdi, 32(%rsp)
+	movq	48(%rsp), %rdi
+	leaq	(%rdx,%rax), %rcx
+	addq	$-3, %rcx
+	movq	%rcx, 32(%rsp)
+	movzbl	-4(%rdx,%rax), %ecx
+	subq	%rcx, %rdi
+	movzbl	(%rdi), %ecx
+	addl	%esi, %ecx
+	movl	%ecx, 20(%rsp)
 	movq	48(%rsp), %rsi
 	leaq	(%rdx,%rax), %rdi
 	addq	$-2, %rdi
@@ -5132,7 +5329,7 @@ susan_corners:                          # @susan_corners
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
 	addl	%ecx, %esi
-	movl	%esi, 28(%rsp)
+	movl	%esi, 20(%rsp)
 	movq	48(%rsp), %rcx
 	leaq	(%rdx,%rax), %rdi
 	addq	$-1, %rdi
@@ -5141,45 +5338,77 @@ susan_corners:                          # @susan_corners
 	subq	%rdi, %rcx
 	movzbl	(%rcx), %ecx
 	addl	%esi, %ecx
-	movl	%ecx, 28(%rsp)
+	movl	%ecx, 20(%rsp)
 	movq	48(%rsp), %rsi
+	leaq	-1(%r8), %rdi
+	movq	%rdi, 32(%rsp)
+	movzbl	-1(%rdx,%rax), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%ecx, %esi
+	movl	%esi, 20(%rsp)
+	movq	48(%rsp), %rcx
 	movq	%r8, 32(%rsp)
-	movzbl	-1(%rdx,%rax), %eax
-	subq	%rax, %rsi
-	movzbl	(%rsi), %eax
-	addl	%ecx, %eax
-	movl	%eax, 28(%rsp)
+	movzbl	(%rdx,%rax), %edi
+	subq	%rdi, %rcx
+	movzbl	(%rcx), %ecx
+	addl	%esi, %ecx
+	movl	%ecx, 20(%rsp)
+	movq	48(%rsp), %rsi
+	leaq	(%rdx,%rax), %rdi
+	addq	$2, %rdi
+	movq	%rdi, 32(%rsp)
+	movzbl	1(%rdx,%rax), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%ecx, %esi
+	movl	%esi, 20(%rsp)
+	movq	48(%rsp), %rcx
+	movzbl	2(%rdx,%rax), %eax
+	subq	%rax, %rcx
+	movzbl	(%rcx), %eax
+	addl	%esi, %eax
+	movl	%eax, 20(%rsp)
 	movslq	16(%rsp), %rcx
 	leaq	(%rcx,%r8), %rdx
-	addq	$-6, %rdx
+	addq	$-5, %rdx
 	movq	%rdx, 32(%rsp)
 	movq	48(%rsp), %rdx
-	movzbl	-6(%rcx,%r8), %esi
+	leaq	(%rcx,%r8), %rsi
+	addq	$-4, %rsi
+	movq	%rsi, 32(%rsp)
+	movzbl	-5(%rcx,%r8), %esi
 	subq	%rsi, %rdx
 	movzbl	(%rdx), %edx
 	addl	%eax, %edx
-	movl	%edx, 28(%rsp)
+	movl	%edx, 20(%rsp)
 	movq	48(%rsp), %rax
 	leaq	(%rcx,%r8), %rsi
-	addq	$-5, %rsi
+	addq	$-3, %rsi
 	movq	%rsi, 32(%rsp)
-	movzbl	-6(%rcx,%r8), %ecx
-	subq	%rcx, %rax
+	movzbl	-4(%rcx,%r8), %esi
+	subq	%rsi, %rax
 	movzbl	(%rax), %eax
 	addl	%edx, %eax
-	movl	%eax, 28(%rsp)
-	cmpl	64(%rsp), %eax
+	movl	%eax, 20(%rsp)
+	movq	48(%rsp), %rdx
+	movzbl	-3(%rcx,%r8), %ecx
+	subq	%rcx, %rdx
+	movzbl	(%rdx), %ecx
+	addl	%eax, %ecx
+	movl	%ecx, 20(%rsp)
+	cmpl	64(%rsp), %ecx
 	jge	.LBB16_29
 # %bb.5:                                #   in Loop: Header=BB16_3 Depth=2
 	movq	32(%rsp), %rax
-	leaq	2(%rax), %rcx
-	movq	%rcx, 32(%rsp)
 	movq	48(%rsp), %rcx
+	leaq	3(%rax), %rdx
+	movq	%rdx, 32(%rsp)
 	movzbl	2(%rax), %eax
 	subq	%rax, %rcx
 	movzbl	(%rcx), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.6:                                #   in Loop: Header=BB16_3 Depth=2
@@ -5190,8 +5419,8 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.7:                                #   in Loop: Header=BB16_3 Depth=2
@@ -5200,22 +5429,22 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.8:                                #   in Loop: Header=BB16_3 Depth=2
 	movslq	16(%rsp), %rax
 	movq	32(%rsp), %rcx
-	leaq	(%rax,%rcx), %rdx
-	addq	$-6, %rdx
-	movq	%rdx, 32(%rsp)
 	movq	48(%rsp), %rdx
+	leaq	(%rax,%rcx), %rsi
+	addq	$-5, %rsi
+	movq	%rsi, 32(%rsp)
 	movzbl	-6(%rax,%rcx), %eax
 	subq	%rax, %rdx
 	movzbl	(%rdx), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.9:                                #   in Loop: Header=BB16_3 Depth=2
@@ -5226,8 +5455,8 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.10:                               #   in Loop: Header=BB16_3 Depth=2
@@ -5238,8 +5467,8 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.11:                               #   in Loop: Header=BB16_3 Depth=2
@@ -5250,8 +5479,8 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.12:                               #   in Loop: Header=BB16_3 Depth=2
@@ -5262,8 +5491,8 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.13:                               #   in Loop: Header=BB16_3 Depth=2
@@ -5274,8 +5503,8 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.14:                               #   in Loop: Header=BB16_3 Depth=2
@@ -5284,22 +5513,22 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.15:                               #   in Loop: Header=BB16_3 Depth=2
 	movslq	16(%rsp), %rax
 	movq	32(%rsp), %rcx
-	leaq	(%rax,%rcx), %rdx
-	addq	$-5, %rdx
-	movq	%rdx, 32(%rsp)
 	movq	48(%rsp), %rdx
+	leaq	(%rax,%rcx), %rsi
+	addq	$-4, %rsi
+	movq	%rsi, 32(%rsp)
 	movzbl	-5(%rax,%rcx), %eax
 	subq	%rax, %rdx
 	movzbl	(%rdx), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.16:                               #   in Loop: Header=BB16_3 Depth=2
@@ -5310,8 +5539,8 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.17:                               #   in Loop: Header=BB16_3 Depth=2
@@ -5322,8 +5551,8 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.18:                               #   in Loop: Header=BB16_3 Depth=2
@@ -5334,8 +5563,8 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.19:                               #   in Loop: Header=BB16_3 Depth=2
@@ -5344,22 +5573,22 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.20:                               #   in Loop: Header=BB16_3 Depth=2
 	movslq	16(%rsp), %rax
 	movq	32(%rsp), %rcx
-	leaq	(%rax,%rcx), %rdx
-	addq	$-3, %rdx
-	movq	%rdx, 32(%rsp)
 	movq	48(%rsp), %rdx
+	leaq	(%rax,%rcx), %rsi
+	addq	$-2, %rsi
+	movq	%rsi, 32(%rsp)
 	movzbl	-3(%rax,%rcx), %eax
 	subq	%rax, %rdx
 	movzbl	(%rdx), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.21:                               #   in Loop: Header=BB16_3 Depth=2
@@ -5370,8 +5599,8 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.22:                               #   in Loop: Header=BB16_3 Depth=2
@@ -5380,28 +5609,25 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %eax
-	addl	28(%rsp), %eax
-	movl	%eax, 28(%rsp)
+	addl	20(%rsp), %eax
+	movl	%eax, 20(%rsp)
 	cmpl	64(%rsp), %eax
 	jge	.LBB16_29
 # %bb.23:                               #   in Loop: Header=BB16_3 Depth=2
 	movl	$0, 12(%rsp)
-	movslq	24(%rsp), %rax
+	movl	$0, 44(%rsp)
+	movslq	28(%rsp), %rax
 	addq	$-3, %rax
 	movslq	16(%rsp), %rdx
 	imulq	%rax, %rdx
 	addq	88(%rsp), %rdx
-	movl	$0, 44(%rsp)
-	movslq	20(%rsp), %rsi
+	movslq	24(%rsp), %rsi
 	leaq	(%rdx,%rsi), %r8
-	leaq	(%rsi,%rdx), %rax
-	addq	$-1, %rax
-	movq	%rax, 32(%rsp)
-	movzbl	-1(%rsi,%rdx), %eax
-	movq	48(%rsp), %rcx
-	movq	%rcx, %rdi
-	subq	%rax, %rdi
-	movzbl	(%rdi), %edi
+	movq	48(%rsp), %rax
+	movq	%r8, 32(%rsp)
+	movzbl	-1(%rsi,%rdx), %edi
+	subq	%rdi, %rax
+	movzbl	(%rax), %edi
 	movb	%dil, 11(%rsp)
 	leal	(%rdi,%rdi,2), %eax
                                         # kill: def $edi killed $edi killed $rdi
@@ -5409,16 +5635,19 @@ susan_corners:                          # @susan_corners
 	movl	%edi, 12(%rsp)
 	negl	%eax
 	movl	%eax, 44(%rsp)
-	movq	%r8, 32(%rsp)
-	movzbl	-1(%rsi,%rdx), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
+	movq	48(%rsp), %rdi
+	leaq	(%rsi,%rdx), %rcx
+	addq	$1, %rcx
+	movq	%rcx, 32(%rsp)
+	movzbl	(%rsi,%rdx), %ecx
+	subq	%rcx, %rdi
+	movzbl	(%rdi), %ecx
 	movb	%cl, 11(%rsp)
 	leal	(%rcx,%rcx,2), %ecx
 	subl	%ecx, %eax
 	movl	%eax, 44(%rsp)
 	movq	48(%rsp), %rcx
-	movzbl	(%rsi,%rdx), %edx
+	movzbl	1(%rsi,%rdx), %edx
 	subq	%rdx, %rcx
 	movzbl	(%rcx), %ecx
 	movb	%cl, 11(%rsp)
@@ -5430,32 +5659,9 @@ susan_corners:                          # @susan_corners
 	movl	%eax, 44(%rsp)
 	movslq	16(%rsp), %rdx
 	leaq	(%rdx,%r8), %r9
-	leaq	(%rdx,%r8), %rcx
-	addq	$-3, %rcx
+	addq	$1, %r9
+	leaq	-2(%rdx,%r8), %rcx
 	movq	%rcx, 32(%rsp)
-	movq	48(%rsp), %rcx
-	movzbl	-3(%rdx,%r8), %esi
-	subq	%rsi, %rcx
-	movzbl	(%rcx), %ecx
-	movb	%cl, 11(%rsp)
-	addl	%ecx, %ecx
-	subl	%ecx, %edi
-	movl	%edi, 12(%rsp)
-	subl	%ecx, %eax
-	movl	%eax, 44(%rsp)
-	movq	48(%rsp), %rcx
-	leaq	(%rdx,%r8), %rsi
-	addq	$-2, %rsi
-	movq	%rsi, 32(%rsp)
-	movzbl	-3(%rdx,%r8), %esi
-	subq	%rsi, %rcx
-	movzbl	(%rcx), %ecx
-	movb	%cl, 11(%rsp)
-	subl	%ecx, %edi
-	movl	%edi, 12(%rsp)
-	addl	%ecx, %ecx
-	subl	%ecx, %eax
-	movl	%eax, 44(%rsp)
 	movq	48(%rsp), %rcx
 	leaq	(%rdx,%r8), %rsi
 	addq	$-1, %rsi
@@ -5465,11 +5671,36 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	movb	%cl, 11(%rsp)
 	addl	%ecx, %ecx
+	subl	%ecx, %edi
+	movl	%edi, 12(%rsp)
+	subl	%ecx, %eax
+	movl	%eax, 44(%rsp)
+	movq	48(%rsp), %rcx
+	leaq	-1(%r9), %rsi
+	movq	%rsi, 32(%rsp)
+	movzbl	-1(%rdx,%r8), %esi
+	subq	%rsi, %rcx
+	movzbl	(%rcx), %ecx
+	movb	%cl, 11(%rsp)
+	subl	%ecx, %edi
+	movl	%edi, 12(%rsp)
+	addl	%ecx, %ecx
 	subl	%ecx, %eax
 	movl	%eax, 44(%rsp)
 	movq	48(%rsp), %rcx
 	movq	%r9, 32(%rsp)
-	movzbl	-1(%rdx,%r8), %esi
+	movzbl	(%rdx,%r8), %esi
+	subq	%rsi, %rcx
+	movzbl	(%rcx), %ecx
+	movb	%cl, 11(%rsp)
+	addl	%ecx, %ecx
+	subl	%ecx, %eax
+	movl	%eax, 44(%rsp)
+	movq	48(%rsp), %rcx
+	leaq	(%rdx,%r8), %rsi
+	addq	$2, %rsi
+	movq	%rsi, 32(%rsp)
+	movzbl	1(%rdx,%r8), %esi
 	subq	%rsi, %rcx
 	movzbl	(%rcx), %ecx
 	movb	%cl, 11(%rsp)
@@ -5480,90 +5711,92 @@ susan_corners:                          # @susan_corners
 	subl	%ecx, %eax
 	movl	%eax, 44(%rsp)
 	movq	48(%rsp), %rcx
-	movzbl	(%rdx,%r8), %edx
+	movzbl	2(%rdx,%r8), %edx
 	subq	%rdx, %rcx
 	movzbl	(%rcx), %ecx
 	movb	%cl, 11(%rsp)
-	leal	(%rsi,%rcx,2), %esi
-	movl	%esi, 12(%rsp)
+	leal	(%rsi,%rcx,2), %edi
+	movl	%edi, 12(%rsp)
 	addl	%ecx, %ecx
 	subl	%ecx, %eax
 	movl	%eax, 44(%rsp)
-	movslq	16(%rsp), %r8
+	movslq	16(%rsp), %r9
 	movq	32(%rsp), %rdx
-	leaq	(%r8,%rdx), %rdi
-	addq	$-5, %rdi
-	movq	%rdi, 32(%rsp)
-	movq	48(%rsp), %rdi
-	movzbl	-5(%r8,%rdx), %ecx
-	subq	%rcx, %rdi
-	movzbl	(%rdi), %ecx
+	leaq	(%r9,%rdx), %r8
+	leaq	-5(%r9,%rdx), %rsi
+	movq	%rsi, 32(%rsp)
+	movq	48(%rsp), %rsi
+	leaq	(%r9,%rdx), %rcx
+	addq	$-4, %rcx
+	movq	%rcx, 32(%rsp)
+	movzbl	-5(%r9,%rdx), %ecx
+	subq	%rcx, %rsi
+	movzbl	(%rsi), %ecx
 	movb	%cl, 11(%rsp)
-	leal	(%rcx,%rcx,2), %edi
-	subl	%edi, %esi
-	movl	%esi, 12(%rsp)
+	leal	(%rcx,%rcx,2), %esi
+	subl	%esi, %edi
+	movl	%edi, 12(%rsp)
 	subl	%ecx, %eax
 	movl	%eax, 44(%rsp)
 	movq	48(%rsp), %rcx
-	leaq	(%r8,%rdx), %rdi
-	addq	$-4, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-5(%r8,%rdx), %edi
-	subq	%rdi, %rcx
+	leaq	(%r9,%rdx), %rsi
+	addq	$-3, %rsi
+	movq	%rsi, 32(%rsp)
+	movzbl	-4(%r9,%rdx), %esi
+	subq	%rsi, %rcx
 	movzbl	(%rcx), %ecx
 	movb	%cl, 11(%rsp)
-	leal	(%rcx,%rcx), %edi
-	subl	%edi, %esi
-	movl	%esi, 12(%rsp)
+	leal	(%rcx,%rcx), %esi
+	subl	%esi, %edi
+	movl	%edi, 12(%rsp)
 	subl	%ecx, %eax
 	movl	%eax, 44(%rsp)
 	movq	48(%rsp), %rcx
-	leaq	(%r8,%rdx), %rdi
-	addq	$-3, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-4(%r8,%rdx), %edi
-	subq	%rdi, %rcx
-	movzbl	(%rcx), %ecx
-	movb	%cl, 11(%rsp)
-	subl	%ecx, %esi
-	movl	%esi, 12(%rsp)
-	subl	%ecx, %eax
-	movl	%eax, 44(%rsp)
-	movq	48(%rsp), %rcx
-	leaq	(%r8,%rdx), %rsi
+	leaq	(%r9,%rdx), %rsi
 	addq	$-2, %rsi
 	movq	%rsi, 32(%rsp)
-	movzbl	-3(%r8,%rdx), %esi
+	movzbl	-3(%r9,%rdx), %esi
+	subq	%rsi, %rcx
+	movzbl	(%rcx), %ecx
+	movb	%cl, 11(%rsp)
+	subl	%ecx, %edi
+	movl	%edi, 12(%rsp)
+	subl	%ecx, %eax
+	movl	%eax, 44(%rsp)
+	movq	48(%rsp), %rcx
+	leaq	(%r9,%rdx), %rsi
+	addq	$-1, %rsi
+	movq	%rsi, 32(%rsp)
+	movzbl	-2(%r9,%rdx), %esi
 	subq	%rsi, %rcx
 	movzbl	(%rcx), %ecx
 	movb	%cl, 11(%rsp)
 	subl	%ecx, %eax
 	movl	%eax, 44(%rsp)
 	movq	48(%rsp), %rcx
-	leaq	(%r8,%rdx), %rsi
-	addq	$-1, %rsi
-	movq	%rsi, 32(%rsp)
-	movzbl	-2(%r8,%rdx), %esi
+	movq	%r8, 32(%rsp)
+	movzbl	-1(%r9,%rdx), %esi
 	subq	%rsi, %rcx
 	movzbl	(%rcx), %ecx
 	movb	%cl, 11(%rsp)
 	subl	%ecx, %eax
 	addl	12(%rsp), %ecx
-	leaq	(%r8,%rdx), %rsi
 	movl	%ecx, 12(%rsp)
 	movl	%eax, 44(%rsp)
-	movq	48(%rsp), %rdi
-	movq	%rsi, 32(%rsp)
-	movzbl	-1(%r8,%rdx), %esi
-	subq	%rsi, %rdi
-	movzbl	(%rdi), %esi
+	movq	48(%rsp), %rsi
+	leaq	(%r9,%rdx), %rdi
+	addq	$1, %rdi
+	movq	%rdi, 32(%rsp)
+	movzbl	(%r9,%rdx), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
 	movb	%sil, 11(%rsp)
 	leal	(%rcx,%rsi,2), %edi
 	movl	%edi, 12(%rsp)
 	subl	%esi, %eax
 	movl	%eax, 44(%rsp)
 	movq	48(%rsp), %rcx
-	movzbl	(%r8,%rdx), %edx
+	movzbl	1(%r9,%rdx), %edx
 	subq	%rdx, %rcx
 	movzbl	(%rcx), %edx
 	movb	%dl, 11(%rsp)
@@ -5578,6 +5811,9 @@ susan_corners:                          # @susan_corners
 	leaq	-6(%rdx,%rsi), %rdi
 	movq	%rdi, 32(%rsp)
 	movq	48(%rsp), %rdi
+	leaq	(%rdx,%rsi), %rax
+	addq	$-5, %rax
+	movq	%rax, 32(%rsp)
 	movzbl	-6(%rdx,%rsi), %eax
 	subq	%rax, %rdi
 	movzbl	(%rdi), %eax
@@ -5587,9 +5823,9 @@ susan_corners:                          # @susan_corners
 	movl	%ecx, 12(%rsp)
 	movq	48(%rsp), %rax
 	leaq	(%rdx,%rsi), %rdi
-	addq	$-5, %rdi
+	addq	$-4, %rdi
 	movq	%rdi, 32(%rsp)
-	movzbl	-6(%rdx,%rsi), %edi
+	movzbl	-5(%rdx,%rsi), %edi
 	subq	%rdi, %rax
 	movzbl	(%rax), %eax
 	movb	%al, 11(%rsp)
@@ -5597,88 +5833,58 @@ susan_corners:                          # @susan_corners
 	subl	%eax, %ecx
 	movl	%ecx, 12(%rsp)
 	movq	48(%rsp), %rax
-	movzbl	-5(%rdx,%rsi), %edi
+	movzbl	-4(%rdx,%rsi), %edi
 	subq	%rdi, %rax
 	movzbl	(%rax), %eax
 	movb	%al, 11(%rsp)
 	subl	%eax, %ecx
 	movl	%ecx, 12(%rsp)
 	leaq	(%rdx,%rsi), %rax
-	addq	$-3, %rax
+	addq	$-2, %rax
 	movq	%rax, 32(%rsp)
 	movq	48(%rsp), %rax
-	movzbl	-3(%rdx,%rsi), %edi
+	leaq	(%rdx,%rsi), %rdi
+	addq	$-1, %rdi
+	movq	%rdi, 32(%rsp)
+	movzbl	-2(%rdx,%rsi), %edi
 	subq	%rdi, %rax
 	movzbl	(%rax), %eax
 	movb	%al, 11(%rsp)
 	addl	%eax, %ecx
 	movl	%ecx, 12(%rsp)
 	movq	48(%rsp), %rax
-	leaq	(%rdx,%rsi), %rdi
-	addq	$-2, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-3(%rdx,%rsi), %edi
+	movq	%r8, 32(%rsp)
+	movzbl	-1(%rdx,%rsi), %edi
 	subq	%rdi, %rax
 	movzbl	(%rax), %eax
 	movb	%al, 11(%rsp)
 	leal	(%rcx,%rax,2), %eax
 	movl	%eax, 12(%rsp)
 	movq	48(%rsp), %rcx
-	movzbl	-2(%rdx,%rsi), %edx
+	movzbl	(%rdx,%rsi), %edx
 	subq	%rdx, %rcx
 	movzbl	(%rcx), %ecx
 	movb	%cl, 11(%rsp)
-	leal	(%rcx,%rcx,2), %esi
-	addl	%eax, %esi
-	movl	%esi, 12(%rsp)
+	leal	(%rcx,%rcx,2), %edi
+	addl	%eax, %edi
+	movl	%edi, 12(%rsp)
 	movslq	16(%rsp), %rdx
+	leaq	(%rdx,%r8), %r9
 	leaq	(%rdx,%r8), %rax
-	addq	$-8, %rax
+	addq	$-6, %rax
 	movq	%rax, 32(%rsp)
 	movq	48(%rsp), %rax
-	movzbl	-8(%rdx,%r8), %ecx
+	leaq	(%rdx,%r8), %rcx
+	addq	$-5, %rcx
+	movq	%rcx, 32(%rsp)
+	movzbl	-6(%rdx,%r8), %ecx
 	subq	%rcx, %rax
 	movzbl	(%rax), %ecx
 	movb	%cl, 11(%rsp)
 	leal	(%rcx,%rcx,2), %eax
-	subl	%eax, %esi
-	movl	%esi, 12(%rsp)
+	subl	%eax, %edi
 	addl	44(%rsp), %ecx
-	movl	%ecx, 44(%rsp)
-	movq	48(%rsp), %rax
-	leaq	(%rdx,%r8), %rdi
-	addq	$-7, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-8(%rdx,%r8), %edi
-	subq	%rdi, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 11(%rsp)
-	leal	(%rax,%rax), %edi
-	subl	%edi, %esi
-	movl	%esi, 12(%rsp)
-	addl	%eax, %ecx
-	movl	%ecx, 44(%rsp)
-	movq	48(%rsp), %rax
-	leaq	(%rdx,%r8), %rdi
-	addq	$-6, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-7(%rdx,%r8), %edi
-	subq	%rdi, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 11(%rsp)
-	subl	%eax, %esi
-	movl	%esi, 12(%rsp)
-	addl	%eax, %ecx
-	movl	%ecx, 44(%rsp)
-	movq	48(%rsp), %rax
-	leaq	(%rdx,%r8), %rsi
-	addq	$-5, %rsi
-	movq	%rsi, 32(%rsp)
-	movzbl	-6(%rdx,%r8), %esi
-	subq	%rsi, %rax
-	movzbl	(%rax), %eax
-	movb	%al, 11(%rsp)
-	addl	%eax, %ecx
+	movl	%edi, 12(%rsp)
 	movl	%ecx, 44(%rsp)
 	movq	48(%rsp), %rax
 	leaq	(%rdx,%r8), %rsi
@@ -5688,15 +5894,48 @@ susan_corners:                          # @susan_corners
 	subq	%rsi, %rax
 	movzbl	(%rax), %eax
 	movb	%al, 11(%rsp)
+	leal	(%rax,%rax), %esi
+	subl	%esi, %edi
+	movl	%edi, 12(%rsp)
+	addl	%eax, %ecx
+	movl	%ecx, 44(%rsp)
+	movq	48(%rsp), %rax
+	leaq	(%rdx,%r8), %rsi
+	addq	$-3, %rsi
+	movq	%rsi, 32(%rsp)
+	movzbl	-4(%rdx,%r8), %esi
+	subq	%rsi, %rax
+	movzbl	(%rax), %eax
+	movb	%al, 11(%rsp)
+	subl	%eax, %edi
+	movl	%edi, 12(%rsp)
+	addl	%eax, %ecx
+	movl	%ecx, 44(%rsp)
+	movq	48(%rsp), %rax
+	leaq	(%rdx,%r8), %rsi
+	addq	$-2, %rsi
+	movq	%rsi, 32(%rsp)
+	movzbl	-3(%rdx,%r8), %esi
+	subq	%rsi, %rax
+	movzbl	(%rax), %eax
+	movb	%al, 11(%rsp)
+	addl	%eax, %ecx
+	movl	%ecx, 44(%rsp)
+	movq	48(%rsp), %rax
+	leaq	(%rdx,%r8), %rsi
+	addq	$-1, %rsi
+	movq	%rsi, 32(%rsp)
+	movzbl	-2(%rdx,%r8), %esi
+	subq	%rsi, %rax
+	movzbl	(%rax), %eax
+	movb	%al, 11(%rsp)
 	addl	%eax, %ecx
 	addl	12(%rsp), %eax
 	movl	%eax, 12(%rsp)
 	movl	%ecx, 44(%rsp)
 	movq	48(%rsp), %rsi
-	leaq	(%rdx,%r8), %rdi
-	addq	$-3, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-4(%rdx,%r8), %edi
+	movq	%r9, 32(%rsp)
+	movzbl	-1(%rdx,%r8), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
 	movb	%sil, 11(%rsp)
@@ -5705,7 +5944,7 @@ susan_corners:                          # @susan_corners
 	addl	%esi, %ecx
 	movl	%ecx, 44(%rsp)
 	movq	48(%rsp), %rsi
-	movzbl	-3(%rdx,%r8), %edx
+	movzbl	(%rdx,%r8), %edx
 	subq	%rdx, %rsi
 	movzbl	(%rsi), %edx
 	movb	%dl, 11(%rsp)
@@ -5720,6 +5959,9 @@ susan_corners:                          # @susan_corners
 	addq	$-5, %rdi
 	movq	%rdi, 32(%rsp)
 	movq	48(%rsp), %rdi
+	leaq	(%r8,%rdx), %rax
+	addq	$-4, %rax
+	movq	%rax, 32(%rsp)
 	movzbl	-5(%r8,%rdx), %eax
 	subq	%rax, %rdi
 	movzbl	(%rdi), %eax
@@ -5731,24 +5973,14 @@ susan_corners:                          # @susan_corners
 	movl	%eax, 44(%rsp)
 	movq	48(%rsp), %rcx
 	leaq	(%r8,%rdx), %rdi
-	addq	$-4, %rdi
+	addq	$-3, %rdi
 	movq	%rdi, 32(%rsp)
-	movzbl	-5(%r8,%rdx), %edi
+	movzbl	-4(%r8,%rdx), %edi
 	subq	%rdi, %rcx
 	movzbl	(%rcx), %ecx
 	movb	%cl, 11(%rsp)
 	subl	%ecx, %esi
 	movl	%esi, 12(%rsp)
-	leal	(%rax,%rcx,2), %eax
-	movl	%eax, 44(%rsp)
-	movq	48(%rsp), %rcx
-	leaq	(%r8,%rdx), %rsi
-	addq	$-3, %rsi
-	movq	%rsi, 32(%rsp)
-	movzbl	-4(%r8,%rdx), %esi
-	subq	%rsi, %rcx
-	movzbl	(%rcx), %ecx
-	movb	%cl, 11(%rsp)
 	leal	(%rax,%rcx,2), %eax
 	movl	%eax, 44(%rsp)
 	movq	48(%rsp), %rcx
@@ -5760,12 +5992,22 @@ susan_corners:                          # @susan_corners
 	movzbl	(%rcx), %ecx
 	movb	%cl, 11(%rsp)
 	leal	(%rax,%rcx,2), %eax
+	movl	%eax, 44(%rsp)
+	movq	48(%rsp), %rcx
+	leaq	(%r8,%rdx), %rsi
+	addq	$-1, %rsi
+	movq	%rsi, 32(%rsp)
+	movzbl	-2(%r8,%rdx), %esi
+	subq	%rsi, %rcx
+	movzbl	(%rcx), %ecx
+	movb	%cl, 11(%rsp)
+	leal	(%rax,%rcx,2), %eax
                                         # kill: def $ecx killed $ecx killed $rcx def $rcx
 	addl	12(%rsp), %ecx
 	movl	%ecx, 12(%rsp)
 	movl	%eax, 44(%rsp)
 	movq	48(%rsp), %rsi
-	movzbl	-2(%r8,%rdx), %edx
+	movzbl	-1(%r8,%rdx), %edx
 	subq	%rdx, %rsi
 	movzbl	(%rsi), %edx
 	movb	%dl, 11(%rsp)
@@ -5778,6 +6020,9 @@ susan_corners:                          # @susan_corners
 	leaq	-3(%rax,%rcx), %rdi
 	movq	%rdi, 32(%rsp)
 	movq	48(%rsp), %rdi
+	leaq	(%rax,%rcx), %rdx
+	addq	$-2, %rdx
+	movq	%rdx, 32(%rsp)
 	movzbl	-3(%rax,%rcx), %edx
 	subq	%rdx, %rdi
 	movzbl	(%rdi), %edx
@@ -5789,9 +6034,9 @@ susan_corners:                          # @susan_corners
 	movl	%edx, 44(%rsp)
 	movq	48(%rsp), %rsi
 	leaq	(%rax,%rcx), %rdi
-	addq	$-2, %rdi
+	addq	$-1, %rdi
 	movq	%rdi, 32(%rsp)
-	movzbl	-3(%rax,%rcx), %edi
+	movzbl	-2(%rax,%rcx), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
 	movb	%sil, 11(%rsp)
@@ -5799,7 +6044,7 @@ susan_corners:                          # @susan_corners
 	addl	%edx, %esi
 	movl	%esi, 44(%rsp)
 	movq	48(%rsp), %rdx
-	movzbl	-2(%rax,%rcx), %eax
+	movzbl	-1(%rax,%rcx), %eax
 	subq	%rax, %rdx
 	movzbl	(%rdx), %eax
 	movb	%al, 11(%rsp)
@@ -5815,7 +6060,7 @@ susan_corners:                          # @susan_corners
 	movl	%eax, 112(%rsp)
 	addl	%ecx, %eax
 	movl	%eax, 68(%rsp)
-	movl	28(%rsp), %ecx
+	movl	20(%rsp), %ecx
 	imull	%ecx, %ecx
 	movl	%ecx, %edx
 	shrl	$31, %edx
@@ -5854,7 +6099,7 @@ susan_corners:                          # @susan_corners
 	movsd	.LCPI16_0(%rip), %xmm4  # xmm4 = mem[0],zero
 	subsd	%xmm4, %xmm2
 	cvttsd2si	%xmm2, %edx
-	movslq	24(%rsp), %r9
+	movslq	28(%rsp), %r9
 	addsd	%xmm4, %xmm1
 	cvttsd2si	%xmm1, %edi
 	cmoval	%edx, %edi
@@ -5862,7 +6107,7 @@ susan_corners:                          # @susan_corners
 	addq	%r9, %rsi
 	movslq	16(%rsp), %r11
 	imulq	%r11, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rdx, %rsi
 	cltq
 	addq	%rax, %rsi
@@ -5927,11 +6172,11 @@ susan_corners:                          # @susan_corners
 	cltd
 	idivl	44(%rsp)
                                         # kill: def $eax killed $eax def $rax
-	movl	24(%rsp), %r8d
+	movl	28(%rsp), %r8d
 	leal	(%r8,%rax), %esi
 	movl	16(%rsp), %r10d
 	imull	%r10d, %esi
-	movl	20(%rsp), %r11d
+	movl	24(%rsp), %r11d
 	addl	%r11d, %esi
 	movss	84(%rsp), %xmm0         # xmm0 = mem[0],zero,zero,zero
 	xorps	%xmm3, %xmm3
@@ -6000,66 +6245,66 @@ susan_corners:                          # @susan_corners
 	jl	.LBB16_29
 # %bb.28:                               #   in Loop: Header=BB16_3 Depth=2
 	movl	64(%rsp), %eax
-	subl	28(%rsp), %eax
+	subl	20(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	movl	%eax, (%rcx,%rdx,4)
 	imull	$51, 12(%rsp), %eax
 	cltd
-	idivl	28(%rsp)
+	idivl	20(%rsp)
 	movq	104(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	movl	%eax, (%rcx,%rdx,4)
 	imull	$51, 44(%rsp), %eax
 	cltd
-	idivl	28(%rsp)
+	idivl	20(%rsp)
 	movq	96(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	movl	%eax, (%rcx,%rdx,4)
 	jmp	.LBB16_29
 .LBB16_31:
-	movl	$0, 28(%rsp)
-	movl	$5, 24(%rsp)
+	movl	$0, 20(%rsp)
+	movl	$5, 28(%rsp)
 	jmp	.LBB16_32
 	.p2align	4, 0x90
 .LBB16_86:                              #   in Loop: Header=BB16_32 Depth=1
-	addl	$1, 24(%rsp)
+	addl	$1, 28(%rsp)
 .LBB16_32:                              # =>This Loop Header: Depth=1
                                         #     Child Loop BB16_34 Depth 2
 	movl	144(%rsp), %eax
 	addl	$-5, %eax
-	cmpl	%eax, 24(%rsp)
+	cmpl	%eax, 28(%rsp)
 	jge	.LBB16_87
 # %bb.33:                               #   in Loop: Header=BB16_32 Depth=1
-	movl	$5, 20(%rsp)
+	movl	$5, 24(%rsp)
 	jmp	.LBB16_34
 	.p2align	4, 0x90
 .LBB16_85:                              #   in Loop: Header=BB16_34 Depth=2
-	addl	$1, 20(%rsp)
+	addl	$1, 24(%rsp)
 .LBB16_34:                              #   Parent Loop BB16_32 Depth=1
                                         # =>  This Inner Loop Header: Depth=2
 	movl	16(%rsp), %eax
 	addl	$-5, %eax
-	cmpl	%eax, 20(%rsp)
+	cmpl	%eax, 24(%rsp)
 	jge	.LBB16_86
 # %bb.35:                               #   in Loop: Header=BB16_34 Depth=2
 	movq	56(%rsp), %rax
-	movslq	24(%rsp), %rcx
+	movslq	28(%rsp), %rcx
 	movslq	16(%rsp), %rdx
 	imulq	%rcx, %rdx
-	movslq	20(%rsp), %rcx
+	movslq	24(%rsp), %rcx
 	addq	%rdx, %rcx
 	movl	(%rax,%rcx,4), %eax
 	movl	%eax, 12(%rsp)
@@ -6068,576 +6313,576 @@ susan_corners:                          # @susan_corners
 # %bb.36:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-3, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-12(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.37:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-3, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-8(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.38:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-3, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-4(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.39:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-3, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.40:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-3, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	4(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.41:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-3, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	8(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.42:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-3, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	12(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.43:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-2, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-12(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.44:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-2, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-8(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.45:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-2, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-4(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.46:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-2, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.47:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-2, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	4(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.48:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-2, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	8(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.49:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-2, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	12(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.50:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-1, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-12(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.51:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-1, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-8(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.52:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-1, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-4(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.53:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-1, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.54:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-1, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	4(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.55:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-1, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	8(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.56:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$-1, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	12(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.57:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-12(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.58:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-8(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.59:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-4(%rcx,%rdx,4), %eax
 	jle	.LBB16_85
 # %bb.60:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	4(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.61:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	8(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.62:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	12(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.63:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$1, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-12(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.64:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$1, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-8(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.65:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$1, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-4(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.66:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$1, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.67:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$1, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	4(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.68:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$1, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	8(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.69:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$1, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	12(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.70:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$2, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-12(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.71:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$2, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-8(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.72:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$2, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-4(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.73:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$2, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.74:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$2, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	4(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.75:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$2, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	8(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.76:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$2, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	12(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.77:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$3, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-12(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.78:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$3, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-8(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.79:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$3, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	-4(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.80:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$3, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.81:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$3, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	4(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.82:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$3, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	8(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.83:                               #   in Loop: Header=BB16_34 Depth=2
 	movl	12(%rsp), %eax
 	movq	56(%rsp), %rcx
-	movslq	24(%rsp), %rdx
+	movslq	28(%rsp), %rdx
 	addq	$3, %rdx
 	movslq	16(%rsp), %rsi
 	imulq	%rdx, %rsi
-	movslq	20(%rsp), %rdx
+	movslq	24(%rsp), %rdx
 	addq	%rsi, %rdx
 	cmpl	12(%rcx,%rdx,4), %eax
 	jl	.LBB16_85
 # %bb.84:                               #   in Loop: Header=BB16_34 Depth=2
 	movq	72(%rsp), %rax
-	movslq	28(%rsp), %rcx
+	movslq	20(%rsp), %rcx
 	leaq	(%rcx,%rcx,2), %rcx
 	movl	$0, 8(%rax,%rcx,8)
-	movl	20(%rsp), %eax
-	movq	72(%rsp), %rcx
-	movslq	28(%rsp), %rdx
-	leaq	(%rdx,%rdx,2), %rdx
-	movl	%eax, (%rcx,%rdx,8)
 	movl	24(%rsp), %eax
 	movq	72(%rsp), %rcx
-	movslq	28(%rsp), %rdx
+	movslq	20(%rsp), %rdx
+	leaq	(%rdx,%rdx,2), %rdx
+	movl	%eax, (%rcx,%rdx,8)
+	movl	28(%rsp), %eax
+	movq	72(%rsp), %rcx
+	movslq	20(%rsp), %rdx
 	leaq	(%rdx,%rdx,2), %rdx
 	movl	%eax, 4(%rcx,%rdx,8)
 	movq	104(%rsp), %rax
-	movslq	24(%rsp), %rcx
+	movslq	28(%rsp), %rcx
 	movslq	16(%rsp), %rdx
 	imulq	%rcx, %rdx
-	movslq	20(%rsp), %rcx
+	movslq	24(%rsp), %rcx
 	addq	%rdx, %rcx
 	movl	(%rax,%rcx,4), %eax
 	movq	72(%rsp), %rcx
-	movslq	28(%rsp), %rdx
+	movslq	20(%rsp), %rdx
 	leaq	(%rdx,%rdx,2), %rdx
 	movl	%eax, 12(%rcx,%rdx,8)
 	movq	96(%rsp), %rax
-	movslq	24(%rsp), %rcx
+	movslq	28(%rsp), %rcx
 	movslq	16(%rsp), %rdx
 	imulq	%rcx, %rdx
-	movslq	20(%rsp), %rcx
+	movslq	24(%rsp), %rcx
 	addq	%rdx, %rcx
 	movl	(%rax,%rcx,4), %eax
 	movq	72(%rsp), %rcx
-	movslq	28(%rsp), %rdx
+	movslq	20(%rsp), %rdx
 	leaq	(%rdx,%rdx,2), %rdx
 	movl	%eax, 16(%rcx,%rdx,8)
 	movq	88(%rsp), %rax
-	movslq	24(%rsp), %rcx
+	movslq	28(%rsp), %rcx
 	movslq	16(%rsp), %rdx
 	imulq	%rcx, %rdx
-	movslq	20(%rsp), %rcx
+	movslq	24(%rsp), %rcx
 	addq	%rdx, %rcx
 	movzbl	(%rax,%rcx), %eax
 	movq	72(%rsp), %rcx
-	movslq	28(%rsp), %rdx
+	movslq	20(%rsp), %rdx
 	leaq	(%rdx,%rdx,2), %rdx
 	movl	%eax, 20(%rcx,%rdx,8)
-	movl	28(%rsp), %eax
+	movl	20(%rsp), %eax
 	addl	$1, %eax
-	movl	%eax, 28(%rsp)
+	movl	%eax, 20(%rsp)
 	cmpl	$15000, %eax            # imm = 0x3A98
 	jne	.LBB16_85
 # %bb.88:
@@ -6649,7 +6894,7 @@ susan_corners:                          # @susan_corners
 	callq	exit
 .LBB16_87:
 	movq	72(%rsp), %rax
-	movslq	28(%rsp), %rcx
+	movslq	20(%rsp), %rcx
 	leaq	(%rcx,%rcx,2), %rcx
 	movl	$7, 8(%rax,%rcx,8)
 	movq	104(%rsp), %rdi
@@ -6671,15 +6916,15 @@ susan_corners:                          # @susan_corners
 susan_corners_quick:                    # @susan_corners_quick
 	.cfi_startproc
 # %bb.0:
-	pushq	%rbp
+	pushq	%r14
 	.cfi_def_cfa_offset 16
 	pushq	%rbx
 	.cfi_def_cfa_offset 24
 	subq	$88, %rsp
 	.cfi_def_cfa_offset 112
 	.cfi_offset %rbx, -24
-	.cfi_offset %rbp, -16
-	movq	%rdi, 64(%rsp)
+	.cfi_offset %r14, -16
+	movq	%rdi, 72(%rsp)
 	movq	%rsi, 24(%rsp)
 	movq	%rdx, 80(%rsp)
 	movl	%ecx, 44(%rsp)
@@ -6717,99 +6962,100 @@ susan_corners_quick:                    # @susan_corners_quick
 	jge	.LBB17_25
 # %bb.4:                                #   in Loop: Header=BB17_3 Depth=2
 	movl	$100, 4(%rsp)
-	movslq	16(%rsp), %rcx
-	leaq	-3(%rcx), %rax
-	movslq	8(%rsp), %r8
-	imulq	%r8, %rax
-	movq	64(%rsp), %rsi
-	addq	%rsi, %rax
-	movslq	12(%rsp), %rdi
-	leaq	(%rdi,%rax), %rdx
-	addq	$-1, %rdx
-	movq	%rdx, 32(%rsp)
-	imulq	%r8, %rcx
-	addq	%rdi, %rcx
-	movzbl	(%rsi,%rcx), %esi
-	addq	80(%rsp), %rsi
-	leaq	(%rax,%rdi), %r9
-	movq	%rsi, 48(%rsp)
-	movq	%r9, 32(%rsp)
-	movzbl	-1(%rdi,%rax), %r8d
-	movq	%rsi, %rdx
-	subq	%r8, %rdx
-	movzbl	(%rdx), %r8d
-	leal	100(%r8), %edx
-	movl	%edx, 4(%rsp)
-	leaq	(%rdi,%rax), %rdx
-	addq	$1, %rdx
-	movq	%rdx, 32(%rsp)
-	movzbl	(%rdi,%rax), %eax
-	subq	%rax, %rsi
-	movzbl	(%rsi), %eax
-	leal	(%r8,%rax), %r8d
-	addl	$100, %r8d
-	movl	%r8d, 4(%rsp)
-	movslq	8(%rsp), %rdx
-	leaq	1(%rdx,%r9), %rax
-	leaq	-2(%rdx,%r9), %rdi
+	movslq	16(%rsp), %rsi
+	leaq	-3(%rsi), %rax
+	movslq	8(%rsp), %r9
+	imulq	%r9, %rax
+	movq	72(%rsp), %r8
+	addq	%r8, %rax
+	movslq	12(%rsp), %rdx
+	leaq	(%rax,%rdx), %r10
+	leaq	(%rdx,%rax), %rdi
+	addq	$-1, %rdi
 	movq	%rdi, 32(%rsp)
-	movq	48(%rsp), %rdi
-	movzbl	-2(%rdx,%r9), %esi
+	imulq	%r9, %rsi
+	addq	%rdx, %rsi
+	movzbl	(%r8,%rsi), %ecx
+	addq	80(%rsp), %rcx
+	movq	%rcx, 48(%rsp)
+	movq	%r10, 32(%rsp)
+	movzbl	-1(%rdx,%rax), %r8d
+	movq	%rcx, %rsi
+	subq	%r8, %rsi
+	movzbl	(%rsi), %r8d
+	leal	100(%r8), %esi
+	movl	%esi, 4(%rsp)
+	leaq	(%rdx,%rax), %rsi
+	addq	$1, %rsi
+	movq	%rsi, 32(%rsp)
+	movzbl	(%rdx,%rax), %esi
+	movq	%rcx, %rdi
 	subq	%rsi, %rdi
 	movzbl	(%rdi), %esi
-	addl	%r8d, %esi
+	leal	(%r8,%rsi), %esi
+	addl	$100, %esi
 	movl	%esi, 4(%rsp)
-	movq	48(%rsp), %rdi
-	leaq	(%rdx,%r9), %rcx
-	addq	$-1, %rcx
-	movq	%rcx, 32(%rsp)
-	movzbl	-2(%rdx,%r9), %ecx
-	subq	%rcx, %rdi
-	movzbl	(%rdi), %ecx
+	movzbl	1(%rdx,%rax), %eax
+	subq	%rax, %rcx
+	movzbl	(%rcx), %ecx
+	addl	%esi, %ecx
+	movl	%ecx, 4(%rsp)
+	movslq	8(%rsp), %rdx
+	leaq	(%rdx,%r10), %rax
+	addq	$1, %rax
+	leaq	-2(%rdx,%r10), %rsi
+	movq	%rsi, 32(%rsp)
+	movq	48(%rsp), %rsi
+	leaq	(%rdx,%r10), %rdi
+	addq	$-1, %rdi
+	movq	%rdi, 32(%rsp)
+	movzbl	-2(%rdx,%r10), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%ecx, %esi
+	movl	%esi, 4(%rsp)
+	movq	48(%rsp), %rcx
+	leaq	-1(%rax), %rdi
+	movq	%rdi, 32(%rsp)
+	movzbl	-1(%rdx,%r10), %edi
+	subq	%rdi, %rcx
+	movzbl	(%rcx), %ecx
 	addl	%esi, %ecx
 	movl	%ecx, 4(%rsp)
 	movq	48(%rsp), %rsi
-	leaq	-1(%rax), %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-1(%rdx,%r9), %edi
-	subq	%rdi, %rsi
-	movzbl	(%rsi), %esi
-	addl	%ecx, %esi
-	movl	%esi, 4(%rsp)
-	movq	48(%rsp), %rcx
 	movq	%rax, 32(%rsp)
-	movzbl	(%rdx,%r9), %edx
-	subq	%rdx, %rcx
-	movzbl	(%rcx), %edi
-	addl	%esi, %edi
-	movl	%edi, 4(%rsp)
-	movslq	8(%rsp), %rdx
-	leaq	(%rdx,%rax), %r8
-	leaq	(%rdx,%rax), %rsi
-	addq	$-5, %rsi
-	movq	%rsi, 32(%rsp)
-	movq	48(%rsp), %rsi
-	movzbl	-5(%rdx,%rax), %ecx
-	subq	%rcx, %rsi
-	movzbl	(%rsi), %ecx
-	addl	%edi, %ecx
-	movl	%ecx, 4(%rsp)
-	movq	48(%rsp), %rsi
-	leaq	(%rdx,%rax), %rdi
-	addq	$-4, %rdi
-	movq	%rdi, 32(%rsp)
-	movzbl	-5(%rdx,%rax), %edi
+	movzbl	(%rdx,%r10), %edi
 	subq	%rdi, %rsi
 	movzbl	(%rsi), %esi
 	addl	%ecx, %esi
 	movl	%esi, 4(%rsp)
 	movq	48(%rsp), %rcx
-	leaq	(%rdx,%rax), %rdi
-	addq	$-3, %rdi
+	leaq	(%rdx,%r10), %rdi
+	addq	$2, %rdi
 	movq	%rdi, 32(%rsp)
-	movzbl	-4(%rdx,%rax), %edi
+	movzbl	1(%rdx,%r10), %edi
 	subq	%rdi, %rcx
 	movzbl	(%rcx), %ecx
+	addl	%esi, %ecx
+	movl	%ecx, 4(%rsp)
+	movq	48(%rsp), %rsi
+	movzbl	2(%rdx,%r10), %edx
+	subq	%rdx, %rsi
+	movzbl	(%rsi), %esi
+	addl	%ecx, %esi
+	movl	%esi, 4(%rsp)
+	movslq	8(%rsp), %rdx
+	leaq	(%rdx,%rax), %r8
+	addq	$1, %r8
+	leaq	-4(%rdx,%rax), %rdi
+	movq	%rdi, 32(%rsp)
+	movq	48(%rsp), %rdi
+	leaq	(%rdx,%rax), %rcx
+	addq	$-3, %rcx
+	movq	%rcx, 32(%rsp)
+	movzbl	-4(%rdx,%rax), %ecx
+	subq	%rcx, %rdi
+	movzbl	(%rdi), %ecx
 	addl	%esi, %ecx
 	movl	%ecx, 4(%rsp)
 	movq	48(%rsp), %rsi
@@ -6831,38 +7077,70 @@ susan_corners_quick:                    # @susan_corners_quick
 	addl	%esi, %ecx
 	movl	%ecx, 4(%rsp)
 	movq	48(%rsp), %rsi
+	leaq	-1(%r8), %rdi
+	movq	%rdi, 32(%rsp)
+	movzbl	-1(%rdx,%rax), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%ecx, %esi
+	movl	%esi, 4(%rsp)
+	movq	48(%rsp), %rcx
 	movq	%r8, 32(%rsp)
-	movzbl	-1(%rdx,%rax), %eax
-	subq	%rax, %rsi
-	movzbl	(%rsi), %eax
-	addl	%ecx, %eax
+	movzbl	(%rdx,%rax), %edi
+	subq	%rdi, %rcx
+	movzbl	(%rcx), %ecx
+	addl	%esi, %ecx
+	movl	%ecx, 4(%rsp)
+	movq	48(%rsp), %rsi
+	leaq	(%rdx,%rax), %rdi
+	addq	$2, %rdi
+	movq	%rdi, 32(%rsp)
+	movzbl	1(%rdx,%rax), %edi
+	subq	%rdi, %rsi
+	movzbl	(%rsi), %esi
+	addl	%ecx, %esi
+	movl	%esi, 4(%rsp)
+	movq	48(%rsp), %rcx
+	movzbl	2(%rdx,%rax), %eax
+	subq	%rax, %rcx
+	movzbl	(%rcx), %eax
+	addl	%esi, %eax
 	movl	%eax, 4(%rsp)
 	movslq	8(%rsp), %rcx
 	leaq	(%rcx,%r8), %rdx
-	addq	$-6, %rdx
+	addq	$-5, %rdx
 	movq	%rdx, 32(%rsp)
 	movq	48(%rsp), %rdx
-	movzbl	-6(%rcx,%r8), %esi
+	leaq	(%rcx,%r8), %rsi
+	addq	$-4, %rsi
+	movq	%rsi, 32(%rsp)
+	movzbl	-5(%rcx,%r8), %esi
 	subq	%rsi, %rdx
 	movzbl	(%rdx), %edx
 	addl	%eax, %edx
 	movl	%edx, 4(%rsp)
 	movq	48(%rsp), %rax
 	leaq	(%rcx,%r8), %rsi
-	addq	$-5, %rsi
+	addq	$-3, %rsi
 	movq	%rsi, 32(%rsp)
-	movzbl	-6(%rcx,%r8), %ecx
-	subq	%rcx, %rax
+	movzbl	-4(%rcx,%r8), %esi
+	subq	%rsi, %rax
 	movzbl	(%rax), %eax
 	addl	%edx, %eax
 	movl	%eax, 4(%rsp)
-	cmpl	44(%rsp), %eax
+	movq	48(%rsp), %rdx
+	movzbl	-3(%rcx,%r8), %ecx
+	subq	%rcx, %rdx
+	movzbl	(%rdx), %ecx
+	addl	%eax, %ecx
+	movl	%ecx, 4(%rsp)
+	cmpl	44(%rsp), %ecx
 	jge	.LBB17_24
 # %bb.5:                                #   in Loop: Header=BB17_3 Depth=2
 	movq	32(%rsp), %rax
-	leaq	2(%rax), %rcx
-	movq	%rcx, 32(%rsp)
 	movq	48(%rsp), %rcx
+	leaq	3(%rax), %rdx
+	movq	%rdx, 32(%rsp)
 	movzbl	2(%rax), %eax
 	subq	%rax, %rcx
 	movzbl	(%rcx), %eax
@@ -6895,10 +7173,10 @@ susan_corners_quick:                    # @susan_corners_quick
 # %bb.8:                                #   in Loop: Header=BB17_3 Depth=2
 	movslq	8(%rsp), %rax
 	movq	32(%rsp), %rcx
-	leaq	(%rax,%rcx), %rdx
-	addq	$-6, %rdx
-	movq	%rdx, 32(%rsp)
 	movq	48(%rsp), %rdx
+	leaq	(%rax,%rcx), %rsi
+	addq	$-5, %rsi
+	movq	%rsi, 32(%rsp)
 	movzbl	-6(%rax,%rcx), %eax
 	subq	%rax, %rdx
 	movzbl	(%rdx), %eax
@@ -6979,10 +7257,10 @@ susan_corners_quick:                    # @susan_corners_quick
 # %bb.15:                               #   in Loop: Header=BB17_3 Depth=2
 	movslq	8(%rsp), %rax
 	movq	32(%rsp), %rcx
-	leaq	(%rax,%rcx), %rdx
-	addq	$-5, %rdx
-	movq	%rdx, 32(%rsp)
 	movq	48(%rsp), %rdx
+	leaq	(%rax,%rcx), %rsi
+	addq	$-4, %rsi
+	movq	%rsi, 32(%rsp)
 	movzbl	-5(%rax,%rcx), %eax
 	subq	%rax, %rdx
 	movzbl	(%rdx), %eax
@@ -7039,10 +7317,10 @@ susan_corners_quick:                    # @susan_corners_quick
 # %bb.20:                               #   in Loop: Header=BB17_3 Depth=2
 	movslq	8(%rsp), %rax
 	movq	32(%rsp), %rcx
-	leaq	(%rax,%rcx), %rdx
-	addq	$-3, %rdx
-	movq	%rdx, 32(%rsp)
 	movq	48(%rsp), %rdx
+	leaq	(%rax,%rcx), %rsi
+	addq	$-2, %rsi
+	movq	%rsi, 32(%rsp)
 	movzbl	-3(%rax,%rcx), %eax
 	subq	%rax, %rdx
 	movzbl	(%rdx), %eax
@@ -7656,7 +7934,7 @@ susan_corners_quick:                    # @susan_corners_quick
 	movslq	4(%rsp), %rdx
 	leaq	(%rdx,%rdx,2), %rdx
 	movl	%eax, 4(%rcx,%rdx,8)
-	movq	64(%rsp), %rax
+	movq	72(%rsp), %rax
 	movslq	16(%rsp), %rcx
 	leaq	-2(%rcx), %rdi
 	movslq	8(%rsp), %r8
@@ -7736,66 +8014,110 @@ susan_corners_quick:                    # @susan_corners_quick
 	movslq	4(%rsp), %rdx
 	leaq	(%rdx,%rdx,2), %rdx
 	movl	%eax, 20(%rcx,%rdx,8)
-	movq	64(%rsp), %rax
-	movslq	16(%rsp), %rdx
-	movslq	8(%rsp), %r10
-	movslq	12(%rsp), %r8
-	leaq	-2(%rdx), %r11
-	imulq	%r10, %r11
-	addq	%r8, %r11
-	movzbl	2(%rax,%r11), %r9d
-	leaq	-1(%rdx), %rdi
-	imulq	%r10, %rdi
-	addq	%r8, %rdi
-	movzbl	2(%rax,%rdi), %esi
-	addl	%r9d, %esi
-	movq	%rdx, %rcx
-	imulq	%r10, %rcx
-	addq	%r8, %rcx
-	movzbl	2(%rax,%rcx), %r9d
-	addl	%esi, %r9d
-	leaq	1(%rdx), %rbx
-	imulq	%r10, %rbx
-	addq	%r8, %rbx
-	movzbl	2(%rax,%rbx), %ebp
-	addl	%r9d, %ebp
-	addq	$2, %rdx
-	imulq	%r10, %rdx
-	addq	%r8, %rdx
-	movzbl	2(%rax,%rdx), %esi
-	addl	%ebp, %esi
-	movzbl	-2(%rax,%r11), %ebp
-	movzbl	-2(%rax,%rdi), %edi
-	addl	%ebp, %edi
-	movzbl	-2(%rax,%rcx), %ecx
-	addl	%edi, %ecx
-	movzbl	-2(%rax,%rbx), %edi
-	addl	%ecx, %edi
-	movzbl	-2(%rax,%rdx), %ecx
-	addl	%edi, %ecx
-	subl	%ecx, %esi
-	movl	%esi, 20(%rsp)
-	movzbl	-2(%rax,%rdx), %ecx
-	movzbl	-1(%rax,%rdx), %edi
-	addl	%ecx, %edi
-	movzbl	(%rax,%rdx), %ecx
-	addl	%edi, %ecx
-	movzbl	1(%rax,%rdx), %edi
-	addl	%ecx, %edi
-	movzbl	2(%rax,%rdx), %ecx
-	addl	%edi, %ecx
-	movzbl	-2(%rax,%r11), %edx
-	movzbl	-1(%rax,%r11), %edi
-	addl	%edx, %edi
-	movzbl	(%rax,%r11), %edx
-	addl	%edi, %edx
-	movzbl	1(%rax,%r11), %edi
-	addl	%edx, %edi
-	movzbl	2(%rax,%r11), %eax
+	movq	72(%rsp), %rax
+	movslq	16(%rsp), %rdi
+	leaq	-2(%rdi), %r10
+	movslq	8(%rsp), %r8
+	imulq	%r8, %r10
+	movslq	12(%rsp), %r11
+	addq	%r11, %r10
+	movzbl	2(%rax,%r10), %ecx
+	leaq	-1(%rdi), %r9
+	imulq	%r8, %r9
+	addq	%r11, %r9
+	movzbl	2(%rax,%r9), %esi
+	addl	%ecx, %esi
+	movq	%rdi, %rcx
+	imulq	%r8, %rcx
+	addq	%r11, %rcx
+	movzbl	2(%rax,%rcx), %edx
+	addl	%esi, %edx
+	leaq	1(%rdi), %r14
+	imulq	%r8, %r14
+	addq	%r11, %r14
+	movzbl	2(%rax,%r14), %ebx
+	addl	%edx, %ebx
+	addq	$2, %rdi
+	imulq	%r8, %rdi
+	addq	%r11, %rdi
+	movzbl	2(%rax,%rdi), %edx
+	addl	%ebx, %edx
+	movzbl	-2(%rax,%r10), %r8d
+	movzbl	-2(%rax,%r9), %ebx
+	addl	%r8d, %ebx
+	movzbl	-2(%rax,%rcx), %esi
+	addl	%ebx, %esi
+	movzbl	-2(%rax,%r14), %ebx
+	addl	%esi, %ebx
+	movzbl	-2(%rax,%rdi), %esi
+	addl	%ebx, %esi
+	subl	%esi, %edx
+	movl	%edx, 20(%rsp)
+	movzbl	1(%rax,%r10), %esi
+	addl	%edx, %esi
+	movzbl	1(%rax,%r9), %ebx
+	addl	%esi, %ebx
+	movzbl	1(%rax,%rcx), %esi
+	addl	%ebx, %esi
+	movzbl	1(%rax,%r14), %ebx
+	addl	%esi, %ebx
+	movzbl	1(%rax,%rdi), %r8d
+	addl	%ebx, %r8d
+	movzbl	-1(%rax,%r10), %esi
+	movzbl	-1(%rax,%r9), %ebx
+	addl	%esi, %ebx
+	movzbl	-1(%rax,%rcx), %ecx
+	addl	%ebx, %ecx
+	movzbl	-1(%rax,%r14), %esi
+	addl	%ecx, %esi
+	movzbl	-1(%rax,%rdi), %ecx
+	addl	%esi, %ecx
+	subl	%ecx, %r8d
+	addl	%edx, %r8d
+	movl	%r8d, 20(%rsp)
+	movzbl	-2(%rax,%rdi), %ecx
+	movzbl	-1(%rax,%rdi), %edx
+	addl	%ecx, %edx
+	movzbl	(%rax,%rdi), %ecx
+	addl	%edx, %ecx
+	movzbl	1(%rax,%rdi), %edx
+	addl	%ecx, %edx
+	movzbl	2(%rax,%rdi), %ecx
+	addl	%edx, %ecx
+	movzbl	-2(%rax,%r10), %edx
+	movzbl	-1(%rax,%r10), %esi
+	addl	%edx, %esi
+	movzbl	(%rax,%r10), %edx
+	addl	%esi, %edx
+	movzbl	1(%rax,%r10), %esi
+	addl	%edx, %esi
+	movzbl	2(%rax,%r10), %edx
+	addl	%esi, %edx
+	subl	%edx, %ecx
+	movl	%ecx, 68(%rsp)
+	movzbl	-2(%rax,%r14), %edx
+	addl	%ecx, %edx
+	movzbl	-1(%rax,%r14), %esi
+	addl	%edx, %esi
+	movzbl	(%rax,%r14), %edx
+	addl	%esi, %edx
+	movzbl	1(%rax,%r14), %esi
+	addl	%edx, %esi
+	movzbl	2(%rax,%r14), %edx
+	addl	%esi, %edx
+	movzbl	-2(%rax,%r9), %esi
+	movzbl	-1(%rax,%r9), %edi
+	addl	%esi, %edi
+	movzbl	(%rax,%r9), %esi
+	addl	%edi, %esi
+	movzbl	1(%rax,%r9), %edi
+	addl	%esi, %edi
+	movzbl	2(%rax,%r9), %eax
 	addl	%edi, %eax
-	subl	%eax, %ecx
-	movl	%ecx, 76(%rsp)
-	movslq	%esi, %rax
+	subl	%eax, %edx
+	addl	%ecx, %edx
+	movl	%edx, 68(%rsp)
+	movslq	%r8d, %rax
 	imulq	$-2004318071, %rax, %rcx # imm = 0x88888889
 	shrq	$32, %rcx
 	addl	%ecx, %eax
@@ -7807,7 +8129,7 @@ susan_corners_quick:                    # @susan_corners_quick
 	movslq	4(%rsp), %rdx
 	leaq	(%rdx,%rdx,2), %rdx
 	movl	%eax, 12(%rcx,%rdx,8)
-	movslq	76(%rsp), %rax
+	movslq	68(%rsp), %rax
 	imulq	$-2004318071, %rax, %rcx # imm = 0x88888889
 	shrq	$32, %rcx
 	addl	%eax, %ecx
@@ -7840,7 +8162,7 @@ susan_corners_quick:                    # @susan_corners_quick
 	.cfi_def_cfa_offset 24
 	popq	%rbx
 	.cfi_def_cfa_offset 16
-	popq	%rbp
+	popq	%r14
 	.cfi_def_cfa_offset 8
 	retq
 .Lfunc_end17:

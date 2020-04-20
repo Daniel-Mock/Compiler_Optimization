@@ -22,7 +22,7 @@
 #include "llvm/Support/GraphWriter.h"
 #include "llvm/IR/InstIterator.h"
 #include "llvm/Analysis/InstructionSimplify.h"
-
+#include "llvm/Transforms/Utils/Local.h"
 #include <map>
 
 using namespace llvm;
@@ -38,6 +38,98 @@ int CSELdElim=0;
 int CSELdStElim=0;
 int CSERStElim=0;
 
+bool isDead(Instruction &I)
+{
+  int opcode = I.getOpcode();
+  switch(opcode){
+  case Instruction::Add:
+  case Instruction::FNeg:
+  case Instruction::FAdd: 	
+  case Instruction::Sub:
+  case Instruction::FSub: 	
+  case Instruction::Mul:
+  case Instruction::FMul: 	
+  case Instruction::UDiv:	
+  case Instruction::SDiv:	
+  case Instruction::FDiv:	
+  case Instruction::URem: 	
+  case Instruction::SRem: 	
+  case Instruction::FRem: 	
+  case Instruction::Shl: 	
+  case Instruction::LShr: 	
+  case Instruction::AShr: 	
+  case Instruction::And: 	
+  case Instruction::Or: 	
+  case Instruction::Xor: 	
+  case Instruction::Alloca:
+  case Instruction::GetElementPtr: 	
+  case Instruction::Trunc: 	
+  case Instruction::ZExt: 	
+  case Instruction::SExt: 	
+  case Instruction::FPToUI: 	
+  case Instruction::FPToSI: 	
+  case Instruction::UIToFP: 	
+  case Instruction::SIToFP: 	
+  case Instruction::FPTrunc: 	
+  case Instruction::FPExt: 	
+  case Instruction::PtrToInt: 	
+  case Instruction::IntToPtr: 	
+  case Instruction::BitCast: 	
+  case Instruction::AddrSpaceCast: 	
+  case Instruction::ICmp: 	
+  case Instruction::FCmp: 	
+  case Instruction::PHI: 
+  case Instruction::Select: 
+  case Instruction::ExtractElement: 	
+  case Instruction::InsertElement: 	
+  case Instruction::ShuffleVector: 	
+  case Instruction::ExtractValue: 	
+  case Instruction::InsertValue: 
+    if ( I.use_begin() == I.use_end() )
+      {
+	return true;
+      }    
+    break;
+
+
+  case Instruction::Load:
+    {
+      LoadInst *li = dyn_cast<LoadInst>(&I);
+      if (li->isVolatile())
+	return false;
+
+
+      if ( I.use_begin() == I.use_end() )
+	{
+	  return true;
+	}
+      
+      break;
+    }
+  
+  default: // any other opcode fails (includes stores and branches)
+    // we don't know about this case, so conservatively fail!
+    return false;
+  }
+  
+  return false;
+}
+
+
+static void CSE_Dead(Instruction &I)
+{
+  bool check = isInstructionTriviallyDead(&I);
+  if (check) {
+    CSEDead++;
+    I.eraseFromParent();
+    } 
+  else if(isDead(I)){
+      abort();
+      }      
+}
+
+
+
 static void CSE_Simplify(Instruction &I)
 {
   if (Value * V = SimplifyInstruction(&I,I.getModule()->getDataLayout()))
@@ -48,7 +140,7 @@ static void CSE_Simplify(Instruction &I)
     
 }
 
-static void CSE_Basic(Instruction &I)
+static void CSE_Elim(Instruction &I)
 {
 	if (isa<LoadInst>(I) || isa<StoreInst>(I) || isa<VAArgInst>(I)
 			|| isa<CallInst>(I) || isa<AllocaInst>(I) || isa<FCmpInst>(I))
@@ -68,7 +160,8 @@ static void CSE_Basic(Instruction &I)
 				if (I.isIdenticalTo(&target)) {
 					CSEElim++;
 					target.replaceAllUsesWith(&I);
-					bb_it = target.eraseFromParent()--;
+					bb_it--;
+				        target.eraseFromParent();
 				}
 			}
 		}
@@ -92,8 +185,9 @@ static void CSE_Loads(Instruction &I)
 					&& load->getPointerOperand() == LI->getPointerOperand()) {
 			CSELdElim++;
 			load->replaceAllUsesWith(LI);
-			load->eraseFromParent();
 			bb_it--;
+			load->eraseFromParent();
+		
 		}
 	}
 }
@@ -113,13 +207,26 @@ static void CSE_Stores(Instruction &I)
 		if (!store->isVolatile() && store->getPointerOperand() == SI->getPointerOperand()
 					&& store->getValueOperand()->getType() == SI->getValueOperand()->getType()) {
 				CSERStElim++;
-				store->eraseFromParent();
                                 bb_it--;
+				store->eraseFromParent();
+				return;
 		}
-		return;
+		else return;
 	}
 		
-	
+		LoadInst *load = dyn_cast<LoadInst>(&*bb_it);
+		if (load) {
+			if (!load->isVolatile() && load->getPointerOperand() == SI->getPointerOperand()
+					&& load->getType() == SI->getValueOperand()->getType()) {
+				CSELdStElim++;
+				load->replaceAllUsesWith(SI->getValueOperand());
+				bb_it--;
+			        load->eraseFromParent();
+				return;
+			} else {
+				return;
+			}
+		}	
         
         }
 }
@@ -127,11 +234,11 @@ static void BB_Iter(BasicBlock &BB)
 {
 	for (BasicBlock::iterator bb_it=BB.begin(); bb_it!=BB.end(); bb_it++) {
 		Instruction &I = *bb_it;
-
-		//CSE_Basic(I);
-               // CSE_Simplify(I);
+                CSE_Dead(I);
+	        //CSE_Simplify(I);
+		//CSE_Elim(I);
 		//CSE_Loads(I);
-		CSE_Stores(I);
+		//CSE_Stores(I);
 	}
 }
 
