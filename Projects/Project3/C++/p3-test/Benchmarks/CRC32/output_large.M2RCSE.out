@@ -1,4 +1,0 @@
-/afs/eos.ncsu.edu/lockers/workspace/ece/ece466/001/djmock/HW/Projects/Project3/C++/p3-test/../wolfbench/Benchmarks/adpcm/large.pcm: No such file or directory
-00000000       0
-exit 1
-RunSafely.sh detected a failure with these command-line arguments:  60 1 /dev/null output_large.M2RCSE.out ./crc32.M2RCSE /afs/eos.ncsu.edu/lockers/workspace/ece/ece466/001/djmock/HW/Projects/Project3/C++/p3-test/../wolfbench/Benchmarks/adpcm/large.pcm
